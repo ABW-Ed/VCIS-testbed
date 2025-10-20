@@ -2,7 +2,7 @@
 $('#header-menu').append(` `);
 
 // Load HTML for popup from GitHub Pages
-fetch('https://<abw-ed.github.io/VCIS-testbed/html/tnc-content.html')
+fetch('https://abw-ed.github.io/VCIS-testbed/html/tnc-content.html')
   .then(res => res.text())
   .then(html => {
     $('body').append(html);
@@ -23,3 +23,4 @@ $('body').on('click', '#close-tnc, #tnc-overlay', function() {
   $('#tnc-overlay').hide();
   console.log("❎ Popup closed");
 });
+
