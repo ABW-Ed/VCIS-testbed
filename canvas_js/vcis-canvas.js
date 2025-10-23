@@ -15,7 +15,8 @@ class CanvasCustomizer {
       TIMEOUTS: {
         DEFAULT: 5000,
         SCORM_SETUP: 12000, // Increased for SCORM ENV loading
-        IFRAME_READY: 15000  // Time to wait for iframe
+        IFRAME_READY: 15000,  // Time to wait for iframe
+		NAVMENU_READY: 2000
       }
     };
 
@@ -244,7 +245,11 @@ class CanvasCustomizer {
 
   async collapseCourseNavigation() {
     try {
-      const btn = await this.waitFor(() => this.$(this.selectors.courseMenuToggle));
+      const btn = await this.waitFor(
+		  () => this.$(this.selectors.courseMenuToggle),
+		  () => {},                          // placeholder callback
+		  this.config.NAVMENU_READY          // timeout value
+		);
       
       const label = btn.getAttribute("aria-label") || btn.getAttribute("title") || "";
       const isOpen = /Hide Course(s)? Navigation Menu/i.test(label);
