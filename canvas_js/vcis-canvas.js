@@ -298,7 +298,7 @@ class CanvasCustomizer {
       try {
         const iframeRect = iframe.getBoundingClientRect();
         const absoluteElementTop = iframeRect.top + window.scrollY;
-        const middle = absoluteElementTop - (window.innerHeight / 2 - 50) + (iframeRect.height / 2 - 50);
+        const middle = absoluteElementTop - (window.innerHeight / 2 + 50) + (iframeRect.height / 2 + 50);
 
         window.scrollTo({
           top: middle,
