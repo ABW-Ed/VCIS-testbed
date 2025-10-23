@@ -170,11 +170,21 @@ class CanvasCustomizer {
 
     const attemptNode = Array.from(container.querySelectorAll("*"))
       .find(el => el.textContent.trim().startsWith("Attempt"));
+	
+	const anonGradeNode = Array.from(container.querySelectorAll("*"))
+      .find(el => el.textContent.trim().startsWith("Anonymous Grading"));
+	
 
     if (attemptNode && attemptNode.style.display !== "none") {
       attemptNode.style.display = "none";
       console.log("ðŸ” Hidden attempt block");
     }
+
+	if (anonGradeNode && anonGradeNode.style.display !== "none") {
+      anonGradeNode.style.display = "none";
+      console.log("ðŸ” Hidden anongrade block");
+    }
+	  
   }
 
   customizeHelpTray() {
