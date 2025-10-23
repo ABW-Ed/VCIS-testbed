@@ -71,7 +71,7 @@ class CanvasCustomizer {
         return;
       }
 
-      console.log("ðŸŽ¨ Initializing Canvas customizations for student");
+      console.log(¨Initializing Canvas customizations for student");
       
       await this.applyStudentStyles();
       await this.setupUICustomizations();
@@ -79,10 +79,10 @@ class CanvasCustomizer {
       await this.highlightFirstIncompleteModule();
       
       this.state.isInitialized = true;
-      console.log("âœ… Canvas customizations initialized successfully");
+      console.log("Canvas customizations initialized successfully");
       
     } catch (error) {
-      console.error("âŒ Error initializing Canvas customizations:", error);
+      console.error("Error initializing Canvas customizations:", error);
     }
   }
 
@@ -153,7 +153,7 @@ class CanvasCustomizer {
     styleEl.textContent = styles;
     document.head.appendChild(styleEl);
     
-    console.log("ðŸ“ Applied student CSS customizations");
+    console.log("Applied student CSS customizations");
   }
 
   // ----------------------------
@@ -173,7 +173,7 @@ class CanvasCustomizer {
 
     if (attemptNode && attemptNode.style.display !== "none") {
       attemptNode.style.display = "none";
-      console.log("ðŸ” Hidden attempt block");
+      console.log("Hidden attempt block");
     }
   }
 
@@ -201,7 +201,7 @@ class CanvasCustomizer {
       if (itemsToBlock.some(item => text.includes(item) || href.includes(item))) {
         const li = el.closest("li");
         (li || el).style.display = "none";
-        console.log(`ðŸš« Hidden help item: ${text || href}`);
+        console.log(`Hidden help item: ${text || href}`);
       }
     });
   }
@@ -215,11 +215,11 @@ class CanvasCustomizer {
       await this.waitFor(() => window.ENV?.current_user_roles, () => {}, this.config.TIMEOUTS.SCORM_SETUP);
       
       if (!this.isSCORMContext()) {
-        console.log("â„¹ï¸ Non-SCORM context, skipping SCORM setup");
+        console.log("Non-SCORM context, skipping SCORM setup");
         return;
       }
 
-      console.log("ðŸŽ¯ SCORM context detected, setting up SCORM handling");
+      console.log("SCORM context detected, setting up SCORM handling");
 
       await this.collapseCourseNavigation();
       this.hideFeedbackButtons();
@@ -228,7 +228,7 @@ class CanvasCustomizer {
       await this.initSCORMWatcher();
       
     } catch (error) {
-      console.warn("âš ï¸ SCORM setup timed out or failed:", error.message);
+      console.warn("SCORM setup timed out or failed:", error.message);
     }
   }
 
@@ -241,10 +241,10 @@ class CanvasCustomizer {
       
       if (isOpen) {
         btn.click();
-        console.log("ðŸ“± Collapsed navigation for SCORM");
+        console.log("Collapsed navigation for SCORM");
       }
     } catch (error) {
-      console.warn("âš ï¸ Could not collapse navigation:", error.message);
+      console.warn("Could not collapse navigation:", error.message);
     }
   }
 
@@ -252,7 +252,7 @@ class CanvasCustomizer {
     this.$$(this.selectors.viewFeedbackButton).forEach(el => {
       el.style.display = "none";
     });
-    console.log("ðŸ”’ Hidden feedback buttons");
+    console.log("Hidden feedback buttons");
   }
 
   async initSCORMWatcher() {
@@ -260,7 +260,7 @@ class CanvasCustomizer {
 
     // Wait for the iframe to actually exist and be ready
     try {
-      console.log("â³ Waiting for SCORM iframe to be ready...");
+      console.log("Waiting for SCORM iframe to be ready...");
       
       const iframe = await this.waitFor(
         () => this.$(this.selectors.scormIframe),
@@ -277,15 +277,15 @@ class CanvasCustomizer {
       const assignmentId = window.ENV?.ASSIGNMENT_ID || this.config.DEFAULT_ASSIGNMENT_ID;
 
       if (!courseId) {
-        console.warn("âš ï¸ No course ID available for SCORM watcher");
+        console.warn("No course ID available for SCORM watcher");
         return;
       }
 
       this.setupIframeWatcher(iframe, courseId, assignmentId);
-      console.log("ðŸ‘ï¸ SCORM watcher initialized successfully");
+      console.log("SCORM watcher initialized successfully");
       
     } catch (error) {
-      console.warn("âš ï¸ SCORM iframe not found or failed to initialize:", error.message);
+      console.warn("SCORM iframe not found or failed to initialize:", error.message);
     }
   }
 
@@ -297,15 +297,15 @@ class CanvasCustomizer {
       for (const mutation of mutations) {
         if (mutation.attributeName === "src") {
           const newSrc = iframe.getAttribute("src");
-          console.log(`ðŸ”„ Iframe src changed: ${newSrc}`);
+          console.log(`Iframe src changed: ${newSrc}`);
           lastSrc = null;
           
           // Trigger grade check when iframe src changes
-          console.log("ðŸŽ¯ Iframe change detected - checking grade");
+          console.log("Iframe change detected - checking grade");
           try {
             await this.checkGradeAndHighlight(courseId, assignmentId);
           } catch (error) {
-            console.error("âŒ Error checking grade on src change:", error);
+            console.error("Error checking grade on src change:", error);
           }
         }
       }
@@ -317,18 +317,18 @@ class CanvasCustomizer {
     // Watch for load events - check grade each time iframe loads
     iframe.addEventListener("load", async () => {
       const src = iframe.src;
-      console.log(`ðŸ“„ Iframe loaded: ${src}`);
+      console.log(`Iframe loaded: ${src}`);
 
       if (src !== lastSrc) {
         lastSrc = src;
         
         // Add a small delay to ensure iframe content is ready
         setTimeout(async () => {
-          console.log("ðŸŽ¯ Iframe detected - checking grade");
+          console.log("Iframe detected - checking grade");
           try {
             await this.checkGradeAndHighlight(courseId, assignmentId);
           } catch (error) {
-            console.error("âŒ Error checking grade on iframe load:", error);
+            console.error("Error checking grade on iframe load:", error);
           }
         }, 1000); // 1 second delay to ensure iframe is fully loaded
       }
@@ -337,7 +337,7 @@ class CanvasCustomizer {
 
   async checkGradeAndHighlight(courseId, assignmentId) {
     try {
-      console.log("ðŸ” Checking current grade status...");
+      console.log("Checking current grade status...");
       const submission = await this.checkSubmissionStatus(courseId, assignmentId);
       
       if (this.isPassingGrade(submission?.grade)) {
@@ -345,11 +345,11 @@ class CanvasCustomizer {
         this.highlightNextButton();
         return true; // Indicates passing grade found
       } else {
-        console.log(`ðŸ“ Current grade: ${submission?.grade || 'No grade'} (not passing)`);
+        console.log(`Current grade: ${submission?.grade || 'No grade'} (not passing)`);
         return false;
       }
     } catch (error) {
-      console.warn("âš ï¸ Could not check grade status:", error.message);
+      console.warn("Could not check grade status:", error.message);
       return false;
     }
   }
@@ -358,7 +358,7 @@ class CanvasCustomizer {
   // Keeping them for potential future use or cleanup purposes
   startSCORMPolling(courseId, assignmentId) {
     // This method is now unused - grade checking happens on iframe events only
-    console.log("â„¹ï¸ startSCORMPolling called but not needed - using event-driven approach");
+    console.log("startSCORMPolling called but not needed - using event-driven approach");
   }
 
   stopSCORMPolling() {
@@ -366,7 +366,7 @@ class CanvasCustomizer {
     if (this.state.scormPollingInterval) {
       clearInterval(this.state.scormPollingInterval);
       this.state.scormPollingInterval = null;
-      console.log("â¹ï¸ SCORM polling stopped");
+      console.log("SCORM polling stopped");
     }
   }
 
@@ -405,19 +405,19 @@ class CanvasCustomizer {
   highlightNextButton() {
     const btn = this.$(this.selectors.nextButton);
     if (!btn) {
-      console.warn("âš ï¸ Next assignment button not found");
+      console.warn("Next assignment button not found");
       return;
     }
 
     this.createHighlightEffect(btn, {
       flashCount: this.config.NEXT_BTN_FLASH_COUNT,
-      message: "ðŸŽ¯ Highlighted Next Assignment button"
+      message: "Highlighted Next Assignment button"
     });
   }
 
   async highlightFirstIncompleteModule() {
     if (!this.isHomePage()) {
-      console.log("â„¹ï¸ Not on home page, skipping module highlighting");
+      console.log("Not on home page, skipping module highlighting");
       return;
     }
 
@@ -427,24 +427,24 @@ class CanvasCustomizer {
 
       const incompleteItems = await this.getIncompleteModuleItems(courseId);
       if (incompleteItems.length === 0) {
-        console.log("âœ… All module items completed");
+        console.log("All module items completed");
         return;
       }
 
       const targetElement = this.findModuleTargetElement();
       if (!targetElement) {
-        console.warn("âš ï¸ No module target element found");
+        console.warn("No module target element found");
         return;
       }
 
       this.addBeginLabel(targetElement);
       this.createHighlightEffect(targetElement, {
         flashCount: this.config.HIGHLIGHT_FLASH_COUNT,
-        message: "âœ¨ Highlighted first incomplete module"
+        message: "Highlighted first incomplete module"
       });
 
     } catch (error) {
-      console.error("âŒ Error highlighting module:", error);
+      console.error("Error highlighting module:", error);
     }
   }
 
@@ -617,7 +617,7 @@ class CanvasManager {
       attributes: false // Reduced observer scope
     });
 
-    console.log("ðŸ‘ï¸ DOM observer initialized");
+    console.log("DOM observer initialized");
   }
 }
 
