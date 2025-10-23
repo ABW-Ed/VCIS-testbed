@@ -294,11 +294,11 @@ class CanvasCustomizer {
       this.setupIframeWatcher(iframe, courseId, assignmentId);
       console.log("👁️ SCORM watcher initialized successfully");
 
-      // 🔽 Scroll iframe into center view once it's ready
+      // 🔽 Scroll iframe into center view once it's ready, slight adjustment to scorm window height
       try {
         const iframeRect = iframe.getBoundingClientRect();
         const absoluteElementTop = iframeRect.top + window.scrollY;
-        const middle = absoluteElementTop - (window.innerHeight / 2) + (iframeRect.height / 2);
+        const middle = absoluteElementTop - (window.innerHeight / 2 - 50) + (iframeRect.height / 2 - 50);
 
         window.scrollTo({
           top: middle,
