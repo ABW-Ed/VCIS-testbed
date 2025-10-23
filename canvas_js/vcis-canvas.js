@@ -292,7 +292,24 @@ class CanvasCustomizer {
       }
 
       this.setupIframeWatcher(iframe, courseId, assignmentId);
-      console.log("ðŸ‘ï¸ SCORM watcher initialized successfully");
+      console.log("👁️ SCORM watcher initialized successfully");
+
+      // 🔽 Scroll iframe into center view once it's ready
+      try {
+        const iframeRect = iframe.getBoundingClientRect();
+        const absoluteElementTop = iframeRect.top + window.scrollY;
+        const middle = absoluteElementTop - (window.innerHeight / 2) + (iframeRect.height / 2);
+
+        window.scrollTo({
+          top: middle,
+          behavior: "smooth"
+        });
+
+        console.log("🪄 SCORM iframe centered in viewport");
+      } catch (err) {
+        console.warn("⚠️ Could not scroll to SCORM iframe:", err.message);
+      }
+
       
     } catch (error) {
       console.warn("âš ï¸ SCORM iframe not found or failed to initialize:", error.message);
