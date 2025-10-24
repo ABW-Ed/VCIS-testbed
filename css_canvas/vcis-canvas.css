@@ -22,7 +22,7 @@ iframe.tool_launch {
     height: 100%;
     border: none;
     max-width: 100%;
-	max-height: 90vh; /* fill up to 90% of screen to accomodate for menu buttons */
+	max-height: 85vh; /* fill up to 85% of screen to accomodate for menu buttons */
     object-fit: contain; 
 }
 
