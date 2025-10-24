@@ -22,7 +22,7 @@ iframe.tool_launch {
     height: 100%;
     border: none;
     max-width: 100%;
-	max-height: 80vh; /* fill up to 80% of the viewport */
+	max-height: 90vh; /* fill up to 90% of screen to accomodate for menu buttons */
     object-fit: contain; 
 }
 
@@ -33,23 +33,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 }
 
 
-@media only screen and (min-width: 576px) and (max-width: 991px) {
-iframe.tool_launch { {
-height: 550px !important;
-}
-}
 
-@media only screen and (min-width: 992px) and (max-width: 1199px) {
-iframe.tool_launch { {
-height: 550px !important;
-}
-}
-
-@media only screen and (min-width: 1200px) and (max-width: 1449px) {
-iframe.tool_launch { {
-height: 580px !important;
-}
-}
 
 .vcishover-fade {
   display: inline-block;
