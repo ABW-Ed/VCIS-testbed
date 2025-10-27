@@ -255,11 +255,11 @@ class CanvasCustomizer {
       await this.waitFor(() => window.ENV?.current_user_roles, () => {}, this.config.TIMEOUTS.SCORM_SETUP);
       
       if (!this.isSCORMContext()) {
-        console.log("â„¹ï¸ Non-SCORM context, skipping SCORM setup");
+        console.log("Non-SCORM context, skipping SCORM setup");
         return;
       }
 
-      console.log("ðŸŽ¯ SCORM context detected, setting up SCORM handling");
+      console.log("SCORM context detected, setting up SCORM handling");
 
       await this.collapseCourseNavigation();
       this.hideFeedbackButtons();
@@ -268,7 +268,7 @@ class CanvasCustomizer {
       await this.initSCORMWatcher();
       
     } catch (error) {
-      console.warn("âš ï¸ SCORM setup timed out or failed:", error.message);
+      console.warn("SCORM setup timed out or failed:", error.message);
     }
   }
 
@@ -594,7 +594,7 @@ class CanvasCustomizer {
     try {
       const courseId = window.ENV?.COURSE_ID;
       if (!courseId) {
-        console.warn("⚠️ No course ID found — cannot update assignment completions.");
+        console.warn("No course ID found — cannot update assignment completions.");
         return;
       }
 
@@ -631,7 +631,7 @@ class CanvasCustomizer {
         }
 
         if (!res.ok) {
-          console.warn(`⚠️ Could not fetch assignment ${assignmentId}: HTTP ${res.status}`);
+          console.warn(`Could not fetch assignment ${assignmentId}: HTTP ${res.status}`);
           // Fallback: try fetching assignments list and look up the id (robustness)
           try {
             const listRes = await fetch(`/api/v1/courses/${courseId}/assignments?include[]=submission`, {
@@ -669,14 +669,14 @@ class CanvasCustomizer {
 
         // Determine "in progress" if there is a submission but not complete
         const hasSubmission = !!submission && Object.keys(submission).length > 0;
-        let statusText = "Completion: ❌ Not started";
+        let statusText = "Completion: Not started";
         let color = "red";
 
         if (complete) {
-          statusText = "Completion: ✅ Completed";
+          statusText = "Completion: Completed";
           color = "green";
         } else if (hasSubmission) {
-          statusText = "Completion: ⚠️ In progress";
+          statusText = "Completion: In progress";
           color = "orange";
         }
 
