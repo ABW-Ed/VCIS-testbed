@@ -3,6 +3,8 @@
 // Refactored for better maintainability and scalability
 // ----------------------------
 
+
+// Constructor - this is where we assign regularly used values for later on that cannot be 'programmatically' assigned easily
 class CanvasCustomizer {
   constructor() {
     this.config = {
@@ -59,6 +61,8 @@ class CanvasCustomizer {
       "global_nav_calendar_link"
     ];
 
+
+	  // list of Help items that are blocked from Nav menu
     this.blockedHelpItems = [
       "Field Admin Console Access",
       "Ask the Community", 
@@ -66,7 +70,7 @@ class CanvasCustomizer {
 	  "Search the Canvas Guides",
 	  "Training Services Portal"
     ];
-	
+	// conditional block list of items
 	this.blockedHelpItemsConditional = [
 		"Protecting Children - Mandatory Reporting and Other Obligations for Non-Government Schools - Frequently Asked Questions"
 	];
@@ -86,7 +90,7 @@ class CanvasCustomizer {
         return;
       }
 
-      console.log("ðŸŽ¨ Initializing Canvas customizations for student");
+      console.log("Initializing Canvas customizations for student");
       
       await this.applyStudentStyles();
       await this.setupUICustomizations();
@@ -101,10 +105,10 @@ class CanvasCustomizer {
 	
       
       this.state.isInitialized = true;
-      console.log("âœ… Canvas customizations initialized successfully");
+      console.log("Canvas customizations initialized successfully");
       
     } catch (error) {
-      console.error("âŒ Error initializing Canvas customizations:", error);
+      console.error("Error initializing Canvas customizations:", error);
     }
   }
 
@@ -680,9 +684,9 @@ class CanvasCustomizer {
         el.style.color = color;
       }
 
-      console.log("✅ Assignment completion statuses updated.");
+      console.log("Assignment completion statuses updated.");
     } catch (error) {
-      console.error("❌ Error updating assignment completion status:", error);
+      console.error("Error updating assignment completion status:", error);
     }
   }
 
@@ -695,13 +699,13 @@ class CanvasCustomizer {
     const hasSubmission = !!submission && Object.keys(submission).length > 0;
 
     if (complete) {
-      el.textContent = "Completion: ✅ Completed";
+      el.textContent = "Completion: Completed";
       el.style.color = "green";
     } else if (hasSubmission) {
-      el.textContent = "Completion: ⚠️ In progress";
+      el.textContent = "Completion: In progress";
       el.style.color = "orange";
     } else {
-      el.textContent = "Completion: ❌ Not started";
+      el.textContent = "Completion: Not started";
       el.style.color = "red";
     }
   }
