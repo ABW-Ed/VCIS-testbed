@@ -587,8 +587,8 @@ class CanvasCustomizer {
     }, 1000);
   }
 
-  // ----------------------------
-  // Assignment Completion Updater (uses assignmentMap)
+ // ----------------------------
+  // Assignment Completion Updater (auto-maps sequentially)
   // ----------------------------
   async updateModuleCompletionStatus() {
     try {
@@ -598,115 +598,66 @@ class CanvasCustomizer {
         return;
       }
 
-      const assignmentMap = this.assignmentMap || {};
-      const entries = Object.entries(assignmentMap);
-      if (entries.length === 0) {
-        console.log("ℹ️ No assignments configured in assignmentMap.");
+      // Collect all page elements that match the ModComp pattern
+      const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
+      if (modElements.length === 0) {
+        console.log(" No ModComp elements found on this page.");
         return;
       }
 
-      for (const [elementId, assignmentId] of entries) {
-        const el = document.getElementById(elementId);
-        if (!el) continue;
+      // Fetch all assignments (including submission info)
+      const res = await fetch(`/api/v1/courses/${courseId}/assignments?include[]=submission`, {
+        credentials: "include",
+        headers: { "Accept": "application/json" }
+      });
 
-        // Default while fetching
-        el.textContent = "Completion: Checking…";
-        el.style.color = "";
+      if (!res.ok) {
+        console.error(" Failed to fetch assignments:", res.status);
+        return;
+      }
 
-        // Fetch specific assignment including the user's submission
-        let res;
-        try {
-          res = await fetch(
-            `/api/v1/courses/${courseId}/assignments/${assignmentId}?include[]=submission`,
-            {
-              credentials: "include",
-              headers: { "Accept": "application/json" }
-            }
-          );
-        } catch (fetchErr) {
-          console.warn(`⚠️ Network error fetching assignment ${assignmentId}:`, fetchErr);
-          el.textContent = "Completion: Unknown";
+      const assignments = await res.json();
+      if (!assignments || !assignments.length) {
+        console.warn("⚠️ No assignments found for this course.");
+        return;
+      }
+
+      // Loop through each ModComp element and assign by index
+      modElements.forEach((el, index) => {
+        const assignment = assignments[index];
+        if (!assignment) {
+          el.textContent = "Completion: (no assignment)";
           el.style.color = "gray";
-          continue;
+          return;
         }
 
-        if (!res.ok) {
-          console.warn(`Could not fetch assignment ${assignmentId}: HTTP ${res.status}`);
-          // Fallback: try fetching assignments list and look up the id (robustness)
-          try {
-            const listRes = await fetch(`/api/v1/courses/${courseId}/assignments?include[]=submission`, {
-              credentials: "include",
-              headers: { "Accept": "application/json" }
-            });
-            if (listRes.ok) {
-              const allAssignments = await listRes.json();
-              const found = allAssignments.find(a => String(a.id) === String(assignmentId));
-              if (found) {
-                // Use the submission payload from the list
-                const sub = found.submission || null;
-                this._writeAssignmentStatusToElement(el, found, sub);
-                continue;
-              }
-            }
-          } catch (e) {
-            /* ignore secondary failure */
-          }
-
-          el.textContent = "Completion: Unknown";
-          el.style.color = "gray";
-          continue;
-        }
-
-        const assignmentData = await res.json();
-        const submission = assignmentData.submission || null;
-
-        // Use the same completion logic you used earlier:
-        // complete if workflow_state is "graded" or "submitted", or if graded_at exists
-        const workflow_state = submission?.workflow_state || "unsubmitted";
+        const sub = assignment.submission || {};
+        const state = sub.workflow_state || "unsubmitted";
         const complete =
-          ["graded", "submitted"].includes(workflow_state) ||
-          (submission && submission.graded_at != null);
+          ["graded", "submitted"].includes(state) ||
+          (sub.graded_at != null);
 
-        // Determine "in progress" if there is a submission but not complete
-        const hasSubmission = !!submission && Object.keys(submission).length > 0;
-        let statusText = "Completion: Not started";
+        const hasSubmission = !!sub && Object.keys(sub).length > 0;
+
+        let statusText = `Completion: Not started`;
         let color = "red";
 
         if (complete) {
-          statusText = "Completion: Completed";
+          statusText = `Completion: Completed`;
           color = "green";
         } else if (hasSubmission) {
-          statusText = "Completion: In progress";
+          statusText = `Completion: In progress`;
           color = "orange";
         }
 
-        el.textContent = statusText;
+        // Optionally show assignment name for clarity
+        el.textContent = `${assignment.name}: ${statusText}`;
         el.style.color = color;
-      }
+      });
 
       console.log("Assignment completion statuses updated.");
     } catch (error) {
       console.error("Error updating assignment completion status:", error);
-    }
-  }
-
-  // small helper (optional) — can be removed if not wanted elsewhere
-  _writeAssignmentStatusToElement(el, assignmentData, submission) {
-    const workflow_state = submission?.workflow_state || "unsubmitted";
-    const complete =
-      ["graded", "submitted"].includes(workflow_state) ||
-      (submission && submission.graded_at != null);
-    const hasSubmission = !!submission && Object.keys(submission).length > 0;
-
-    if (complete) {
-      el.textContent = "Completion: Completed";
-      el.style.color = "green";
-    } else if (hasSubmission) {
-      el.textContent = "Completion: In progress";
-      el.style.color = "orange";
-    } else {
-      el.textContent = "Completion: Not started";
-      el.style.color = "red";
     }
   }
 	
