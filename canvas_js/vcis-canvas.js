@@ -37,7 +37,19 @@ class CanvasCustomizer {
       moduleItem: 'li[id^="context_module_item_"].min_score_requirement',
       completionRequirements: '.with-completion-requirements',
       itemName: '.item_name'
+		
     };
+
+	// ----------------------------
+    // 🎯 Module completion mapping
+    // ----------------------------
+    // Maps <div id="ModCompX"> elements on your homepage to Canvas Module IDs
+    this.moduleMap = {
+      ModComp1: 101, // Replace with your Canvas module IDs
+      ModComp2: 102,
+      ModComp3: 103
+    };
+  
 
     this.hiddenElements = [
       "course-show-secondary",
@@ -78,6 +90,12 @@ class CanvasCustomizer {
       await this.setupUICustomizations();
       await this.setupSCORMHandling();
       await this.highlightFirstIncompleteModule();
+		
+	  if (this.isWikiPage()) {
+        await this.updateModuleCompletionStatus();
+      }
+	
+	
       
       this.state.isInitialized = true;
       console.log("âœ… Canvas customizations initialized successfully");
@@ -101,6 +119,10 @@ class CanvasCustomizer {
 
   isHomePage() {
     return window.ENV?.active_context_tab === "home";
+  }
+
+  isWikiPage() {
+	  return !!window.ENV?.WIKI_PAGES_PATH;
   }
   
   isMRMod() {
@@ -558,6 +580,49 @@ class CanvasCustomizer {
     }, 1000);
   }
 
+async updateModuleCompletionStatus() {
+  try {
+    const courseId = window.ENV?.COURSE_ID;
+    if (!courseId) {
+      console.warn("⚠️ No course ID found — cannot update module completions.");
+      return;
+    }
+
+    const moduleMap = this.moduleMap;
+
+    for (const [elementId, moduleId] of Object.entries(moduleMap)) {
+      const el = document.getElementById(elementId);
+      if (!el) continue;
+
+      const res = await fetch(`/api/v1/courses/${courseId}/modules/${moduleId}?include[]=items`, {
+        credentials: "include",
+        headers: { "Accept": "application/json" }
+      });
+
+      if (!res.ok) {
+        console.warn(`⚠️ Could not fetch module ${moduleId}: ${res.status}`);
+        el.textContent = "Completion: Unknown";
+        continue;
+      }
+
+      const moduleData = await res.json();
+      const allItems = moduleData.items || [];
+      const allCompleted = allItems.length > 0 && allItems.every(item =>
+        item.completion_requirement?.completed === true
+      );
+      const isComplete = moduleData.state === "completed" || allCompleted;
+
+      el.textContent = isComplete ? "Completion: ✅ Completed" : "Completion: ❌ Not started";
+      el.style.color = isComplete ? "green" : "red";
+    }
+
+    console.log("✅ Module completion statuses updated.");
+  } catch (error) {
+    console.error("❌ Error updating module completion status:", error);
+  }
+}
+
+	
   // ----------------------------
   // Cleanup
   // ----------------------------
