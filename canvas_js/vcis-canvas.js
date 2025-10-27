@@ -626,7 +626,7 @@ class CanvasCustomizer {
       modElements.forEach((el, index) => {
         const assignment = assignments[index];
         if (!assignment) {
-          el.textContent = "Completion: (no assignment)";
+          el.textContent = "Completion (no assignment)";
           el.style.color = "gray";
           return;
         }
@@ -651,7 +651,7 @@ class CanvasCustomizer {
         }
 
         // Optionally show assignment name for clarity
-        el.textContent = `${assignment.name}: ${statusText}`;
+        el.textContent = `${assignment.name} ${statusText}`;
         el.style.color = color;
       });
 
