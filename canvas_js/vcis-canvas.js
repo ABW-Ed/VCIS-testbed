@@ -44,7 +44,7 @@ class CanvasCustomizer {
     // 🎯 Module completion mapping
     // ----------------------------
     // Maps <div id="ModCompX"> elements on your homepage to Canvas Module IDs
-    this.moduleMap = {
+    this.assignmentMap = {
 	  CLAuthMod1: 250, // CL Auth module
 	  CLAuthSurvey: 261, // CL Auth Survey
       ModComp1: 256, // DE - ISEW module 1
@@ -583,48 +583,128 @@ class CanvasCustomizer {
     }, 1000);
   }
 
-async updateModuleCompletionStatus() {
-  try {
-    const courseId = window.ENV?.COURSE_ID;
-    if (!courseId) {
-      console.warn("⚠️ No course ID found — cannot update module completions.");
-      return;
-    }
-
-    const moduleMap = this.moduleMap;
-
-    for (const [elementId, moduleId] of Object.entries(moduleMap)) {
-      const el = document.getElementById(elementId);
-      if (!el) continue;
-
-      const res = await fetch(`/api/v1/courses/${courseId}/modules/${moduleId}?include[]=items`, {
-        credentials: "same-origin",
-        headers: { "Accept": "application/json" }
-      });
-
-      if (!res.ok) {
-        console.warn(`⚠️ Could not fetch module ${moduleId}: ${res.status}`);
-        el.textContent = "Completion: Unknown";
-        continue;
+  // ----------------------------
+  // Assignment Completion Updater (uses assignmentMap)
+  // ----------------------------
+  async updateModuleCompletionStatus() {
+    try {
+      const courseId = window.ENV?.COURSE_ID;
+      if (!courseId) {
+        console.warn("⚠️ No course ID found — cannot update assignment completions.");
+        return;
       }
 
-      const moduleData = await res.json();
-      const allItems = moduleData.items || [];
-      const allCompleted = allItems.length > 0 && allItems.every(item =>
-        item.completion_requirement?.completed === true
-      );
-      const isComplete = moduleData.state === "completed" || allCompleted;
+      const assignmentMap = this.assignmentMap || {};
+      const entries = Object.entries(assignmentMap);
+      if (entries.length === 0) {
+        console.log("ℹ️ No assignments configured in assignmentMap.");
+        return;
+      }
 
-      el.textContent = isComplete ? "Completion: ✅ Completed" : "Completion: ❌ Not started";
-      el.style.color = isComplete ? "green" : "red";
+      for (const [elementId, assignmentId] of entries) {
+        const el = document.getElementById(elementId);
+        if (!el) continue;
+
+        // Default while fetching
+        el.textContent = "Completion: Checking…";
+        el.style.color = "";
+
+        // Fetch specific assignment including the user's submission
+        let res;
+        try {
+          res = await fetch(
+            `/api/v1/courses/${courseId}/assignments/${assignmentId}?include[]=submission`,
+            {
+              credentials: "include",
+              headers: { "Accept": "application/json" }
+            }
+          );
+        } catch (fetchErr) {
+          console.warn(`⚠️ Network error fetching assignment ${assignmentId}:`, fetchErr);
+          el.textContent = "Completion: Unknown";
+          el.style.color = "gray";
+          continue;
+        }
+
+        if (!res.ok) {
+          console.warn(`⚠️ Could not fetch assignment ${assignmentId}: HTTP ${res.status}`);
+          // Fallback: try fetching assignments list and look up the id (robustness)
+          try {
+            const listRes = await fetch(`/api/v1/courses/${courseId}/assignments?include[]=submission`, {
+              credentials: "include",
+              headers: { "Accept": "application/json" }
+            });
+            if (listRes.ok) {
+              const allAssignments = await listRes.json();
+              const found = allAssignments.find(a => String(a.id) === String(assignmentId));
+              if (found) {
+                // Use the submission payload from the list
+                const sub = found.submission || null;
+                this._writeAssignmentStatusToElement(el, found, sub);
+                continue;
+              }
+            }
+          } catch (e) {
+            /* ignore secondary failure */
+          }
+
+          el.textContent = "Completion: Unknown";
+          el.style.color = "gray";
+          continue;
+        }
+
+        const assignmentData = await res.json();
+        const submission = assignmentData.submission || null;
+
+        // Use the same completion logic you used earlier:
+        // complete if workflow_state is "graded" or "submitted", or if graded_at exists
+        const workflow_state = submission?.workflow_state || "unsubmitted";
+        const complete =
+          ["graded", "submitted"].includes(workflow_state) ||
+          (submission && submission.graded_at != null);
+
+        // Determine "in progress" if there is a submission but not complete
+        const hasSubmission = !!submission && Object.keys(submission).length > 0;
+        let statusText = "Completion: ❌ Not started";
+        let color = "red";
+
+        if (complete) {
+          statusText = "Completion: ✅ Completed";
+          color = "green";
+        } else if (hasSubmission) {
+          statusText = "Completion: ⚠️ In progress";
+          color = "orange";
+        }
+
+        el.textContent = statusText;
+        el.style.color = color;
+      }
+
+      console.log("✅ Assignment completion statuses updated.");
+    } catch (error) {
+      console.error("❌ Error updating assignment completion status:", error);
     }
-
-    console.log("✅ Module completion statuses updated.");
-  } catch (error) {
-    console.error("❌ Error updating module completion status:", error);
   }
-}
 
+  // small helper (optional) — can be removed if not wanted elsewhere
+  _writeAssignmentStatusToElement(el, assignmentData, submission) {
+    const workflow_state = submission?.workflow_state || "unsubmitted";
+    const complete =
+      ["graded", "submitted"].includes(workflow_state) ||
+      (submission && submission.graded_at != null);
+    const hasSubmission = !!submission && Object.keys(submission).length > 0;
+
+    if (complete) {
+      el.textContent = "Completion: ✅ Completed";
+      el.style.color = "green";
+    } else if (hasSubmission) {
+      el.textContent = "Completion: ⚠️ In progress";
+      el.style.color = "orange";
+    } else {
+      el.textContent = "Completion: ❌ Not started";
+      el.style.color = "red";
+    }
+  }
 	
   // ----------------------------
   // Cleanup
