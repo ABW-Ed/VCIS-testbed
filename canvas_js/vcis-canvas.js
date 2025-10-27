@@ -45,9 +45,9 @@ class CanvasCustomizer {
     // ----------------------------
     // Maps <div id="ModCompX"> elements on your homepage to Canvas Module IDs
     this.moduleMap = {
-      ModComp1: 101, // Replace with your Canvas module IDs
-      ModComp2: 102,
-      ModComp3: 103
+      ModComp1: 256, // DE - ISEW module 1
+      ModComp2: 258, // DE - ISEW module 2
+      ModComp3: 259 // DE - ISEW module 3
     };
   
 
