@@ -92,6 +92,7 @@ class CanvasCustomizer {
       await this.highlightFirstIncompleteModule();
 		
 	  if (this.isWikiPage()) {
+		console.log("Found wiki page");
         await this.updateModuleCompletionStatus();
       }
 	
@@ -595,7 +596,7 @@ async updateModuleCompletionStatus() {
       if (!el) continue;
 
       const res = await fetch(`/api/v1/courses/${courseId}/modules/${moduleId}?include[]=items`, {
-        credentials: "include",
+        credentials: "same-origin",
         headers: { "Accept": "application/json" }
       });
 
