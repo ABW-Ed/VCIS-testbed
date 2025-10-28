@@ -146,7 +146,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   gap: 2rem;
 }
 .course-banner img {
-  max-width: 180px;
+  max-width: 35vh;
   height: auto;
   flex: 1 1 150px;
 }
