@@ -674,7 +674,7 @@ async updateModuleCompletionStatus() {
       let color = "red";
 
       if (complete) {
-        statusText = `Completion: Completed`;
+        statusText = `&#128269 Completion: Completed`;
         color = "green";
       } else if (hasSubmission) {
         statusText = `Completion: In progress`;
