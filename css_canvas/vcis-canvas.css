@@ -157,6 +157,11 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   margin: 1rem 0;
 }
 
+/* --- External Links - remove weird icon --- */
+.external_link_icon {
+  display: none;
+}
+
 /* --- Module Section --- */
 .modules-section {
   margin: 2rem 0;
