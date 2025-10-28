@@ -670,16 +670,19 @@ async updateModuleCompletionStatus() {
         ["graded", "submitted"].includes(state) || (sub.graded_at != null);
       const hasSubmission = !!sub && Object.keys(sub).length > 0;
 
-      let statusText = `&#xf1ce; Completion: Not started`;
-      let color = "red";
+      let statusHTML = `<i class="fa fa-circle-o-notch"></i> Completion: Not started`;
+	  let color = "red";
 
-      if (complete) {
-        statusText = `&#xf058; Completion: Completed`;
-        color = "green";
+	  if (complete) {
+ 	  statusHTML = `<i class="fa fa-check-circle"></i> Completion: Completed`;
+      color = "green";
       } else if (hasSubmission) {
-        statusText = `&#xf06a; Completion: In progress`;
-        color = "orange";
+      statusHTML = `<i class="fa fa-exclamation-circle"></i> Completion: In progress`;
+      color = "orange";
       }
+
+el.innerHTML = `${assignment.name} ${statusHTML}`;
+el.style.color = color;
 
       // Update text and colour indicator
       el.textContent = `${assignment.name} ${statusText}`;
