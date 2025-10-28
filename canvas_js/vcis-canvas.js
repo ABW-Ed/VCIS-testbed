@@ -42,6 +42,8 @@ class CanvasCustomizer {
 		
     };
 
+	  
+
 	// ----------------------------
     // 🎯 Module completion mapping
     // ----------------------------
@@ -76,6 +78,8 @@ class CanvasCustomizer {
 	];
 
     this.observers = new Map();
+
+	this.catalogBaseUrl = "https://training-infosharing.sydney.catalog.canvaslms.com";
   }
 
   // ----------------------------
@@ -136,6 +140,10 @@ class CanvasCustomizer {
 	return window.ENV?.COURSE_ID === "217";
   }
 
+  getCurrentUserId() {
+    return window.ENV?.current_user_id || null;
+  }
+
   $(selector) {
     return document.querySelector(selector);
   }
@@ -192,7 +200,28 @@ class CanvasCustomizer {
   async setupUICustomizations() {
     this.hideAttemptBlock();
     this.customizeHelpTray();
+	this.updateDashboardLink();
   }
+
+   updateDashboardLink() {
+    const catalogUrl = this.catalogBaseUrl;
+    const userId = this.getCurrentUserId();
+    if (!catalogUrl || !userId) {
+      console.warn("Missing catalog URL or current user ID; dashboard link not updated.");
+      return;
+    }
+
+    const dashboardLink = this.$("#global_nav_dashboard_link");
+    if (!dashboardLink) {
+      console.warn("Could not find Canvas dashboard link.");
+      return;
+    }
+
+    const newHref = `${catalogUrl}/dashboard?current_user_id=${encodeURIComponent(userId)}`;
+    dashboardLink.setAttribute("href", newHref);
+
+    console.log(`Updated Dashboard link → ${newHref}`);
+  }	
 
   hideAttemptBlock() {
     const container = this.$(this.selectors.studentView);
