@@ -146,8 +146,19 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   gap: 2rem;
 }
 .course-banner img {
-  width: 30vh;
-  flex: 0 1 30vh;
+	flex: 1 1 15vh;
+    height: 15vh;
+    width: auto;
+    padding-left: 0.75vh;
+    padding-right: 0.75vh;
+}
+
+.course-banner-cl img {
+	flex: 1 1 15vh;
+    height: 20vh;
+    width: auto;
+    padding-left: 0.75vh;
+    padding-right: 0.75vh;
 }
 
 /* --- Text Blocks --- */
