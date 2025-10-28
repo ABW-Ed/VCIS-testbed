@@ -238,3 +238,11 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   padding: 0.5rem;
 }
 
+/* --- images for course module card --- */
+.vcis-module-img {
+  display: flex; 
+  flex-wrap: wrap; 
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
