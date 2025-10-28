@@ -159,7 +159,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* --- External Links - remove weird icon --- */
 .external_link_icon {
-  display: none;
+  display: none!important;
 }
 
 /* --- Module Section --- */
