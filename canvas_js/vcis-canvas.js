@@ -616,79 +616,89 @@ class CanvasCustomizer {
     }, 1000);
   }
 
- // ----------------------------
-  // Assignment Completion Updater (auto-maps sequentially)
-  // ----------------------------
-  async updateModuleCompletionStatus() {
-    try {
-      const courseId = window.ENV?.COURSE_ID;
-      if (!courseId) {
-        console.warn("No course ID found — cannot update assignment completions.");
-        return;
-      }
-
-      // Collect all page elements that match the ModComp pattern
-      const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
-      if (modElements.length === 0) {
-        console.log(" No ModComp elements found on this page.");
-        return;
-      }
-
-      // Fetch all assignments (including submission info)
-      const res = await fetch(`/api/v1/courses/${courseId}/assignments?include[]=submission`, {
-        credentials: "include",
-        headers: { "Accept": "application/json" }
-      });
-
-      if (!res.ok) {
-        console.error(" Failed to fetch assignments:", res.status);
-        return;
-      }
-
-      const assignments = await res.json();
-      if (!assignments || !assignments.length) {
-        console.warn("⚠️ No assignments found for this course.");
-        return;
-      }
-
-      // Loop through each ModComp element and assign by index
-      modElements.forEach((el, index) => {
-        const assignment = assignments[index];
-        if (!assignment) {
-          el.textContent = "Completion (no assignment)";
-          el.style.color = "gray";
-          return;
-        }
-
-        const sub = assignment.submission || {};
-        const state = sub.workflow_state || "unsubmitted";
-        const complete =
-          ["graded", "submitted"].includes(state) ||
-          (sub.graded_at != null);
-
-        const hasSubmission = !!sub && Object.keys(sub).length > 0;
-
-        let statusText = `Completion: Not started`;
-        let color = "red";
-
-        if (complete) {
-          statusText = `Completion: Completed`;
-          color = "green";
-        } else if (hasSubmission) {
-          statusText = `Completion: In progress`;
-          color = "orange";
-        }
-
-        // Optionally show assignment name for clarity
-        el.textContent = `${assignment.name} ${statusText}`;
-        el.style.color = color;
-      });
-
-      console.log("Assignment completion statuses updated.");
-    } catch (error) {
-      console.error("Error updating assignment completion status:", error);
+// ----------------------------
+// Assignment Completion Updater (auto-maps sequentially)
+// ----------------------------
+async updateModuleCompletionStatus() {
+  try {
+    const courseId = window.ENV?.COURSE_ID;
+    if (!courseId) {
+      console.warn("No course ID found — cannot update assignment completions.");
+      return;
     }
+
+    // Collect ModComp and ModButton elements
+    const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
+    const modButtons = Array.from(document.querySelectorAll("[id^='ModButton']"));
+    if (modElements.length === 0) {
+      console.log("⚠️ No ModComp elements found on this page.");
+      return;
+    }
+
+    // Fetch all assignments (including submission info)
+    const res = await fetch(`/api/v1/courses/${courseId}/assignments?include[]=submission`, {
+      credentials: "include",
+      headers: { "Accept": "application/json" }
+    });
+
+    if (!res.ok) {
+      console.error("❌ Failed to fetch assignments:", res.status);
+      return;
+    }
+
+    const assignments = await res.json();
+    if (!assignments || !assignments.length) {
+      console.warn("⚠️ No assignments found for this course.");
+      return;
+    }
+
+    // Loop through each ModComp element and match assignment by index
+    modElements.forEach((el, index) => {
+      const assignment = assignments[index];
+      const button = modButtons[index];
+
+      if (!assignment) {
+        el.textContent = "Completion (no assignment)";
+        el.style.color = "gray";
+        if (button) button.classList.remove("completed", "in-progress");
+        return;
+      }
+
+      const sub = assignment.submission || {};
+      const state = sub.workflow_state || "unsubmitted";
+      const complete =
+        ["graded", "submitted"].includes(state) || (sub.graded_at != null);
+      const hasSubmission = !!sub && Object.keys(sub).length > 0;
+
+      let statusText = `Completion: Not started`;
+      let color = "red";
+
+      if (complete) {
+        statusText = `Completion: Completed`;
+        color = "green";
+      } else if (hasSubmission) {
+        statusText = `Completion: In progress`;
+        color = "orange";
+      }
+
+      // Update text and colour indicator
+      el.textContent = `${assignment.name} ${statusText}`;
+      el.style.color = color;
+
+      // Update button state classes
+      if (button) {
+        button.classList.remove("completed", "in-progress");
+        if (complete) button.classList.add("completed");
+        else if (hasSubmission) button.classList.add("in-progress");
+      }
+    });
+
+    console.log("✅ Assignment completion statuses updated.");
+  } catch (error) {
+    console.error("❌ Error updating assignment completion status:", error);
   }
+}
+
 	
   // ----------------------------
   // Cleanup
