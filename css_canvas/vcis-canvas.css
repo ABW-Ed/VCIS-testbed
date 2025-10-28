@@ -137,7 +137,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 /* --- Banner Section --- */
 .course-banner {
   background-color: #f5f5f5;
-  padding: 1rem 0;
+  padding: 2rem 0;
   border-radius: 0.5rem;
   display: flex;
   flex-wrap: wrap;
@@ -149,8 +149,8 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 	flex: 1 1 15vh;
     height: 15vh;
     width: auto;
-    padding-left: 0.75vh;
-    padding-right: 0.75vh;
+  	font-size: 15vh;         /* trick to make 1em ≈ image height */
+ 	padding: 0 0.2em;        /* roughly 20% of height */
 }
 
 .course-banner-cl img {
