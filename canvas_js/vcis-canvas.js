@@ -325,7 +325,7 @@ class CanvasCustomizer {
     this.$$(this.selectors.viewFeedbackButton).forEach(el => {
       el.style.display = "none";
     });
-    console.log("ðŸ”’ Hidden feedback buttons");
+    console.log("Hidden feedback buttons");
   }
 
   async initSCORMWatcher() {
@@ -333,7 +333,7 @@ class CanvasCustomizer {
 
     // Wait for the iframe to actually exist and be ready
     try {
-      console.log("â³ Waiting for SCORM iframe to be ready...");
+      console.log("Waiting for SCORM iframe to be ready...");
       
       const iframe = await this.waitFor(
         () => this.$(this.selectors.scormIframe),
@@ -373,9 +373,11 @@ class CanvasCustomizer {
         console.warn("⚠️ Could not scroll to SCORM iframe:", err.message);
       }
 
+		
+
       
     } catch (error) {
-      console.warn("âš ï¸ SCORM iframe not found or failed to initialize:", error.message);
+      console.warn("SCORM iframe not found or failed to initialize:", error.message);
     }
   }
 
@@ -387,15 +389,15 @@ class CanvasCustomizer {
       for (const mutation of mutations) {
         if (mutation.attributeName === "src") {
           const newSrc = iframe.getAttribute("src");
-          console.log(`ðŸ”„ Iframe src changed: ${newSrc}`);
+          console.log(`Iframe src changed: ${newSrc}`);
           lastSrc = null;
           
           // Trigger grade check when iframe src changes
-          console.log("ðŸŽ¯ Iframe change detected - checking grade");
+          console.log("Iframe change detected - checking grade");
           try {
             await this.checkGradeAndHighlight(courseId, assignmentId);
           } catch (error) {
-            console.error("âŒ Error checking grade on src change:", error);
+            console.error("Error checking grade on src change:", error);
           }
         }
       }
@@ -414,9 +416,10 @@ class CanvasCustomizer {
         
         // Add a small delay to ensure iframe content is ready
         setTimeout(async () => {
-          console.log("ðŸŽ¯ Iframe detected - checking grade");
+          console.log("Iframe detected - checking grade");
           try {
             await this.checkGradeAndHighlight(courseId, assignmentId);
+			await this.addSCORMNavigationButtons();
           } catch (error) {
             console.error("âŒ Error checking grade on iframe load:", error);
           }
@@ -427,28 +430,109 @@ class CanvasCustomizer {
 
   async checkGradeAndHighlight(courseId, assignmentId) {
     try {
-      console.log("ðŸ” Checking current grade status...");
+      console.log("Checking current grade status...");
       const submission = await this.checkSubmissionStatus(courseId, assignmentId);
       
       if (this.isPassingGrade(submission?.grade)) {
-        console.log(`âœ… Passing grade found: ${submission.grade}`);
+        console.log(`Passing grade found: ${submission.grade}`);
         this.highlightNextButton();
         return true; // Indicates passing grade found
       } else {
-        console.log(`ðŸ“ Current grade: ${submission?.grade || 'No grade'} (not passing)`);
+        console.log(`Current grade: ${submission?.grade || 'No grade'} (not passing)`);
         return false;
       }
     } catch (error) {
-      console.warn("âš ï¸ Could not check grade status:", error.message);
+      console.warn("Could not check grade status:", error.message);
       return false;
     }
   }
+
+	async addSCORMNavigationButtons() {
+  try {
+    const courseId = window.ENV?.COURSE_ID;
+    const assignmentId = window.ENV?.ASSIGNMENT_ID;
+
+    if (!courseId || !assignmentId) {
+      console.warn("⚠️ Missing course or assignment ID for SCORM navigation");
+      return;
+    }
+
+    // 1️⃣ Fetch all assignments (includes submissions for later logic)
+    const res = await fetch(
+      `/api/v1/courses/${courseId}/assignments?include[]=submission`,
+      {
+        credentials: "include",
+        headers: { "Accept": "application/json" },
+      }
+    );
+
+    if (!res.ok) throw new Error(`HTTP ${res.status} fetching assignments`);
+
+    const assignments = await res.json();
+    if (!assignments?.length) {
+      console.warn("⚠️ No assignments found for this course");
+      return;
+    }
+
+    // 2️⃣ Sort by ID ascending (you could also sort by position if needed)
+    assignments.sort((a, b) => a.id - b.id);
+
+    // 3️⃣ Locate current assignment and neighbors
+    const index = assignments.findIndex(a => a.id === assignmentId);
+    if (index === -1) {
+      console.warn("⚠️ Current assignment not found in list");
+      return;
+    }
+
+    const prev = assignments[index - 1];
+    const next = assignments[index + 1];
+
+    // 4️⃣ Create button elements
+    const makeButton = (label, url) => {
+      const btn = document.createElement("a");
+      btn.textContent = label;
+      btn.href = url;
+      btn.classList.add(
+        "ic-app-main-content__secondary",
+        "btn",
+        "btn-primary",
+        "scorm-nav-btn"
+      );
+      btn.style.margin = "10px";
+      btn.style.display = "inline-block";
+      return btn;
+    };
+
+    const prevBtn = prev ? makeButton("← Previous", `/courses/${courseId}/assignments/${prev.id}`) : null;
+    const nextBtn = next ? makeButton("Next →", `/courses/${courseId}/assignments/${next.id}`) : null;
+
+    // 5️⃣ Find insertion points
+    const leftSide = document.getElementById("left-side");
+    const rightWrapper = document.getElementById("right-side-wrapper");
+
+    if (!leftSide || !rightWrapper) {
+      console.warn("⚠️ Could not find insertion points for nav buttons");
+      return;
+    }
+
+    // 6️⃣ Insert into DOM
+    if (prevBtn) leftSide.insertAdjacentElement("afterend", prevBtn);
+    if (nextBtn) rightWrapper.insertAdjacentElement("beforebegin", nextBtn);
+
+    console.log(
+      `✅ SCORM navigation buttons added: prev=${prev?.id || "none"}, next=${next?.id || "none"}`
+    );
+
+  } catch (err) {
+    console.error("❌ Error adding SCORM navigation buttons:", err);
+  }
+}
 
   // Note: These methods are no longer needed since we're not continuously polling
   // Keeping them for potential future use or cleanup purposes
   startSCORMPolling(courseId, assignmentId) {
     // This method is now unused - grade checking happens on iframe events only
-    console.log("â„¹ï¸ startSCORMPolling called but not needed - using event-driven approach");
+    console.log("startSCORMPolling called but not needed - using event-driven approach");
   }
 
   stopSCORMPolling() {
@@ -591,7 +675,7 @@ class CanvasCustomizer {
   createHighlightEffect(element, options = {}) {
     const { flashCount = 10, message = "Element highlighted" } = options;
 
-    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    // element.scrollIntoView({ behavior: "smooth", block: "center" });
     element.focus();
 
     setTimeout(() => {
