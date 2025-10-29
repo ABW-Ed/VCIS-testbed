@@ -137,13 +137,12 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 /* --- Banner Section --- */
 .course-banner {
   background-color: #f5f5f5;
-  padding: 2rem 0;
+  padding: 2rem;
   border-radius: 0.5rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
 }
 .course-banner img {
 	flex: 1 1 15vh;
