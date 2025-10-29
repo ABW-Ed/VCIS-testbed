@@ -245,3 +245,18 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   align-items: center;
   gap: 2rem;
 }
+
+.scorm-nav-btn {
+  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: var(--ic-brand-primary);
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.scorm-nav-btn:hover {
+  background-color: var(--ic-brand-primary-dark);
+  text-decoration: none;
+}
