@@ -239,11 +239,12 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* --- images for course module card --- */
 .vcis-module-img {
-  display: flex; 
-  flex-wrap: wrap; 
-  justify-content: center;
-  align-items: center;
+  display: flex;
   gap: 2rem;
+  height: 10vw;
+  width: 16vw;
+  align-items: center;
+  justify-self: center;
 }
 
 .scorm-nav-btn {
