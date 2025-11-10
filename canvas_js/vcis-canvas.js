@@ -824,39 +824,53 @@ class CanvasManager {
     return this.initPromise;
   }
 
-  async doInit() {
-    // Wait for DOM and ENV to be ready
-    await this.waitForDOMReady();
-    await this.waitForENV();
-    
-    await this.customizer.init();
-    this.setupDOMObserver();
-  }
+	async doInit() {
+	  await this.waitForDOMReady();
+	  await this.waitForENV();
+	
+	  await this.customizer.init();
+	
+	  document.addEventListener("turbolinks:load", () => {
+	    console.log("Turbolinks navigation detected — reinitializing UI");
+	    this.customizer.setupUICustomizations();
+	    this.customizer.setupSCORMHandling();
+	  });
+	
+	  document.addEventListener("page:load", () => {
+	    console.log("Page.js navigation detected — reinitializing UI");
+	    this.customizer.setupUICustomizations();
+	    this.customizer.setupSCORMHandling();
+	  });
+	
+	  // start watching the DOM for React subcomponent changes
+	  this.setupDOMObserver();
+	}
 
   waitForDOMReady() {
-    return new Promise(resolve => {
-      if (document.readyState === "complete" || 
-          (document.readyState !== "loading" && !document.documentElement.doScroll)) {
-        resolve();
-      } else {
-        document.addEventListener("DOMContentLoaded", resolve, { once: true });
-      }
-    });
-  }
-
+	  return new Promise(resolve => {
+	    if (document.readyState === "complete" || document.readyState === "interactive") {
+	      resolve();
+	    } else {
+	      document.addEventListener("DOMContentLoaded", resolve, { once: true });
+	    }
+	  });
+	}
+	
   waitForENV() {
-    return new Promise(resolve => {
-      const checkENV = () => {
-        if (window.ENV && window.ENV.current_user_roles) {
-          resolve();
-        } else {
-          setTimeout(checkENV, 100);
-        }
-      };
-      checkENV();
-    });
-  }
+	  return new Promise(resolve => {
+	    const ready = () => window.ENV && window.ENV.current_user_roles;
+	    if (ready()) return resolve(window.ENV);
+	    const observer = new MutationObserver(() => {
+	      if (ready()) {
+	        observer.disconnect();
+	        resolve(window.ENV);
+	      }
+	    });
+	    observer.observe(document.documentElement, { childList: true, subtree: true });
+	  });
+	}
 
+	
   setupDOMObserver() {
     // Debounced re-initialization for dynamic content
     let timeout = null;
