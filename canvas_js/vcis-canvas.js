@@ -95,10 +95,13 @@ class CanvasCustomizer {
       }
 
       console.log("Initializing Canvas customizations for student");
+
+	  await Promise.all([
+		  this.applyStudentStyles(),
+		  this.setupUICustomizations(),
+		  this.setupSCORMHandling()
+	  ]);
       
-      await this.applyStudentStyles();
-      await this.setupUICustomizations();
-      await this.setupSCORMHandling();
       await this.highlightFirstIncompleteModule();
 		
 	  if (this.isWikiPage()) {
