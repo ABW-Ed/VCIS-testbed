@@ -219,8 +219,8 @@ function initHeroOnce() {
 /* ---------------------------------------
    Tiles + homepage customizations (idempotent)
 ----------------------------------------*/
-var homePageCustomizations = function(){
-    if (window.location.pathname === "/browse/infosharing/"){
+var homePageCustomizations = function() {
+    if (window.location.pathname.startsWith("/browse/infosharing")) {
         // Only inject tiles if we haven't already
         if (!$("#listings .custom-home-tile").length) {
           var tiles = defineTiles();
