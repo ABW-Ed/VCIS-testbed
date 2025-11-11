@@ -321,7 +321,7 @@ function setupHeaderNavOnce(){
 
 // Main initializer â€” safe to call many times
 function initAll(){
-  if (window.location.href.indexOf("https://training-infosharing.sydney.catalog.canvaslms.com/") === -1) {
+  if (window.location.href.indexOf("https://training-infosharing.sydney.catalog.canvaslms.com/browse/infosharing") === -1) {
     setupHeaderNavOnce();
     homePageCustomizations();
     tweakLoginHref();
