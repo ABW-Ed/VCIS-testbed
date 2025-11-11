@@ -17,32 +17,111 @@
     padding: 10px 0px;
     background-color: #041E42;
 }
-#feature > div#custom-feature-container {
-    height: 165px;
-    background-size: cover;
-    background-position: center;
-    background-image: url(https://abw-ed.github.io/VCIS-testbed/assets/svg/catalog_hero_bg.svg);
+/* Scope everything under #home-page only */
+#home-page #feature.feature-region {
+  position: relative;
+  height: 165px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-#feature-bg-left {
-    background-color: #041E42;
-    height:100%;
-    position: absolute;
-    left:0;
-    margin-right:-10px;
-    display: inline-block;
-    height: 165px;
 
+/* Central grey area with subtle angled overlay */
+#home-page #feature.feature-region #custom-feature-container {
+  position: relative;
+  width: 100%;
+  height: 165px;
+  background: #6f7279;
+  color: white;
+  text-align: left;
+  padding-left: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2;
+  box-sizing: border-box;
 }
-#feature-bg-right {
-    background-color: #E87722;
-    height:100%;
-    position: absolute;
-    right:0;
-    margin-left:-10px;
-    display: inline-block;
-    height: 165px;
 
+/* Angled overlay for subtle shading */
+#home-page #feature.feature-region #custom-feature-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  z-index: 0;
+  pointer-events: none;
 }
+
+/* Ensure text is above overlay */
+#home-page #feature.feature-region #custom-feature-container h1,
+#home-page #feature.feature-region #custom-feature-container h2 {
+  position: relative;
+  z-index: 2;
+}
+
+/* Angled color shapes */
+#home-page #feature.feature-region::before,
+#home-page #feature.feature-region::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 25%;
+  height: 100%;
+  transform: skewX(-20deg);
+  z-index: 1;
+}
+
+/* Left shape (blue with white stripe) */
+#home-page #feature.feature-region::before {
+  left: -5%;
+  background: linear-gradient(
+    to right,
+    #4285f4 0%,
+    #4285f4 90%,
+    white 90%,
+    white 100%
+  );
+}
+
+/* Right shape (teal with white stripe) */
+#home-page #feature.feature-region::after {
+  right: -5%;
+  background: linear-gradient(
+    to left,
+    #2dbec0 0%,
+    #2dbec0 90%,
+    white 90%,
+    white 100%
+  );
+}
+
+/* Headings */
+#home-page #feature.feature-region #custom-feature-container h1 {
+  font-size: 1.6em;
+  font-weight: 700;
+  margin: 0;
+}
+
+#home-page #feature.feature-region #custom-feature-container h2 {
+  font-size: 1.1em;
+  font-weight: 400;
+  margin: 0.2em 0 0;
+}
+
+/* Optional: taller on large screens */
+@media (min-width: 992px) {
+  #home-page #feature.feature-region,
+  #home-page #feature.feature-region #custom-feature-container {
+    height: 220px;
+  }
+}
+
+
 #app-header {
     padding-bottom: 0px !important;
 }
