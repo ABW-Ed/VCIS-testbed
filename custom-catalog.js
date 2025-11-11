@@ -220,7 +220,7 @@ function initHeroOnce() {
    Tiles + homepage customizations (idempotent)
 ----------------------------------------*/
 var homePageCustomizations = function(){
-    if (window.location.pathname === "/"){
+    if (window.location.pathname === "/browse/infosharing/"){
         // Only inject tiles if we haven't already
         if (!$("#listings .custom-home-tile").length) {
           var tiles = defineTiles();
@@ -337,7 +337,7 @@ function initAll(){
 // Hide "Listings", "Browse Listings", and "There are no courses..." text
 // Only run if we're on the root path
 function hideListingsChrome(){
-  if (window.location.pathname !== '/') return;
+  if (window.location.pathname !== '/browse/infosharing/') return;
   var hideListingsContent = setInterval(function () {
       if ($('#main-heading h1, #listings h2, #listings .col-md-12 .h3').length) {
           clearInterval(hideListingsContent);
