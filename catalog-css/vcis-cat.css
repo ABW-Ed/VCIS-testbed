@@ -1,0 +1,277 @@
+#app-header {
+    background-color: #041E42;
+    color: #ffffff;
+}
+
+/* #app-footer{
+    background-color: #041E42;
+} */
+
+#accountDropdown {
+    color: #FFFFFF;
+}
+#app-header > div.container {
+    padding-bottom:15px;
+}
+#search-form .search-form-container {
+    padding: 10px 0px;
+    background-color: #041E42;
+}
+#feature > div#custom-feature-container {
+    height: 165px;
+    background-size: cover;
+    background-position: center;
+    background-image: url(https://abw-ed.github.io/VCIS-testbed/assets/svg/catalog_hero_bg.svg);
+}
+#feature-bg-left {
+    background-color: #041E42;
+    height:100%;
+    position: absolute;
+    left:0;
+    margin-right:-10px;
+    display: inline-block;
+    height: 165px;
+
+}
+#feature-bg-right {
+    background-color: #E87722;
+    height:100%;
+    position: absolute;
+    right:0;
+    margin-left:-10px;
+    display: inline-block;
+    height: 165px;
+
+}
+#app-header {
+    padding-bottom: 0px !important;
+}
+
+#search-form .search-label,
+#search-form .search-box-wrapper {
+    width: 350px;
+    visibility: hidden;
+}
+
+.StickyHeader {
+    overflow: visible !important;
+}
+
+.StickyHeader--sticky {
+    border-bottom-width: 0px;
+}
+#custom_color_banner {
+    background-color: #E87722;
+    height: 15px; 
+    background-repeat: no-repeat;
+}
+#home-page .feature-region {
+    display: block;
+}
+
+#home-page .feature-region {
+    box-sizing: border-box;
+    text-align: center;
+    background: #ffffff;
+    background-size: contain;
+    color: #27251F;
+}
+
+#home-page #feature h1 {
+    font: 92px/1 'proxima nova bold';
+    margin: 0 auto;
+    color: #27251F;
+}
+
+#home-page #feature h1 span {
+	font-family: "VIC-Bold", "Helvetica Neue", Arial, sans-serif !important;
+    font-weight: bold !important;
+    font: 62px/1 'VIC-Bold';
+}
+
+#home-page #feature h2 {
+    font: 36px 'VIC-Bold';
+    text-align: center;
+    max-width: 685px;
+    margin: 5px auto;
+    position: relative;
+    color: #27251F;
+}
+
+#search-refine-button--refine {
+    display: none;
+}
+
+#search-form.callout-region {
+    background-color: #27251F;
+}
+
+.RegistrationForm__Field {
+    display: none;
+    margin-bottom: 15px;
+}
+
+.jqFlag {
+    display: none;
+}
+
+.product-price {
+    display: none !important;
+}
+
+
+.ProductIcon__LargeCircle--program {
+    background: #E87722;
+}
+
+.product-account-logo {
+    display: none;
+}
+
+::placeholder {
+    color: #9f9f9f !important;
+}
+
+#product-page #feature {
+    padding-top: 0px !important;
+}
+
+/* #app-header h1 {
+    margin: 10px 0;
+} */
+
+/* user-nav includes changes to the Login / User information link */
+
+#user-nav {
+    padding-top: 35px;
+}
+
+#user-nav>a {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 5px 10px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    color: #ffffff;
+}
+
+#user-nav>a:hover {
+    text-decoration: none;
+    color: #EE7323;
+}
+
+/* Active Color of Login button once logged in */
+
+.header-nav li a {
+    color: #ffffff !important;
+}
+
+/* Page Links are specifically the custom links */
+
+#page-links {
+    display: inline-block;
+    /* -ms-transform: translate(0px, 1px);*/
+    /* -webkit-transform: translate(0px, 1px);*/
+    /* transform: translate(0px, 1px);*/
+}
+
+#page-links a {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 14px;
+    color: #ffffff !important;
+}
+
+#page-links a:hover,
+.btn-link:hover {
+    color: #EE7323;
+}
+
+#page-links .header-piped-list>li:after {
+    content: "|";
+    color: #ffffff !important;
+}
+
+#page-links .header-piped-list>li:before {
+    display: none;
+    margin-right: 0;
+}
+
+#search-form>div.search-form-filters>div>div>div.search-refine__switches.search-refine__filter>div>button:nth-child(3) {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 6px;
+    border-top-left-radius: 6px;
+}
+
+#search-form>div.search-form-filters>div>div>div.search-refine__switches.search-refine__sort>div>button:nth-child(2) {
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+#search-form>div.search-form-filters>div>div>div.search-refine__switches.search-refine__filter>div.btn-group>button:first-child {
+    display: none;
+}
+
+#search-form>div.search-form-filters>div>div>div.search-refine__switches.search-refine__filter>div.btn-group>button:nth-child(2) {
+    display: none;
+}
+
+#search-form>div.search-form-filters>div>div>div.search-refine__switches.search-refine__sort>div>button:nth-child(3) {
+    display: none;
+}
+
+#search-form>div.search-form-filters>div>div>div.search-refine__switches.search-refine__sort>div>button:nth-child(4) {
+    display: none;
+}
+
+#search-refine-button--refine {
+    display: none;
+}
+
+#page-links>ul>li:nth-child(3):after {
+    content: "|";
+    color: #ffffff;
+    margin-left: 8px;
+}
+#page-links>.piped-list>li:before {
+    color: #ffffff;
+}
+
+#SubCatalog__DashboardFilter {
+    margin-top: 15px;
+    float: right;
+    margin-bottom: 5px;
+}
+
+div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a,
+div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
+  color: white !important;
+}
+
+
+/* existing changes */
+
+#tnc-button-thing {
+
+padding-left: 10px;
+}
+
+.niceborder {
+    padding: 1rem !important;
+    border: 3px solid rgba(0, 0, 0, 0.5) !important;
+    border-radius: 15px !important;
+    white-space: normal;
+}
+
