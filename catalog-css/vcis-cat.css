@@ -1,5 +1,5 @@
 #app-header {
-    background-color: #041E42;
+/*    background-color: #041E42; */ 
     color: #ffffff;
 }
 
@@ -86,7 +86,7 @@
 #home-page #feature h1 span {
 	font-family: "VIC-Bold", "Helvetica Neue", Arial, sans-serif !important;
     font-weight: bold !important;
-    font: 62px/1 'VIC-Bold';
+    font: 26px/1 'VIC-Bold';
 }
 
 #home-page #feature h2 {
