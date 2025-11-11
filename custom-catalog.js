@@ -177,8 +177,8 @@ var buildTileHTML = function(tile){
    Cache-safe, idempotent hero init
 ----------------------------------------*/
 function initHeroOnce() {
-  // Don't run on OCVS sub-catalog
-  if (window.location.href.indexOf("https://training-infosharing.sydney.catalog.canvaslms.com/") > -1) return;
+  // Don't run on specific sub-catalogs
+  // if (window.location.href.indexOf("https://training-infosharing.sydney.catalog.canvaslms.com/") > -1) return;
 
   var $feature = $("#home-page #feature");
   if (!$feature.length) return; // wait until feature exists
