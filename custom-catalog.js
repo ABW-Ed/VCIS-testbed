@@ -313,15 +313,15 @@ function setupHeaderNavOnce(){
   $("#app-header div.col-xs-12.col-sm-6.col-md-7").attr("class", "col-xs-12 col-sm-12 col-md-4");
   $("#app-header div.col-xs-12.col-sm-6.col-md-5").attr("class", "col-xs-12 col-sm-12 col-md-8");
   $("#app-header #user-nav").prepend("<div id='page-links'><ul class='piped-list'>\
-    <li><a target='_blank' rel='noreferrer noopener' href='https://ocps.instructure.com'>Canvas Home</a></li>\
-    <li><a href='https://ocps.catalog.instructure.com'>Catalog Home</a></li>\
-    <li><a href='https://ocps.catalog.instructure.com/dashboard'>Catalog Dashboard</a></li>\
+    <li><a target='_blank' rel='noreferrer noopener' href='https://training-infosharing.instructure.com'>Canvas Home</a></li>\
+    <li><a href='https://training-infosharing.sydney.catalog.canvaslms.com'>Catalog Home</a></li>\
+    <li><a href='https://training-infosharing.sydney.catalog.canvaslms.com/dashboard'>Catalog Dashboard</a></li>\
     </ul></div>");
 }
 
 // Main initializer â€” safe to call many times
 function initAll(){
-  if (window.location.href.indexOf("https://ocvs.catalog.instructure.com/") === -1) {
+  if (window.location.href.indexOf("https://training-infosharing.sydney.catalog.canvaslms.com/") === -1) {
     setupHeaderNavOnce();
     homePageCustomizations();
     tweakLoginHref();
