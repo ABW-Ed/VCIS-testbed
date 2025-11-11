@@ -180,8 +180,8 @@ function initHeroOnce() {
   // Don't run on specific sub-catalogs
   // if (window.location.href.indexOf("https://training-infosharing.sydney.catalog.canvaslms.com/") > -1) return;
 
-  var $feature = $("#home-page #feature");
-  if (!$feature.length) return; // wait until feature exists
+  var $feature = $("#feature");
+  if (!$feature.length) return; // wait until feature exists - might need to make this dependent on something else
 
   // If already present, don't create duplicates; just recompute positions.
   var $container = $("#custom-feature-container");
