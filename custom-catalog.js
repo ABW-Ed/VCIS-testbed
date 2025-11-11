@@ -321,7 +321,7 @@ function setupHeaderNavOnce(){
 
 // Main initializer â€” safe to call many times
 function initAll(){
-  if (window.location.href.pathname === '/browse/infosharing/' {
+  if (window.location.pathname.startsWith("/browse/infosharing")) {
     setupHeaderNavOnce();
     homePageCustomizations();
     tweakLoginHref();
