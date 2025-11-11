@@ -17,112 +17,88 @@
     padding: 10px 0px;
     background-color: #041E42;
 }
-/* Scope only to homepage */
+/* Scope everything under #home-page only */
 #home-page #feature.feature-region {
   position: relative;
+  height: 165px;
   overflow: hidden;
-  width: 100%;
-  min-height: 15vh;
-}
-
-/* Flex layout: left | center | right */
-#home-page #custom-feature-container {
   display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Shared side styles */
-#home-page #feature-bg-left,
-#home-page #feature-bg-right {
+/* Central grey area with subtle angled overlay */
+#home-page #feature.feature-region #custom-feature-container {
   position: relative;
-  width: 18vw;
-  min-width: 120px;
-  height: auto;
-  overflow: hidden;
-  z-index: 1;
-}
-
-/* Create the angled shapes */
-#home-page #feature-bg-left::before,
-#home-page #feature-bg-right::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 150%;
-  transform: skewX(-20deg);
-  transform-origin: top left;
-}
-
-/* Left side (blue) */
-#home-page #feature-bg-left::before {
-  left: -25%;
-  background: linear-gradient(
-    to right,
-    #4285f4 0%,
-    #4285f4 85%,
-    white 85%,
-    white 100%
-  );
-}
-
-/* Right side (teal) */
-#home-page #feature-bg-right::before {
-  right: -25%;
-  transform: skewX(20deg);
-  background: linear-gradient(
-    to left,
-    #2dbec0 0%,
-    #2dbec0 85%,
-    white 85%,
-    white 100%
-  );
-}
-
-/* Center grey content area */
-#home-page #feature-center {
-  background: #6f7279;
-  position: relative;
-  z-index: 2;
-  flex-grow: 1;
+  width: 60%;
+  height: 15vh;
+  /* background: #6f7279; */ 
+  color: white;
   text-align: center;
-  padding: 2vh 2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2;
+  box-sizing: border-box;
 }
 
-/* Subtle angled overlay */
-#home-page #feature-center::before {
+/* Angled overlay for subtle shading */
+#home-page #feature.feature-region #custom-feature-container::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(0, 0, 0, 0.2) 100%
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(0, 0, 0, 0.15) 100%
   );
+  z-index: 0;
   pointer-events: none;
 }
 
-/* Text */
-#home-page #feature-center h1 {
-  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
-  font-weight: 700;
-  margin: 0;
+/* Ensure text is above overlay */
+#home-page #feature.feature-region #custom-feature-container h1,
+#home-page #feature.feature-region #custom-feature-container h2 {
+  position: relative;
+  z-index: 2;
 }
 
-#home-page #feature-center h2 {
-  font-size: clamp(1rem, 1.6vw, 1.3rem);
-  font-weight: 400;
-  margin-top: 0.4em;
+/* Angled color shapes */
+#home-page #feature.feature-region::before,
+#home-page #feature.feature-region::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 25%;
+  height: 100%;
+  transform: skewX(-20deg);
+  z-index: 1;
 }
 
-/* Responsive adjustment for height */
-@media (min-width: 992px) {
-  #home-page #feature.feature-region {
-    min-height: 220px;
-  }
+/* Left shape (blue with white stripe) */
+#home-page #feature.feature-region::before {
+  left: -5%;
+  background: linear-gradient(
+    to right,
+    #4285f4 0%,
+    #4285f4 90%,
+    white 90%,
+    white 100%
+  );
 }
+
+/* Right shape (teal with white stripe) */
+#home-page #feature.feature-region::after {
+  right: -5%;
+  background: linear-gradient(
+    to left,
+    #2dbec0 0%,
+    #2dbec0 90%,
+    white 90%,
+    white 100%
+  );
+}
+
 /* Headings */
 #home-page #feature.feature-region #custom-feature-container h1 {
   font-size: 1.6em;
@@ -376,4 +352,3 @@ padding-left: 10px;
     border-radius: 15px !important;
     white-space: normal;
 }
-
