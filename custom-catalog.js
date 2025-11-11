@@ -188,19 +188,25 @@ function initHeroOnce() {
   var $left = $("#feature-bg-left");
   var $right = $("#feature-bg-right");
 
-  if (!$container.length) {
-    $left = $('<div id="feature-bg-left"></div>');
-    $container = $(
-      "<div id='custom-feature-container' class='container'>" +
-        "<div class='hero-container col-xs-12 col-sm-12 col-md-12'>" +
-          "<h1><span>Information Sharing and MARAM Online Learning System</span></h1>" +
-          "<h2>Browse the available courses now</h2>" +
-        "</div>" +
-      "</div>"
-    );
-    $right = $('<div id="feature-bg-right"></div>');
-    $feature.append($left, $container, $right);
-  }
+  if (!$('#custom-feature-container').length) {
+  const $feature = $('#feature.feature-region');
+
+  const $container = $(`
+    <div id="custom-feature-container" class="container-fluid d-flex">
+      <div id="feature-bg-left" class="feature-side left flex-shrink-0"></div>
+      <div id="feature-center" class="flex-grow-1 d-flex flex-column justify-content-center align-items-center text-white">
+        <div class="hero-container text-center">
+          <h1>Canvas Catalog Courses</h1>
+          <h2>Browse the available courses now</h2>
+        </div>
+      </div>
+      <div id="feature-bg-right" class="feature-side right flex-shrink-0"></div>
+    </div>
+  `);
+
+  $feature.append($container);
+ }
+  
 
   // After layout, measure and position
   requestAnimationFrame(function () {
