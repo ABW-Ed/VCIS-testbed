@@ -371,7 +371,7 @@ function hideListingsChrome(){
 // Run on normal load; wait for #feature if needed for hero sizing
 $(function () {
   (function waitForFeature(attempts) {
-    if ($("#home-page #feature").length || attempts > 60) {
+    if ($("#feature").length || attempts > 60) {
       initAll();
       hideListingsChrome();
       return;
