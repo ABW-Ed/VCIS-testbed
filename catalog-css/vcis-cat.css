@@ -150,15 +150,15 @@
 #home-page .feature-region {
     box-sizing: border-box;
     text-align: center;
-    background: #ffffff;
+    background: rgb(0 75 152);
     background-size: contain;
-    color: #27251F;
+    color: #fafafa;
 }
 
 #home-page #feature h1 {
-    font: 92px/1 'proxima nova bold';
+    font: 92px/1 'VIC-Bold';
     margin: 0 auto;
-    color: #27251F;
+    color: #ffffff;
 }
 
 #home-page #feature h1 span {
@@ -173,7 +173,7 @@
     max-width: 685px;
     margin: 5px auto;
     position: relative;
-    color: #27251F;
+    color: #ffffff;
 }
 
 #search-refine-button--refine {
