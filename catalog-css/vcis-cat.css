@@ -27,14 +27,11 @@
   justify-content: center;
 }
 
-/* Central grey area with subtle angled overlay */
+/* Central area of header */
 #home-page #feature.feature-region #custom-feature-container {
   position: relative;
   width: 60%;
   height: 15vh;
-  /* background: #6f7279; */ 
-  color: white;
-  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
