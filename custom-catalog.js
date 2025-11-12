@@ -136,10 +136,10 @@ if (!document.getElementById('custom_color_banner')) {
 
 // Define Tile Text, Links and Public Image URL's
 var defineTiles = function(){
-    var tiles = [["All Employees","/browse/all/all-employees","https://abw-ed.github.io/VCIS-testbed/assets/img/all_employees.jpg"],
-                 ["Administrators & Managers","/browse/all/administrators-and-managers","https://abw-ed.github.io/VCIS-testbed/assets/img/managers_s.jpg"],
-                 ["Instructional","/browse/all/instructional","https://abw-ed.github.io/VCIS-testbed/assets/img/instructional.jpg"],
-                 ["Non-Instructional","/browse/all/non-instructional","https://abw-ed.github.io/VCIS-testbed/assets/img/non-instructional.jpg"]];
+    var tiles = [["All Employees","/browse/all/deworkforces","https://abw-ed.github.io/VCIS-testbed/assets/img/de-wf-tile.png"],
+                 ["Administrators & Managers","/browse/all/dffhworkfoces","https://abw-ed.github.io/VCIS-testbed/assets/img/dffh-wf-tile.png"],
+                 ["Instructional","/browse/all/dhworkforces","https://abw-ed.github.io/VCIS-testbed/assets/img/dh-wf-tile.png"],
+                 ["Non-Instructional","/browse/all/childlink","https://abw-ed.github.io/VCIS-testbed/assets/img/childlink-logo.png"]];
     return tiles;
 };
 
