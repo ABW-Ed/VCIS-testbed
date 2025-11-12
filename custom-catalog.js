@@ -196,7 +196,7 @@ function initHeroOnce() {
       <div id="feature-bg-left" class="feature-side left flex-shrink-0"></div>
       <div id="feature-center" class="flex-grow-1 d-flex flex-column justify-content-center align-items-center text-white">
         <div class="hero-container text-center">
-          <h1>Canvas Catalog Courses</h1>
+          <h1>Information Sharing and MARAM Online Learning System</h1>
           <h2>Browse the available courses now</h2>
         </div>
       </div>
@@ -343,7 +343,7 @@ function initAll(){
 // Hide "Listings", "Browse Listings", and "There are no courses..." text
 // Only run if we're on the root path
 function hideListingsChrome(){
-  if (window.location.pathname !== '/browse/infosharing/') return;
+  if (window.location.pathname.endswith !== '/browse/infosharing/') return;
   var hideListingsContent = setInterval(function () {
       if ($('#main-heading h1, #listings h2, #listings .col-md-12 .h3').length) {
           clearInterval(hideListingsContent);
