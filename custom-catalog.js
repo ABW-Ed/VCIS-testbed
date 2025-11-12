@@ -136,10 +136,10 @@ if (!document.getElementById('custom_color_banner')) {
 
 // Define Tile Text, Links and Public Image URL's
 var defineTiles = function(){
-    var tiles = [["All Employees","/browse/all/deworkforces","https://abw-ed.github.io/VCIS-testbed/assets/img/de-wf-tile.png"],
-                 ["Administrators & Managers","/browse/all/dffhworkfoces","https://abw-ed.github.io/VCIS-testbed/assets/img/dffh-wf-tile.png"],
-                 ["Instructional","/browse/all/dhworkforces","https://abw-ed.github.io/VCIS-testbed/assets/img/dh-wf-tile.png"],
-                 ["Non-Instructional","/browse/all/childlink","https://abw-ed.github.io/VCIS-testbed/assets/img/childlink-logo.png"]];
+    var tiles = [["Education Workforces","/browse/all/deworkforces","https://abw-ed.github.io/VCIS-testbed/assets/img/de-wf-tile.png"],
+                 ["Families Fairness and Housing","/browse/all/dffhworkfoces","https://abw-ed.github.io/VCIS-testbed/assets/img/dffh-wf-tile.png"],
+                 ["Health Workforces","/browse/all/dhworkforces","https://abw-ed.github.io/VCIS-testbed/assets/img/dh-wf-tile.png"],
+                 ["Child Link","/browse/all/childlink","https://abw-ed.github.io/VCIS-testbed/assets/img/childlink-logo.png"]];
     return tiles;
 };
 
