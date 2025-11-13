@@ -739,6 +739,9 @@ async updateModuleCompletionStatus() {
       return;
     }
 
+    // Track completion state
+    let allComplete = true;
+
     // Loop through each ModComp element and match assignment by index
     modElements.forEach((el, index) => {
       const assignment = assignments[index];
@@ -748,6 +751,7 @@ async updateModuleCompletionStatus() {
         el.textContent = "Completion (no assignment)";
         el.style.color = "gray";
         if (button) button.classList.remove("completed", "in-progress");
+        allComplete = false;
         return;
       }
 
@@ -757,22 +761,20 @@ async updateModuleCompletionStatus() {
         ["graded", "submitted"].includes(state) || (sub.graded_at != null);
       const hasSubmission = !!sub && Object.keys(sub).length > 0;
 
-      let statusHTML = `<i class="fa fa-circle-o-notch"></i> Completion: Not started`;
-	  let color = "red";
+      let statusText = "Completion: Not started";
+      let color = "red";
 
-	  if (complete) {
- 	  statusHTML = `<i class="fa fa-check-circle"></i> Completion: Completed`;
-      color = "green";
+      if (complete) {
+        statusText = "Completion: Completed";
+        color = "green";
       } else if (hasSubmission) {
-      statusHTML = `<i class="fa fa-exclamation-circle"></i> Completion: In progress`;
-      color = "orange";
+        statusText = "Completion: In progress";
+        color = "orange";
+      } else {
+        allComplete = false;
       }
 
-el.innerHTML = `${assignment.name} ${statusHTML}`;
-el.style.color = color;
-
-      // Update text and colour indicator
-      el.textContent = `${assignment.name} ${statusText}`;
+      el.textContent = `${assignment.name} — ${statusText}`;
       el.style.color = color;
 
       // Update button state classes
@@ -781,14 +783,46 @@ el.style.color = color;
         if (complete) button.classList.add("completed");
         else if (hasSubmission) button.classList.add("in-progress");
       }
+
+      // If any are not complete, mark false
+      if (!complete) allComplete = false;
     });
+
+    // ----------------------------
+    // 🟢 Check for Certificate
+    // ----------------------------
+    const certElement = document.querySelector("[id^='CompCertificate']");
+    const certButton = document.querySelector(".module-button");
+
+    if (certElement) {
+      if (allComplete) {
+        certElement.textContent = "Certificate Available";
+        certElement.style.color = "green";
+
+        if (certButton) {
+          certButton.classList.remove("in-progress");
+          certButton.classList.add("completed");
+          certButton.style.pointerEvents = "auto";
+          certButton.style.cursor = "pointer";
+        }
+      } else {
+        certElement.textContent = "Course Incomplete";
+        certElement.style.color = "red";
+
+        if (certButton) {
+          certButton.classList.remove("completed");
+          certButton.classList.add("in-progress");
+          certButton.style.pointerEvents = "none";
+          certButton.style.cursor = "default";
+        }
+      }
+    }
 
     console.log("✅ Assignment completion statuses updated.");
   } catch (error) {
     console.error("❌ Error updating assignment completion status:", error);
   }
 }
-
 	
   // ----------------------------
   // Cleanup
