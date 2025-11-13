@@ -792,7 +792,7 @@ async updateModuleCompletionStatus() {
     // 🟢 Check for Certificate
     // ----------------------------
     const certElement = document.querySelector("[id^='CompCertificate']");
-    const certButton = document.querySelector(".module-button");
+    const certButton = document.querySelector("[id^='CompCertButton']");
 
     if (certElement) {
       if (allComplete) {
