@@ -176,7 +176,6 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  justify-content: center;
 }
 
 /* --- Module Card --- */
@@ -189,7 +188,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   border: 1px solid #ddd;
   border-radius: 0.5rem;
   padding: 1rem;
-  width: 220px;
+  width: 320px;
   box-sizing: border-box;
   text-align: center;
   transition: box-shadow 0.3s ease;
