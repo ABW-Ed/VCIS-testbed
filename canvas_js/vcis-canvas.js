@@ -79,9 +79,11 @@ class CanvasCustomizer {
 
     this.observers = new Map();
 
-	this.catalogBaseUrl = "https://training-infosharing.sydney.catalog.canvaslms.com";
-  }
-
+    
+    this.catalogBaseUrl = this.isMRMod()
+      ? "https://protectngstraining.education.vic.gov.au"
+      : "https://training-infosharing.sydney.catalog.canvaslms.com";
+	  
   // ----------------------------
   // Main Initialization
   // ----------------------------
@@ -138,9 +140,9 @@ class CanvasCustomizer {
   isWikiPage() {
 	  return !!window.ENV?.WIKI_PAGES_PATH;
   }
-  
+
   isMRMod() {
-	return window.ENV?.COURSE_ID === "217";
+    return ["217", "224"].includes(window.ENV?.COURSE_ID);
   }
 
   getCurrentUserId() {
