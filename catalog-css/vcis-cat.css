@@ -84,6 +84,14 @@
   );
 }
 
+/* make front page tiles a little wider to accomodate large amounts of text */
+
+@media (min-width: 992px) { 
+  .custom-home-tile.col-md-3 {
+    width: 30%;
+  }
+}
+
 /* Right shape (teal with white stripe) */
 #home-page #feature.feature-region::after {
   right: -5%;
