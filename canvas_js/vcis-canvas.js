@@ -45,7 +45,7 @@ class CanvasCustomizer {
 	  
 
 	// ----------------------------
-    // 🎯 Module completion mapping
+    //  Module completion mapping
     // ----------------------------
     // Maps <div id="ModCompX"> elements on your homepage to Canvas Module IDs
     this.assignmentMap = {
@@ -80,7 +80,10 @@ class CanvasCustomizer {
     this.observers = new Map();
 
     
-    this.catalogBaseUrl = "https://website.catalog.canvaslms.com";
+    this.catalogBaseUrl = this.isMRMod()
+      ? "https://protectngstraining.education.vic.gov.au"
+      : "https://training-infosharing.sydney.catalog.canvaslms.com";
+  }
 	  
   // ----------------------------
   // Main Initialization
