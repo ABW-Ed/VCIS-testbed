@@ -791,36 +791,43 @@ async updateModuleCompletionStatus() {
       if (!complete) allComplete = false;
     });
 
-    // ----------------------------
-    // 🟢 Check for Certificate
-    // ----------------------------
-    const certElement = document.querySelector("[id^='CompCertificate']");
-    const certButton = document.querySelector("[id^='CompCertButton']");
+  // ----------------------------
+  // 🟢 Check for Certificate
+  // ----------------------------
+  const certElement = document.querySelector("[id^='CompCertificate']");
+  const certButton = document.querySelector("[id^='CompCertButton']");
 
-    if (certElement) {
-      if (allComplete) {
-        certElement.textContent = "Certificate Available";
-        certElement.style.color = "green";
+  if (certElement) {
+    if (allComplete) {
+      certElement.textContent = "Certificate Available";
+      certElement.style.color = "green";
 
-        if (certButton) {
-          certButton.classList.remove("in-progress");
-          certButton.classList.add("completed");
-          certButton.style.pointerEvents = "auto";
-          certButton.style.cursor = "pointer";
-        }
-      } else {
-        certElement.textContent = "Course Incomplete";
-        certElement.style.color = "red";
+      if (certButton) {
+        certButton.classList.remove("in-progress");
+        certButton.classList.add("completed");
+        certButton.style.pointerEvents = "auto";
+        certButton.style.cursor = "pointer";
 
-        if (certButton) {
-          certButton.classList.remove("completed");
-          certButton.classList.add("in-progress");
-          certButton.style.pointerEvents = "none";
-          certButton.style.cursor = "default";
-        }
+        // 🔗 Update link for completed state
+        const catalogUrl = this.catalogBaseUrl;
+        certButton.setAttribute("href", `${catalogUrl}/dashboard`);
+      }
+
+    } else {
+      certElement.textContent = "Course Incomplete";
+      certElement.style.color = "red";
+
+      if (certButton) {
+        certButton.classList.remove("completed");
+        certButton.classList.add("in-progress");
+        certButton.style.pointerEvents = "none";
+        certButton.style.cursor = "default";
+
+        // 🚫 Remove link for incomplete state
+        certButton.removeAttribute("href");
       }
     }
-
+  }
     console.log("✅ Assignment completion statuses updated.");
   } catch (error) {
     console.error("❌ Error updating assignment completion status:", error);
