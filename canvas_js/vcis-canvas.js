@@ -80,9 +80,7 @@ class CanvasCustomizer {
     this.observers = new Map();
 
     
-    this.catalogBaseUrl = this.isMRMod()
-      ? "https://protectngstraining.education.vic.gov.au"
-      : "https://training-infosharing.sydney.catalog.canvaslms.com";
+    this.catalogBaseUrl = "https://website.catalog.canvaslms.com";
 	  
   // ----------------------------
   // Main Initialization
