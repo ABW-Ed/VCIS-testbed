@@ -125,10 +125,15 @@ class CanvasCustomizer {
   // ----------------------------
   // Utility Methods
   // ----------------------------
-  isStudent() {
-    const roles = window.ENV?.current_user_roles || [];
-    return roles.includes("student") || roles.includes("fake_student");
-  }
+	
+isStudent() {
+  const roles = window.ENV?.current_user_roles || [];
+  const isStudentRole =
+    roles.includes("student") || roles.includes("fake_student");
+  const isAdminRole =
+    roles.includes("admin") || roles.includes("root_admin");
+  return isStudentRole && !isAdminRole;
+}
 
   isSCORMContext() {
     return String(window.ENV?.LTI_TOOL_ID) === this.config.SCORM_TOOL_ID;
