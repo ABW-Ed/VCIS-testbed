@@ -188,7 +188,7 @@ isStudent() {
     styleEl.textContent = styles;
     document.head.appendChild(styleEl);
     
-    console.log("ðŸ“ Applied student CSS customizations");
+    console.log("Applied student CSS customizations");
   }
 
   // ----------------------------
@@ -311,10 +311,10 @@ isStudent() {
       
       if (isOpen) {
         btn.click();
-        console.log("ðŸ“± Collapsed navigation for SCORM");
+        console.log("Collapsed navigation for SCORM");
       }
     } catch (error) {
-      console.warn("âš ï¸ Could not collapse navigation:", error.message);
+      console.warn("Could not collapse navigation:", error.message);
     }
   }
 
@@ -347,12 +347,12 @@ isStudent() {
       const assignmentId = window.ENV?.ASSIGNMENT_ID || this.config.DEFAULT_ASSIGNMENT_ID;
 
       if (!courseId) {
-        console.warn("âš ï¸ No course ID available for SCORM watcher");
+        console.warn("No course ID available for SCORM watcher");
         return;
       }
 
       this.setupIframeWatcher(iframe, courseId, assignmentId);
-      console.log("👁️ SCORM watcher initialized successfully");
+      console.log("SCORM watcher initialized successfully");
 
       // 🔽 Scroll iframe into center view once it's ready, slight adjustment to scorm window height
       try {
@@ -365,9 +365,9 @@ isStudent() {
           behavior: "smooth"
         });
 
-        console.log("🪄 SCORM iframe centered in viewport");
+        console.log("SCORM iframe centered in viewport");
       } catch (err) {
-        console.warn("⚠️ Could not scroll to SCORM iframe:", err.message);
+        console.warn("Could not scroll to SCORM iframe:", err.message);
       }
 
 		
@@ -430,7 +430,7 @@ setupIframeWatcher(iframe, courseId, assignmentId) {
             try {
                 await this.checkGradeAndHighlight(courseId, assignmentId);
             } catch (error) {
-                console.error("❌ Error checking grade on iframe load:", error);
+                console.error("Error checking grade on iframe load:", error);
             }
         }, 500); // small delay to let SCORM content initialize
     });
@@ -494,19 +494,19 @@ setupIframeWatcher(iframe, courseId, assignmentId) {
   highlightNextButton() {
     const btn = this.$(this.selectors.nextButton);
     if (!btn) {
-      console.warn("âš ï¸ Next assignment button not found");
+      console.warn("âNext assignment button not found");
       return;
     }
 
     this.createHighlightEffect(btn, {
       flashCount: this.config.NEXT_BTN_FLASH_COUNT,
-      message: "ðŸŽ¯ Highlighted Next Assignment button"
+      message: "Highlighted Next Assignment button"
     });
   }
 
   async highlightFirstIncompleteModule() {
     if (!this.isHomePage()) {
-      console.log("â„¹ï¸ Not on home page, skipping module highlighting");
+      console.log("Not on home page, skipping module highlighting");
       return;
     }
 
@@ -516,24 +516,24 @@ setupIframeWatcher(iframe, courseId, assignmentId) {
 
       const incompleteItems = await this.getIncompleteModuleItems(courseId);
       if (incompleteItems.length === 0) {
-        console.log("âœ… All module items completed");
+        console.log("All module items completed");
         return;
       }
 
       const targetElement = this.findModuleTargetElement();
       if (!targetElement) {
-        console.warn("âš ï¸ No module target element found");
+        console.warn("No module target element found");
         return;
       }
 
       this.addBeginLabel(targetElement);
       this.createHighlightEffect(targetElement, {
         flashCount: this.config.HIGHLIGHT_FLASH_COUNT,
-        message: "âœ¨ Highlighted first incomplete module"
+        message: "Highlighted first incomplete module"
       });
 
     } catch (error) {
-      console.error("âŒ Error highlighting module:", error);
+      console.error("Error highlighting module:", error);
     }
   }
 
@@ -630,7 +630,7 @@ async updateModuleCompletionStatus() {
     const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
     const modButtons = Array.from(document.querySelectorAll("[id^='ModButton']"));
     if (modElements.length === 0) {
-      console.log("⚠️ No ModComp elements found on this page.");
+      console.log("No ModComp elements found on this page.");
       return;
     }
 
@@ -641,13 +641,13 @@ async updateModuleCompletionStatus() {
     });
 
     if (!res.ok) {
-      console.error("❌ Failed to fetch assignments:", res.status);
+      console.error("Failed to fetch assignments:", res.status);
       return;
     }
 
     const assignments = await res.json();
     if (!assignments || !assignments.length) {
-      console.warn("⚠️ No assignments found for this course.");
+      console.warn("No assignments found for this course.");
       return;
     }
 
@@ -737,9 +737,9 @@ async updateModuleCompletionStatus() {
       }
     }
   }
-    console.log("✅ Assignment completion statuses updated.");
+    console.log("Assignment completion statuses updated.");
   } catch (error) {
-    console.error("❌ Error updating assignment completion status:", error);
+    console.error("Error updating assignment completion status:", error);
   }
 }
 	
@@ -748,12 +748,11 @@ async updateModuleCompletionStatus() {
   // ----------------------------
   cleanup() {
     // No continuous polling to stop, but clean up any remaining intervals
-    this.stopSCORMPolling();
     this.state.activePollingAssignments.clear();
     
     this.observers.forEach((observer, key) => {
       observer.disconnect();
-      console.log(`ðŸ§¹ Disconnected observer: ${key}`);
+      console.log(`Disconnected observer: ${key}`);
     });
     
     this.observers.clear();
@@ -848,7 +847,7 @@ class CanvasManager {
       attributes: false // Reduced observer scope
     });
 
-    console.log("ðŸ‘ï¸ DOM observer initialized");
+    console.log("DOM observer initialized");
   }
 }
 
