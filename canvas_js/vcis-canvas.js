@@ -458,21 +458,6 @@ setupIframeWatcher(iframe, courseId, assignmentId) {
     }
   }
 
-  // Note: These methods are no longer needed since we're not continuously polling
-  // Keeping them for potential future use or cleanup purposes
-  startSCORMPolling(courseId, assignmentId) {
-    // This method is now unused - grade checking happens on iframe events only
-    console.log("startSCORMPolling called but not needed - using event-driven approach");
-  }
-
-  stopSCORMPolling() {
-    // This method is now unused - no continuous polling to stop
-    if (this.state.scormPollingInterval) {
-      clearInterval(this.state.scormPollingInterval);
-      this.state.scormPollingInterval = null;
-      console.log("â¹ï¸ SCORM polling stopped");
-    }
-  }
 
   async checkSubmissionStatus(courseId, assignmentId) {
     const response = await fetch(
