@@ -261,6 +261,38 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   width: 100%;
 }
 
+/* elements to style text of module completion and certificate elements */
+
+/* module-complete */
+.modcomp-complete {
+  color: green;
+}
+
+/* module in progress */
+.modcomp-inprogress {
+  color: orange;
+}
+
+/* no assignment found */
+.modcomp-noassign { 
+  color: gray;
+}
+
+/* module not started */
+.modcomp-notstart {
+  color: inherit;
+}
+
+/* certificate unavailable */
+.cert-unavail {
+  color: orange;
+}
+
+/* certificate available */
+.cert-avail {
+  color: green;
+}
+
 
 .scorm-nav-btn {
   font-size: 16px;
