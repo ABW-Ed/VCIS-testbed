@@ -15,7 +15,7 @@ class CanvasCustomizer {
       HIGHLIGHT_FLASH_COUNT: 10,
       NEXT_BTN_FLASH_COUNT: 20,
       TIMEOUTS: {
-        DEFAULT: 5000,
+        DEFAULT: 3000,
         SCORM_SETUP: 8000, // 8 seconds should be enough
         IFRAME_READY: 15000,  // Time to wait for iframe
 		NAVMENU_READY: 2000
@@ -238,7 +238,7 @@ isStudent() {
 
 	if (anonGradeNode && anonGradeNode.style.display !== "none") {
       anonGradeNode.style.display = "none";
-      console.log("ðŸ” Hidden anongrade block");
+      console.log("Hidden anongrade block");
     }
 	  
   }
@@ -267,7 +267,7 @@ isStudent() {
       if (itemsToBlock.some(item => text.includes(item) || href.includes(item))) {
         const li = el.closest("li");
         (li || el).style.display = "none";
-        console.log(`ðŸš« Hidden help item: ${text || href}`);
+        console.log(`Hidden help item: ${text || href}`);
       }
     });
   }
