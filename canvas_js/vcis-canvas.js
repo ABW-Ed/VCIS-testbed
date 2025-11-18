@@ -392,52 +392,64 @@ isStudent() {
     }
   }
 
-  setupIframeWatcher(iframe, courseId, assignmentId) {
-    let lastSrc = null;
+setupIframeWatcher(iframe, courseId, assignmentId) {
+    // Debounce timer to avoid rapid consecutive calls
+    let gradeCheckTimeout = null;
 
+    // ----------------------------
     // Watch for src attribute changes
+    // ----------------------------
     const attrObserver = new MutationObserver(async (mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.attributeName === "src") {
-          const newSrc = iframe.getAttribute("src");
-          console.log(`Iframe src changed: ${newSrc}`);
-          lastSrc = null;
-          
-          // Trigger grade check when iframe src changes
-          console.log("Iframe change detected - checking grade");
-          try {
-            await this.checkGradeAndHighlight(courseId, assignmentId);
-          } catch (error) {
-            console.error("Error checking grade on src change:", error);
-          }
+        for (const mutation of mutations) {
+            if (mutation.attributeName === "src") {
+                const newSrc = iframe.getAttribute("src");
+
+                // Ignore blank or about:blank src changes
+                if (!newSrc || newSrc === "about:blank") continue;
+
+                console.log(`Iframe src changed: ${newSrc}`);
+                
+                // Trigger grade check when iframe src changes
+                clearTimeout(gradeCheckTimeout);
+                gradeCheckTimeout = setTimeout(async () => {
+                    console.log("Iframe change detected - checking grade");
+                    try {
+                        await this.checkGradeAndHighlight(courseId, assignmentId);
+                    } catch (error) {
+                        console.error("Error checking grade on src change:", error);
+                    }
+                }, 300); // short debounce
+            }
         }
-      }
     });
 
     attrObserver.observe(iframe, { attributes: true });
     this.observers.set('scorm-iframe-attr', attrObserver);
 
-    // Watch for load events - check grade each time iframe loads
-    iframe.addEventListener("load", async () => {
-      const src = iframe.src;
-      console.log(`ðŸ“„ Iframe loaded: ${src}`);
+    // ----------------------------
+    // Watch for load events
+    // ----------------------------
+    iframe.addEventListener("load", () => {
+        const src = iframe.src;
 
-      if (src !== lastSrc) {
-        lastSrc = src;
-        
-        // Add a small delay to ensure iframe content is ready
-        setTimeout(async () => {
-          console.log("Iframe detected - checking grade");
-          try {
-            await this.checkGradeAndHighlight(courseId, assignmentId);
-          } catch (error) {
-            console.error("âŒ Error checking grade on iframe load:", error);
-          }
-        }, 1000); // 1 second delay to ensure iframe is fully loaded
-      }
+        // Ignore blank or about:blank iframe loads
+        if (!src || src === "about:blank") return;
+
+        console.log(`📤 Iframe loaded: ${src}`);
+
+        // Debounced grade check
+        clearTimeout(gradeCheckTimeout);
+        gradeCheckTimeout = setTimeout(async () => {
+            console.log("Iframe load detected - checking grade");
+            try {
+                await this.checkGradeAndHighlight(courseId, assignmentId);
+            } catch (error) {
+                console.error("❌ Error checking grade on iframe load:", error);
+            }
+        }, 500); // small delay to let SCORM content initialize
     });
-  }
-
+}
+	
   async checkGradeAndHighlight(courseId, assignmentId) {
     try {
       console.log("Checking current grade status...");
