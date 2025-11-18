@@ -458,17 +458,19 @@ isStudent() {
     }
   }
 
-	async addSCORMNavigationButtons() {
+async addSCORMNavigationButtons() {
   try {
-    const courseId = window.ENV?.COURSE_ID;
-    const assignmentId = window.ENV?.ASSIGNMENT_ID;
+
+    // 🔧 Normalize IDs to numbers immediately
+    const courseId = Number(window.ENV?.COURSE_ID);
+    const assignmentId = Number(window.ENV?.ASSIGNMENT_ID);
 
     if (!courseId || !assignmentId) {
       console.warn("⚠️ Missing course or assignment ID for SCORM navigation");
       return;
     }
 
-    // 1️⃣ Fetch all assignments (includes submissions for later logic)
+    // 1️⃣ Fetch all assignments
     const res = await fetch(
       `/api/v1/courses/${courseId}/assignments?include[]=submission`,
       {
@@ -485,20 +487,23 @@ isStudent() {
       return;
     }
 
-    // 2️⃣ Sort by ID ascending (you could also sort by position if needed)
-    assignments.sort((a, b) => a.id - b.id);
+    // 2️⃣ Sort by ID ascending (you can switch to .position if preferred)
+    assignments.sort((a, b) => Number(a.id) - Number(b.id));
 
     // 3️⃣ Locate current assignment and neighbors
-    const index = assignments.findIndex(a => a.id === assignmentId);
+    const index = assignments.findIndex(a => Number(a.id) === assignmentId);
+
     if (index === -1) {
       console.warn("⚠️ Current assignment not found in list");
+      console.warn("Available assignment IDs:", assignments.map(a => a.id));
+      console.warn("Current assignment ID:", assignmentId);
       return;
     }
 
     const prev = assignments[index - 1];
     const next = assignments[index + 1];
 
-    // 4️⃣ Create button elements
+    // 4️⃣ Create button helper
     const makeButton = (label, url) => {
       const btn = document.createElement("a");
       btn.textContent = label;
@@ -514,10 +519,15 @@ isStudent() {
       return btn;
     };
 
-    const prevBtn = prev ? makeButton("← Previous", `/courses/${courseId}/assignments/${prev.id}`) : null;
-    const nextBtn = next ? makeButton("Next →", `/courses/${courseId}/assignments/${next.id}`) : null;
+    const prevBtn = prev
+      ? makeButton("← Previous", `/courses/${courseId}/assignments/${prev.id}`)
+      : null;
 
-    // 5️⃣ Find insertion points
+    const nextBtn = next
+      ? makeButton("Next →", `/courses/${courseId}/assignments/${next.id}`)
+      : null;
+
+    // 5️⃣ Insertion points
     const leftSide = document.getElementById("left-side");
     const rightWrapper = document.getElementById("right-side-wrapper");
 
@@ -526,7 +536,7 @@ isStudent() {
       return;
     }
 
-    // 6️⃣ Insert into DOM
+    // 6️⃣ Insert buttons
     if (prevBtn) leftSide.insertAdjacentElement("afterend", prevBtn);
     if (nextBtn) rightWrapper.insertAdjacentElement("beforebegin", nextBtn);
 
