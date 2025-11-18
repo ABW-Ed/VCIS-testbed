@@ -349,7 +349,7 @@ isStudent() {
       const iframe = await this.waitFor(
         () => this.$(this.selectors.scormIframe),
         () => {},
-        15000 // Give it 15 seconds to appear
+        10000 // Give it 10 seconds to appear
       );
 
       // Additional wait for iframe to be fully loaded
@@ -430,7 +430,6 @@ isStudent() {
           console.log("Iframe detected - checking grade");
           try {
             await this.checkGradeAndHighlight(courseId, assignmentId);
-			await this.hideNextUntilCompleted();
           } catch (error) {
             console.error("âŒ Error checking grade on iframe load:", error);
           }
@@ -460,83 +459,6 @@ isStudent() {
       return false;
     }
   }
-
-async hideNextUntilCompleted() {
-  try {
-    const courseId = window.ENV?.COURSE_ID;
-    const assignmentId = window.ENV?.ASSIGNMENT_ID;
-
-    if (!courseId || !assignmentId) {
-      console.warn("⚠️ Missing course or assignment ID for navigation logic");
-      return;
-    }
-
-    // 1️⃣ Fetch assignments including submission details
-    const res = await fetch(
-      `/api/v1/courses/${courseId}/assignments?include[]=submission`,
-      {
-        credentials: "include",
-        headers: { "Accept": "application/json" }
-      }
-    );
-
-    if (!res.ok) throw new Error(`HTTP ${res.status} fetching assignments`);
-    const assignments = await res.json();
-
-    if (!assignments?.length) {
-      console.warn("⚠️ No assignments found");
-      return;
-    }
-
-    // 2️⃣ Sort by ID ASC
-    assignments.sort((a, b) => a.id - b.id);
-
-    // 3️⃣ Find current assignment
-    const index = assignments.findIndex(a => a.id === assignmentId);
-    if (index === -1) {
-      console.warn("⚠️ Could not find the current assignment in the list");
-      return;
-    }
-
-    const current = assignments[index];
-
-    // =============================
-    // 4️⃣ CHECK COMPLETION STATUS
-    // =============================
-
-    // Canvas submission states:
-    // 'submitted'  → user clicked submit
-    // 'graded'     → completed & graded
-    // 'unsubmitted', 'pending_review', null → NOT completed
-
-    const state = current.submission?.workflow_state;
-
-    const isComplete =
-      state === "submitted" ||
-      state === "graded";
-
-    // 5️⃣ Get Canvas next button
-    const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
-
-    if (!nextBtn) {
-      console.warn("⚠️ Next button not found in DOM");
-      return;
-    }
-
-    // 6️⃣ Hide or show based on completion
-    if (!isComplete) {
-      nextBtn.style.display = "none";
-      console.log("⛔ Assignment NOT completed — hiding Next button");
-    } else {
-      nextBtn.style.display = ""; // ensure it's visible
-      console.log("✅ Assignment completed — leaving Next button visible");
-    }
-
-  } catch (err) {
-    console.error("❌ Error in hideNextUntilCompleted:", err);
-  }
-}
-
 
   // Note: These methods are no longer needed since we're not continuously polling
   // Keeping them for potential future use or cleanup purposes
