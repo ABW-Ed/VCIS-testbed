@@ -664,8 +664,7 @@ async updateModuleCompletionStatus() {
 
       if (!assignment) {
         el.textContent = "Completion (no assignment)";
-		el.classList.add = "modcomp-noassign";
-        // el.style.color = "gray";
+        el.classList.add("modcomp-noassign");
         if (button) button.classList.remove("completed", "in-progress");
         allComplete = false;
         return;
@@ -682,70 +681,72 @@ async updateModuleCompletionStatus() {
 
       if (complete) {
         statusText = "Completion: Completed";
-		// color = "green";
         classname = "modcomp-complete";
       } else if (hasSubmission) {
         statusText = "Completion: In progress";
-		// color = "orange";
         classname = "modcomp-inprogress";
       } else {
         allComplete = false;
       }
 
       el.textContent = `${assignment.name} — ${statusText}`;
-      // el.style.color = color;
-	  el.ClassList.add = classname;
+      el.classList.add(classname);
 
       // Update button state classes
       if (button) {
-        button.classList.remove("completed", "in-progress", "modcomp-complete", "modcomp-inprogress", "modcomp-notstart", "modcomp-noassign");
+        button.classList.remove(
+          "completed",
+          "in-progress",
+          "modcomp-complete",
+          "modcomp-inprogress",
+          "modcomp-notstart",
+          "modcomp-noassign"
+        );
+
         if (complete) button.classList.add("completed", "modcomp-complete");
         else if (hasSubmission) button.classList.add("in-progress", "modcomp-inprogress");
       }
 
-      // If any are not complete, mark false
       if (!complete) allComplete = false;
     });
 
-  // ----------------------------
-  //  update completion certificate elements
-  //  to modify certificate element text, change the 'textContent' parts of this section
-  // ----------------------------
-  const certElement = document.querySelector("[id^='CompCertificate']");
-  const certButton = document.querySelector("[id^='CompCertButton']");
+    // ----------------------------
+    //  Update completion certificate section
+    // ----------------------------
+    const certElement = document.querySelector("[id^='CompCertificate']");
+    const certButton = document.querySelector("[id^='CompCertButton']");
 
-  if (certElement) {
-    if (allComplete) {
-      certElement.textContent = "Certificate Available";
-	  certElement.classList.remove = "cert-unavail";		
-      certElement.classList.add = "cert-avail";
+    if (certElement) {
+      if (allComplete) {
+        certElement.textContent = "Certificate Available";
+        certElement.classList.remove("cert-unavail");
+        certElement.classList.add("cert-avail");
 
-      if (certButton) {
-        certButton.classList.remove("in-progress");
-        certButton.classList.add("completed");
-        certButton.style.pointerEvents = "auto";
-        certButton.style.cursor = "pointer";
+        if (certButton) {
+          certButton.classList.remove("in-progress");
+          certButton.classList.add("completed");
+          certButton.style.pointerEvents = "auto";
+          certButton.style.cursor = "pointer";
 
-        // 🔗 Update link for completed state
-        const catalogUrl = this.catalogBaseUrl;
-        certButton.setAttribute("href", `${catalogUrl}/dashboard`);
-      }
+          const catalogUrl = this.catalogBaseUrl;
+          certButton.setAttribute("href", `${catalogUrl}/dashboard`);
+        }
 
-    } else {
-      certElement.textContent = "Course Incomplete";
-      certElement.classList.add = "cert-unavail";
+      } else {
+        certElement.textContent = "Course Incomplete";
+        certElement.classList.add("cert-unavail");
 
-      if (certButton) {
-        certButton.classList.remove("completed");
-        certButton.classList.add("in-progress");
-        certButton.style.pointerEvents = "none";
-        certButton.style.cursor = "default";
+        if (certButton) {
+          certButton.classList.remove("completed");
+          certButton.classList.add("in-progress");
+          certButton.style.pointerEvents = "none";
+          certButton.style.cursor = "default";
 
-        // 🚫 Remove link for incomplete state
-        certButton.removeAttribute("href");
+          certButton.removeAttribute("href");
+        }
       }
     }
-  }
+
     console.log("Assignment completion statuses updated.");
   } catch (error) {
     console.error("Error updating assignment completion status:", error);
