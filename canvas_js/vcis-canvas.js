@@ -442,13 +442,16 @@ isStudent() {
   async checkGradeAndHighlight(courseId, assignmentId) {
     try {
       console.log("Checking current grade status...");
+	  const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
       const submission = await this.checkSubmissionStatus(courseId, assignmentId);
       
       if (this.isPassingGrade(submission?.grade)) {
         console.log(`Passing grade found: ${submission.grade}`);
+		nextBtn.style.display = ""; // ensure it's visible
         this.highlightNextButton();
         return true; // Indicates passing grade found
       } else {
+		nextBtn.style.display = "none";
         console.log(`Current grade: ${submission?.grade || 'No grade'} (not passing)`);
         return false;
       }
