@@ -16,7 +16,7 @@ class CanvasCustomizer {
       NEXT_BTN_FLASH_COUNT: 20,
       TIMEOUTS: {
         DEFAULT: 5000,
-        SCORM_SETUP: 12000, // Increased for SCORM ENV loading
+        SCORM_SETUP: 8000, // 8 seconds should be enough
         IFRAME_READY: 15000,  // Time to wait for iframe
 		NAVMENU_READY: 2000
       }
