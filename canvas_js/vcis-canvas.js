@@ -42,20 +42,6 @@ class CanvasCustomizer {
 		
     };
 
-	  
-
-	// ----------------------------
-    //  Module completion mapping
-    // ----------------------------
-    // Maps <div id="ModCompX"> elements on your homepage to Canvas Module IDs
-    this.assignmentMap = {
-	  CLAuthMod1: 250, // CL Auth module
-	  CLAuthSurvey: 261, // CL Auth Survey
-      ModComp1: 256, // DE - ISEW module 1
-      ModComp2: 258, // DE - ISEW module 2
-      ModComp3: 259 // DE - ISEW module 3
-    };
-  
 
     this.hiddenElements = [
       "course-show-secondary",
