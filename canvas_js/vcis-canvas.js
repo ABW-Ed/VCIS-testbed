@@ -430,7 +430,7 @@ isStudent() {
           console.log("Iframe detected - checking grade");
           try {
             await this.checkGradeAndHighlight(courseId, assignmentId);
-			await this.addSCORMNavigationButtons();
+			await this.hideNextUntilCompleted();
           } catch (error) {
             console.error("âŒ Error checking grade on iframe load:", error);
           }
@@ -458,96 +458,82 @@ isStudent() {
     }
   }
 
-async addSCORMNavigationButtons() {
+async hideNextUntilCompleted() {
   try {
-
-    // 🔧 Normalize IDs to numbers immediately
-    const courseId = Number(window.ENV?.COURSE_ID);
-    const assignmentId = Number(window.ENV?.ASSIGNMENT_ID);
+    const courseId = window.ENV?.COURSE_ID;
+    const assignmentId = window.ENV?.ASSIGNMENT_ID;
 
     if (!courseId || !assignmentId) {
-      console.warn("⚠️ Missing course or assignment ID for SCORM navigation");
+      console.warn("⚠️ Missing course or assignment ID for navigation logic");
       return;
     }
 
-    // 1️⃣ Fetch all assignments
+    // 1️⃣ Fetch assignments including submission details
     const res = await fetch(
       `/api/v1/courses/${courseId}/assignments?include[]=submission`,
       {
         credentials: "include",
-        headers: { "Accept": "application/json" },
+        headers: { "Accept": "application/json" }
       }
     );
 
     if (!res.ok) throw new Error(`HTTP ${res.status} fetching assignments`);
-
     const assignments = await res.json();
+
     if (!assignments?.length) {
-      console.warn("⚠️ No assignments found for this course");
+      console.warn("⚠️ No assignments found");
       return;
     }
 
-    // 2️⃣ Sort by ID ascending (you can switch to .position if preferred)
-    assignments.sort((a, b) => Number(a.id) - Number(b.id));
+    // 2️⃣ Sort by ID ASC
+    assignments.sort((a, b) => a.id - b.id);
 
-    // 3️⃣ Locate current assignment and neighbors
-    const index = assignments.findIndex(a => Number(a.id) === assignmentId);
-
+    // 3️⃣ Find current assignment
+    const index = assignments.findIndex(a => a.id === assignmentId);
     if (index === -1) {
-      console.warn("⚠️ Current assignment not found in list");
-      console.warn("Available assignment IDs:", assignments.map(a => a.id));
-      console.warn("Current assignment ID:", assignmentId);
+      console.warn("⚠️ Could not find the current assignment in the list");
       return;
     }
 
-    const prev = assignments[index - 1];
-    const next = assignments[index + 1];
+    const current = assignments[index];
 
-    // 4️⃣ Create button helper
-    const makeButton = (label, url) => {
-      const btn = document.createElement("a");
-      btn.textContent = label;
-      btn.href = url;
-      btn.classList.add(
-        "ic-app-main-content__secondary",
-        "btn",
-        "btn-primary",
-        "scorm-nav-btn"
-      );
-      btn.style.margin = "10px";
-      btn.style.display = "inline-block";
-      return btn;
-    };
+    // =============================
+    // 4️⃣ CHECK COMPLETION STATUS
+    // =============================
 
-    const prevBtn = prev
-      ? makeButton("← Previous", `/courses/${courseId}/assignments/${prev.id}`)
-      : null;
+    // Canvas submission states:
+    // 'submitted'  → user clicked submit
+    // 'graded'     → completed & graded
+    // 'unsubmitted', 'pending_review', null → NOT completed
 
-    const nextBtn = next
-      ? makeButton("Next →", `/courses/${courseId}/assignments/${next.id}`)
-      : null;
+    const state = current.submission?.workflow_state;
 
-    // 5️⃣ Insertion points
-    const leftSide = document.getElementById("left-side");
-    const rightWrapper = document.getElementById("right-side-wrapper");
+    const isComplete =
+      state === "submitted" ||
+      state === "graded";
 
-    if (!leftSide || !rightWrapper) {
-      console.warn("⚠️ Could not find insertion points for nav buttons");
+    // 5️⃣ Get Canvas next button
+    const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
+
+    if (!nextBtn) {
+      console.warn("⚠️ Next button not found in DOM");
       return;
     }
 
-    // 6️⃣ Insert buttons
-    if (prevBtn) leftSide.insertAdjacentElement("afterend", prevBtn);
-    if (nextBtn) rightWrapper.insertAdjacentElement("beforebegin", nextBtn);
-
-    console.log(
-      `✅ SCORM navigation buttons added: prev=${prev?.id || "none"}, next=${next?.id || "none"}`
-    );
+    // 6️⃣ Hide or show based on completion
+    if (!isComplete) {
+      nextBtn.style.display = "none";
+      console.log("⛔ Assignment NOT completed — hiding Next button");
+    } else {
+      nextBtn.style.display = ""; // ensure it's visible
+      console.log("✅ Assignment completed — leaving Next button visible");
+    }
 
   } catch (err) {
-    console.error("❌ Error adding SCORM navigation buttons:", err);
+    console.error("❌ Error in hideNextUntilCompleted:", err);
   }
 }
+
 
   // Note: These methods are no longer needed since we're not continuously polling
   // Keeping them for potential future use or cleanup purposes
