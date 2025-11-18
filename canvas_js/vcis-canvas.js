@@ -617,6 +617,9 @@ setupIframeWatcher(iframe, courseId, assignmentId) {
 
 // ----------------------------
 // Assignment Completion Updater (auto-maps sequentially)
+// This part of the script checks for a 'wiki' page (also called a canvas 'Page') for certain element types
+// if one is found, it will update the element
+// this is largely used to show completion for eLearn modules
 // ----------------------------
 async updateModuleCompletionStatus() {
   try {
@@ -661,7 +664,8 @@ async updateModuleCompletionStatus() {
 
       if (!assignment) {
         el.textContent = "Completion (no assignment)";
-        el.style.color = "gray";
+		el.classList.add = "modcomp-noassign";
+        // el.style.color = "gray";
         if (button) button.classList.remove("completed", "in-progress");
         allComplete = false;
         return;
@@ -674,26 +678,29 @@ async updateModuleCompletionStatus() {
       const hasSubmission = !!sub && Object.keys(sub).length > 0;
 
       let statusText = "Completion: Not started";
-      let color = "red";
+      let classname = "modcomp-notstart";
 
       if (complete) {
         statusText = "Completion: Completed";
-        color = "green";
+		// color = "green";
+        classname = "modcomp-complete";
       } else if (hasSubmission) {
         statusText = "Completion: In progress";
-        color = "orange";
+		// color = "orange";
+        classname = "modcomp-inprogress";
       } else {
         allComplete = false;
       }
 
       el.textContent = `${assignment.name} — ${statusText}`;
-      el.style.color = color;
+      // el.style.color = color;
+	  el.ClassList.add = classname;
 
       // Update button state classes
       if (button) {
-        button.classList.remove("completed", "in-progress");
-        if (complete) button.classList.add("completed");
-        else if (hasSubmission) button.classList.add("in-progress");
+        button.classList.remove("completed", "in-progress", "modcomp-complete", "modcomp-inprogress", "modcomp-notstart", "modcomp-noassign");
+        if (complete) button.classList.add("completed", "modcomp-complete");
+        else if (hasSubmission) button.classList.add("in-progress", "modcomp-inprogress");
       }
 
       // If any are not complete, mark false
@@ -701,7 +708,8 @@ async updateModuleCompletionStatus() {
     });
 
   // ----------------------------
-  // 🟢 Check for Certificate
+  //  update completion certificate elements
+  //  to modify certificate element text, change the 'textContent' parts of this section
   // ----------------------------
   const certElement = document.querySelector("[id^='CompCertificate']");
   const certButton = document.querySelector("[id^='CompCertButton']");
@@ -709,7 +717,8 @@ async updateModuleCompletionStatus() {
   if (certElement) {
     if (allComplete) {
       certElement.textContent = "Certificate Available";
-      certElement.style.color = "green";
+	  certElement.classList.remove = "cert-unavail";		
+      certElement.classList.add = "cert-avail";
 
       if (certButton) {
         certButton.classList.remove("in-progress");
@@ -724,7 +733,7 @@ async updateModuleCompletionStatus() {
 
     } else {
       certElement.textContent = "Course Incomplete";
-      certElement.style.color = "red";
+      certElement.classList.add = "cert-unavail";
 
       if (certButton) {
         certButton.classList.remove("completed");
