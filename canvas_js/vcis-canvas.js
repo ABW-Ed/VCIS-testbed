@@ -683,7 +683,7 @@ async updateModuleCompletionStatus() {
         statusText = "Completion: Completed";
         classname = "modcomp-complete";
       } else if (hasSubmission) {
-        statusText = "Completion: In progress";
+        statusText = "Completion: Not Completed"; // apparently Canvas does not have inprogress as an option, so this is placeholder
         classname = "modcomp-inprogress";
       } else {
         allComplete = false;
