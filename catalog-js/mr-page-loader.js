@@ -70,9 +70,9 @@ $(function () {
   // ===============================
   $(".Registration__Agreement a[href*='acceptable-use']").each(function () {
     $(this).attr("href", "#")
-           .removeAttr("target")
-           .addClass("custom-tou-link")
-           .text("Terms of Use");
+      .removeAttr("target")
+      .addClass("custom-tou-link")
+      .text("Terms of Use");
   });
 
   // ===============================
@@ -80,9 +80,9 @@ $(function () {
   // ===============================
   $("#app-footer a[href*='acceptable-use']").each(function () {
     $(this).attr("href", "#")
-           .removeAttr("target")
-           .addClass("custom-tou-link")
-           .text("Terms of Use"); 
+      .removeAttr("target")
+      .addClass("custom-tou-link")
+      .text("Terms of Use");
   });
 
   // ===============================
@@ -135,10 +135,10 @@ $(function () {
 
         // Case 2: Logged in but not enrolled
         if (userObj.enrolled === false) {
-        $(".Registration__SignInButton a")
-        .find("span")         // find all spans inside the <a>
-        .last()               // take the innermost/deepest one
-        .text("Login to Enrol");
+          $(".Registration__SignInButton a")
+            .find("span")         // find all spans inside the <a>
+            .last()               // take the innermost/deepest one
+            .text("Login to Enrol");
         }
 
         // Done checking once ENV.user is stable
@@ -148,70 +148,59 @@ $(function () {
       console.warn("User check error:", err);
     }
   }, intervalMs);
-  
+
   // 9. insert new MR title bit - functions only
-  
-		  function cleanListingsChrome(){
-		  var hideListingsContent = setInterval(function () {
-			  if ($('#main-heading h1, #listings h2, #listings .col-md-12 .h3').length) {
-				  clearInterval(hideListingsContent);
 
-				  // Hide "Listings"
-				  $('#main-heading h1').each(function () {
-					  if ($(this).text().trim() === 'Listings') {
-						  $(this).hide();
-					  }
-				  });
+  function cleanListingsChrome() {
+    var hideListingsContent = setInterval(function () {
+      if ($('#main-heading h1, #listings h2, #listings .col-md-12 .h3').length) {
+        clearInterval(hideListingsContent);
 
-				  // Hide "Browse Listings"
-				  $('#listings h2').each(function () {
-					  if ($(this).text().trim() === 'Browse Listings') {
-						  $(this).hide();
-					  }
-				  });
+        // Hide "Listings"
+        $('#main-heading h1').each(function () {
+          if ($(this).text().trim() === 'Listings') {
+            $(this).hide();
+          }
+        });
 
-				  // Hide "There are no courses or programs to display."
-				  $('#listings .col-md-12 .h3').each(function () {
-					  if ($(this).text().includes('There are no courses')) {
-						  $(this).hide();
-					  }
-				  });
-			  }
-		  }, 50);
-		}
+        // Hide "Browse Listings"
+        $('#listings h2').each(function () {
+          if ($(this).text().trim() === 'Browse Listings') {
+            $(this).hide();
+          }
+        });
 
-		function addMrTopper() {
+        // Hide "There are no courses or programs to display."
+        $('#listings .col-md-12 .h3').each(function () {
+          if ($(this).text().includes('There are no courses')) {
+            $(this).hide();
+          }
+        });
+      }
+    }, 50);
+  }
 
-		  var $listinginsert = $("#listings");
-		  if (!$listinginsert.length) return; // wait until feature exists - might need to make this dependent on something else
+  function addMrTopper2890() {
+    const container = document.querySelector("#main");
+    if (!container) return;
 
-		  // If already present, don't create duplicates; just recompute positions.
-		  var $container = $("#custom-feature-container");
+    fetch("https://abw-ed.github.io/VCIS-testbed/html/mrpageinsert.html")
+      .then(r => {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(html => {
+        container.insertAdjacentHTML("afterbegin", html);
+      })
+      .catch(err => console.error("Fetch error:", err));
+  }
 
-		  if (!$('#custom-mr-content').length) {
-		  const $listinginsert = $('#listings.container');
 
-		  const $container = $(`
-			<div id="custom-mr-content" class="d-flex">
-				  <h1>Mandatory Reporting and Other Obligations</h1>
-				  <h3 class="mr-header-label">Early Childhood</h3>
-				<h4 class="mr-label-content">Relevant roles include Long Day Care, Kindergarten, Outside of School Hours Care and other Early Childhood Educators</h4>
-			  <h3 class="mr-header-label">Non-Government Schools</h3>
-					<h4 class="mr-label-content">Relevant roles include Independent School staff, Catholic School staff, and all Casual Relief staff (CRTs)</h4>
-				  <h1></h1>
-			</div>
-		  `);
 
-		  $listinginsert.prepend($container);
-		 }
-		}
-		  
-		  
-		  
-  
-  
-  
-   // ===============================
+
+
+
+  // ===============================
   // 10. Course title duplication & renaming (only for IDs 16772 & 15667)
   // ===============================
   var productWatcher = setInterval(function () {
@@ -231,8 +220,8 @@ $(function () {
           // Your working duplication & replacement script
           (() => {
             const replacements = {
-		    "Protecting Children - Mandatory Reporting and Other Obligations Early Childhood": "Early Childhood",
-            "Protecting Children - Mandatory Reporting and Other Obligations Non-Government Schools": "Non-Government Schools"
+              "Protecting Children - Mandatory Reporting and Other Obligations Early Childhood": "Early Childhood",
+              "Protecting Children - Mandatory Reporting and Other Obligations Non-Government Schools": "Non-Government Schools"
             };
 
             const headings = [...document.querySelectorAll(".product-heading")];
@@ -261,12 +250,12 @@ $(function () {
               }
 
               // Insert clone immediately after the original
-              
-			  
-			  orig.insertAdjacentElement("afterend", clone);
-			  cleanListingsChrome();
-			  addMrTopper();
-			  
+
+
+              orig.insertAdjacentElement("afterend", clone);
+              cleanListingsChrome();
+              addMrTopper();
+
             });
 
           })();
@@ -282,5 +271,5 @@ $(function () {
       console.warn("Product watcher error:", err);
     }
   }, intervalMs);
-  
+
 });
