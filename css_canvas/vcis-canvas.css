@@ -270,7 +270,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* module in progress */
 .modcomp-inprogress {
-  color: orange;
+  color: inherit;
 }
 
 /* no assignment found */
