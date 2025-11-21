@@ -254,9 +254,12 @@ $(function () {
 
               orig.insertAdjacentElement("afterend", clone);
               cleanListingsChrome();
-              addMrTopper();
+              
 
-            });
+            }); // close the loop
+            // add Mandatory Reporting HTML top thing
+
+            addMrTopper();
 
           })();
 
