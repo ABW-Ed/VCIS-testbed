@@ -180,7 +180,7 @@ $(function () {
     }, 50);
   }
 
-  function addMrTopper2890() {
+  function addMrTopper() {
     const container = document.querySelector("#main");
     if (!container) return;
 
