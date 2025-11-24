@@ -345,10 +345,12 @@
     margin-bottom: 5px;
 }
 
-div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a,
+
+/* this mod seems to break the admin menu - let's remove it */
+/* div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a,
 div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   color: white !important;
-}
+} */
 
 
 /* existing changes */
