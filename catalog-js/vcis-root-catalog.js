@@ -166,7 +166,7 @@ async function initCustomisations() {
   initAttempts = 0;
 
   // Branch 1: Non-product pages → certificate customiser
-  if (!ENV.product) {
+  if (!ENV.product && !ENV.admin_page) {
     console.log("📄 No product context detected — enabling certificate customiser.");
     initFeature(catalogCertCorrection);
   } else {
