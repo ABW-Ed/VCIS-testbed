@@ -689,7 +689,8 @@ async updateModuleCompletionStatus() {
         allComplete = false;
       }
 
-      el.textContent = `${assignment.name} — ${statusText}`;
+      el.textContent = `${statusText}`; // without module name
+	  // el.textContent = `${assignment.name} — ${statusText}`;
       el.classList.add(classname);
 
       // Update button state classes
