@@ -236,7 +236,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* --- In Progress --- */
 .module-button.in-progress {
-  background-color: #f57c00 !important;
+  background-color: #f57c00;
 }
 .module-button.in-progress:hover {
   background-color: #ef6c00 !important;
@@ -252,14 +252,17 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   background-color: #04ff5f !important;
 }
 
+/* Completion Certificate button CSS - for showing if course is complete */
 #CompCertButton.completed {
   cursor: pointer !important;
   pointer-events: auto;
 }
 
+/* Completion Certificate button CSS - show if course still has outstanding modules to complete */
 #CompCertButton.in-progress {
   cursor: default !important;
   pointer-events: none;
+  background-color: #fff;
   
 }
 
@@ -297,7 +300,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* certificate unavailable */
 .cert-unavail {
-  color: orange;
+  color: #fff;
 }
 
 /* certificate available */
