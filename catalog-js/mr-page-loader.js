@@ -119,6 +119,18 @@ $(function () {
     }
   }, intervalMs);
 
+// sneak in the MR ECEC change here - to be removed on 1st of Dec
+  
+  const prodDetail = ENV.product_details;
+
+if (prodDetail.id === 16772) {
+  if ($(".ProductEnrollment__Notice").length) {
+    $(".ProductEnrollment__Notice").text(
+      "Hello! This course is currently not available. Enrolments will open from Monday 1 December."
+    );
+  }
+}
+
   // ===============================
   // 8. User-based DOM customisations
   // ===============================
