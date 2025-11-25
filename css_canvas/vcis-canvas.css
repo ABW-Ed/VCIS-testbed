@@ -252,6 +252,17 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   background-color: #04ff5f !important;
 }
 
+#CompCertButton.completed {
+  cursor: pointer !important;
+  pointer-events: auto;
+}
+
+#CompCertButton.in-progress {
+  cursor: default !important;
+  pointer-events: none;
+  
+}
+
 /* --- Status Box --- */
 .module-status {
   font-size: 0.9rem;
