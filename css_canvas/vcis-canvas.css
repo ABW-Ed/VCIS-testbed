@@ -244,11 +244,11 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* --- Completed --- */
 .module-button.completed {
-  background-color: #888 !important;
+  background-color: #00c447 !important;
   cursor: default !important;
 }
 .module-button.completed:hover {
-  background-color: #666 !important;
+  background-color: #04ff5f !important;
 }
 
 /* --- Status Box --- */
