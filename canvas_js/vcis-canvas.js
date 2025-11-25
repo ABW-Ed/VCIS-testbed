@@ -658,58 +658,66 @@ async updateModuleCompletionStatus() {
     let allComplete = true;
 
     // Loop through each ModComp element and match assignment by index
-    modElements.forEach((el, index) => {
-      const assignment = assignments[index];
-      const button = modButtons[index];
-
-      if (!assignment) {
-        el.textContent = "Completion (no assignment)";
-        el.classList.add("modcomp-noassign");
-        if (button) button.classList.remove("completed", "in-progress");
-        allComplete = false;
-        return;
-      }
-
-      const sub = assignment.submission || {};
-      const state = sub.workflow_state || "unsubmitted";
-      const complete =
-        ["graded", "submitted"].includes(state) || (sub.graded_at != null);
-      const hasSubmission = !!sub && Object.keys(sub).length > 0;
-
-      let statusText = "Completion: Not started";
-      let classname = "modcomp-notstart";
-
-      if (complete) {
-        statusText = "Completion: Completed";
-        classname = "modcomp-complete";
-      } else if (hasSubmission) {
-        statusText = "Completion: Not Completed"; // apparently Canvas does not have inprogress as an option, so this is placeholder
-        classname = "modcomp-inprogress";
-      } else {
-        allComplete = false;
-      }
-
-      el.textContent = `${statusText}`; // without module name
-	  // el.textContent = `${assignment.name} — ${statusText}`;
-      el.classList.add(classname);
-
-      // Update button state classes
-      if (button) {
-        button.classList.remove(
-          "completed",
-          "in-progress",
-          "modcomp-complete",
-          "modcomp-inprogress",
-          "modcomp-notstart",
-          "modcomp-noassign"
-        );
-
-        if (complete) button.classList.add("completed", "modcomp-complete");
-        else if (hasSubmission) button.classList.add("in-progress", "modcomp-inprogress");
-      }
-
-      if (!complete) allComplete = false;
-    });
+	modElements.forEach((el, index) => {
+	  const assignment = assignments[index];
+	  const button = modButtons[index];
+	
+	  if (!assignment) {
+	    el.textContent = "Completion (no assignment)";
+	    el.classList.add("modcomp-noassign");
+	    if (button) button.classList.remove("completed", "in-progress");
+	    allComplete = false;
+	    return;
+	  }
+	
+	  const sub = assignment.submission || {};
+	  const state = sub.workflow_state || "unsubmitted";
+	  const complete =
+	    ["graded", "submitted"].includes(state) || (sub.graded_at != null);
+	  const hasSubmission = !!sub && Object.keys(sub).length > 0;
+	
+	  let statusText = "Completion: Not started";
+	  let classname = "modcomp-notstart";
+	
+	  if (complete) {
+	    statusText = "Completion: Completed";
+	    classname = "modcomp-complete";
+	
+	    // mark the module-button in this card as complete
+	    const card = el.closest(".module-card");
+	    if (card) {
+	      const cardButton = card.querySelector(".module-button");
+	      if (cardButton) {
+	        cardButton.classList.add("completed");
+	      }
+	    }
+	  } else if (hasSubmission) {
+	    statusText = "Completion: Not Completed";
+	    classname = "modcomp-inprogress";
+	  } else {
+	    allComplete = false;
+	  }
+	
+	  el.textContent = `${statusText}`;
+	  el.classList.add(classname);
+	
+	  // Existing button-state logic
+	  if (button) {
+	    button.classList.remove(
+	      "completed",
+	      "in-progress",
+	      "modcomp-complete",
+	      "modcomp-inprogress",
+	      "modcomp-notstart",
+	      "modcomp-noassign"
+	    );
+	
+	    if (complete) button.classList.add("completed", "modcomp-complete");
+	    else if (hasSubmission) button.classList.add("in-progress", "modcomp-inprogress");
+	  }
+	
+	  if (!complete) allComplete = false;
+	});
 
     // ----------------------------
     //  Update completion certificate section
