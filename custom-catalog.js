@@ -92,6 +92,7 @@
       // ===============================
       $(document).on("click", ".custom-tou-link", openTouModal);
 
+
       // ===============================
       // 7. User-based DOM customisations
       // ===============================
@@ -125,6 +126,22 @@
   });
 })();
 
+// =============================
+// 8. Specific Catalog page stuff
+// =============================
+
+const prodDetail = ENV.product_details;
+
+if (prodDetail.id === 16772) {
+  if ($(".ProductEnrollment__Notice").length) {
+    $(".ProductEnrollment__Notice").text(
+      "Hello! This course is currently not available. Enrolments will open from Monday 1 December."
+    );
+  }
+}
+
+
+
 
 // this section is experimental
 
@@ -135,42 +152,42 @@ if (!document.getElementById('custom_color_banner')) {
 }
 
 // Define Tile Text, Links and Public Image URL's
-var defineTiles = function(){
-    var tiles = [["Education Workforces","/browse/all/deworkforces","https://abw-ed.github.io/VCIS-testbed/assets/img/de-wf-tile.png"],
-                 ["Families Fairness and Housing","/browse/all/dffhworkfoces","https://abw-ed.github.io/VCIS-testbed/assets/img/dffh-wf-tile.png"],
-                 ["Health Workforces","/browse/all/dhworkforces","https://abw-ed.github.io/VCIS-testbed/assets/img/dh-wf-tile.png"],
-                 ["Child Link","/browse/all/childlink","https://abw-ed.github.io/VCIS-testbed/assets/img/childlink-logo.png"]];
-    return tiles;
+var defineTiles = function () {
+  var tiles = [["Education Workforces", "/browse/all/deworkforces", "https://abw-ed.github.io/VCIS-testbed/assets/img/de-wf-tile.png"],
+  ["Families Fairness and Housing", "/browse/all/dffhworkforces", "https://abw-ed.github.io/VCIS-testbed/assets/img/dffh-wf-tile.png"],
+  ["Health Workforces", "/browse/all/dhworkforces", "https://abw-ed.github.io/VCIS-testbed/assets/img/dh-wf-tile.png"],
+  ["Child Link", "/browse/all/childlink", "https://abw-ed.github.io/VCIS-testbed/assets/img/childlink-logo.png"]];
+  return tiles;
 };
 
 // Helper function for checking if an element has been rendered yet
 function onElementRendered(selector, cb, _attempts) {
-    var el = $(selector);
-    _attempts = ++_attempts || 1;
-    if (el.length) return cb(el);
-    if (_attempts == 60) return;
-    setTimeout(function () {
-        onElementRendered(selector, cb, _attempts);
-    }, 250);
+  var el = $(selector);
+  _attempts = ++_attempts || 1;
+  if (el.length) return cb(el);
+  if (_attempts == 60) return;
+  setTimeout(function () {
+    onElementRendered(selector, cb, _attempts);
+  }, 250);
 };
 
 // Helper function to help build HTML for Custom tiles
-var buildTileHTML = function(tile){
-    // mark each as custom so we can detect/prevent duplicates
-    var tileHTML = '<div class="col-md-3 col-sm-6 custom-home-tile"><a class="product-link" href="'
-                   + tile[1] +
-                   '"><div class="product-tile course-tile" aria-hidden="true"><div class="product-image"><div class="image-container"><span class="image-wrapper" title="'
-                   + tile[0] +
-                   '" style="background-image: url('
-                   + tile[2] +
-                   ');"><img class="image-placeholder img-responsive" alt="" src="/assets/product-image-ratio.png"></span></div><span class="ProductIcon__Wrapper--gallery-index"><span class="sr-only"></span><span role="presentation" aria-hidden="true" title="Course"><div class="ProductIcon__LargeCircle--course"><span class="icon icon-course"></span></div> </span> </span></div><div class="product-heading" style="word-wrap: break-word;"><h3 title="'
-                   + tile[0] +
-                   ' Courses" class="product-title">'
-                   + tile[0] +
-                   '</h3></div><div class="product-footer"><div class="learn-more"><div class="product-dates home-page-tile-browse-text" style="padding-top: 10px;overflow: visible !important;">Browse Courses Now</div></div></div></div><div class="sr-only"><div>Browse '
-                   + tile[0] +
-                   '</div><div></div></div></a></div>';
-    return tileHTML;
+var buildTileHTML = function (tile) {
+  // mark each as custom so we can detect/prevent duplicates
+  var tileHTML = '<div class="col-md-3 col-sm-6 custom-home-tile"><a class="product-link" href="'
+    + tile[1] +
+    '"><div class="product-tile course-tile" aria-hidden="true"><div class="product-image"><div class="image-container"><span class="image-wrapper" title="'
+    + tile[0] +
+    '" style="background-image: url('
+    + tile[2] +
+    ');"><img class="image-placeholder img-responsive" alt="" src="/assets/product-image-ratio.png"></span></div><span class="ProductIcon__Wrapper--gallery-index"><span class="sr-only"></span><span role="presentation" aria-hidden="true" title="Course"><div class="ProductIcon__LargeCircle--course"><span class="icon icon-course"></span></div> </span> </span></div><div class="product-heading" style="word-wrap: break-word;"><h3 title="'
+    + tile[0] +
+    ' Courses" class="product-title">'
+    + tile[0] +
+    '</h3></div><div class="product-footer"><div class="learn-more"><div class="product-dates home-page-tile-browse-text" style="padding-top: 10px;overflow: visible !important;">Browse Courses Now</div></div></div></div><div class="sr-only"><div>Browse '
+    + tile[0] +
+    '</div><div></div></div></a></div>';
+  return tileHTML;
 };
 
 /* ---------------------------------------
@@ -189,9 +206,9 @@ function initHeroOnce() {
   var $right = $("#feature-bg-right");
 
   if (!$('#custom-feature-container').length) {
-  const $feature = $('#feature.feature-region');
+    const $feature = $('#feature.feature-region');
 
-  const $container = $(`
+    const $container = $(`
     <div id="custom-feature-container" class="container-fluid d-flex">
       <div id="feature-bg-left" class="feature-side left flex-shrink-0"></div>
       <div id="feature-center" class="flex-grow-1 d-flex flex-column justify-content-center align-items-center text-white">
@@ -204,9 +221,9 @@ function initHeroOnce() {
     </div>
   `);
 
-  $feature.append($container);
- }
-  
+    $feature.append($container);
+  }
+
 
   // After layout, measure and position
   requestAnimationFrame(function () {
@@ -217,7 +234,7 @@ function initHeroOnce() {
     var marginLeft = Math.max(0, Math.round(rect.left)) + 5;
     var top = Math.round(rect.top + window.pageYOffset);
 
-    if ($left.length)  $left.css({ width: marginLeft + "px", top: top + "px" });
+    if ($left.length) $left.css({ width: marginLeft + "px", top: top + "px" });
     if ($right.length) $right.css({ width: marginLeft + "px", top: top + "px" });
   });
 }
@@ -225,96 +242,96 @@ function initHeroOnce() {
 /* ---------------------------------------
    Tiles + homepage customizations (idempotent)
 ----------------------------------------*/
-var homePageCustomizations = function() {
-    if (window.location.pathname.startsWith("/browse/infosharing")) {
-        // Only inject tiles if we haven't already
-        if (!$("#listings .custom-home-tile").length) {
-          var tiles = defineTiles();
-          var tilesHTML = "";
-          tiles.forEach(function(tile){
-              tilesHTML += buildTileHTML(tile);
-          });
-          if ($("#listings").length) {
-            $("#listings").append(tilesHTML);
+var homePageCustomizations = function () {
+  if (window.location.pathname.startsWith("/browse/infosharing")) {
+    // Only inject tiles if we haven't already
+    if (!$("#listings .custom-home-tile").length) {
+      var tiles = defineTiles();
+      var tilesHTML = "";
+      tiles.forEach(function (tile) {
+        tilesHTML += buildTileHTML(tile);
+      });
+      if ($("#listings").length) {
+        $("#listings").append(tilesHTML);
+      }
+    }
+
+    // cache-safe hero
+    initHeroOnce();
+
+    // Hides No Courses found text
+    var hideNoCoursesText = setInterval(function () {
+      if ($('div.col-md-12 > h3').length) {
+        clearInterval(hideNoCoursesText);
+        $("div.col-md-12 > h3").ready(function () {
+          $("#listings > div.col-md-12").html("");
+        });
+      }
+    }, 50);
+  } else {
+    // Add some text to the search bar to help indicate that they are only searching the current sub-catalog
+    var checkExist = setInterval(function () {
+      if ($('#search').length) {
+        clearInterval(checkExist);
+        $("#search").ready(function () {
+          var q = document.getElementsByName('query')[0];
+          if (q && q.placeholder !== 'Search this Page') {
+            q.placeholder = 'Search this Page';
           }
-        }
+        });
+      }
+    }, 50);
+  }
 
-        // cache-safe hero
-        initHeroOnce();
-
-        // Hides No Courses found text
-        var hideNoCoursesText = setInterval(function () {
-            if ($('div.col-md-12 > h3').length) {
-                clearInterval(hideNoCoursesText);
-                $("div.col-md-12 > h3").ready(function () {
-                    $("#listings > div.col-md-12").html("");
-                });
-            }
-        }, 50);
-    } else {
-        // Add some text to the search bar to help indicate that they are only searching the current sub-catalog
-        var checkExist = setInterval(function () {
-            if ($('#search').length) {
-                clearInterval(checkExist);
-                $("#search").ready(function () {
-                    var q = document.getElementsByName('query')[0];
-                    if (q && q.placeholder !== 'Search this Page') {
-                      q.placeholder = 'Search this Page';
-                    }
-                });
-            }
-        }, 50);
-    }
-
-    // Add the Search All Courses Link (idempotent)
-    var actionsSel = "#search-form >div.search-form-container > div.container > div.search-form > div.search-form__actions.pull-right";
-    if ($(actionsSel).length && !document.getElementById('search-all-courses-btn')) {
-      $(actionsSel).append(
-        '<span>' +
-          '<div class="sr-only">Use the following button to be redirected to a URL with all available courses</div>' +
-          '<button type="button" id="search-all-courses-btn" onclick="location.href=\''+window.location.origin+'/browse/all?sort=date\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
-            '<div class="search-refine-button__contents">' +
-              '<div class="search-refine-button__text">Search All Courses</div>' +
-              '<div class="search-submit" aria-hidden="true" style="color:#ffffff;padding-left: 160px;"></div>' +
-            '</div>' +
-          '</button>' +
-        '</span>'
-      );
-    }
+  // Add the Search All Courses Link (idempotent)
+  var actionsSel = "#search-form >div.search-form-container > div.container > div.search-form > div.search-form__actions.pull-right";
+  if ($(actionsSel).length && !document.getElementById('search-all-courses-btn')) {
+    $(actionsSel).append(
+      '<span>' +
+      '<div class="sr-only">Use the following button to be redirected to a URL with all available courses</div>' +
+      '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + '/browse/all?sort=date\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
+      '<div class="search-refine-button__contents">' +
+      '<div class="search-refine-button__text">Search All Courses</div>' +
+      '<div class="search-submit" aria-hidden="true" style="color:#ffffff;padding-left: 160px;"></div>' +
+      '</div>' +
+      '</button>' +
+      '</span>'
+    );
+  }
 };
 
 //Change Credit Text to Say Points (safe to run repeatedly)
 function changeCredits() {
-    onElementRendered('.product-credits', function (e) {
-        var links = document.getElementsByClassName("product-credits");
-        for (var i = 0; i < links.length; i++) {
-            var html = links[i].innerHTML;
-            // strip pipe once; then replace words
-            html = html.replace('|', '');
-            // only replace if still credits/credit
-            html = html.replace(/\bcredits\b/g, 'points');
-            html = html.replace(/\bcredit\b/g, 'point');
-            links[i].innerHTML = html;
-        }
-    });
+  onElementRendered('.product-credits', function (e) {
+    var links = document.getElementsByClassName("product-credits");
+    for (var i = 0; i < links.length; i++) {
+      var html = links[i].innerHTML;
+      // strip pipe once; then replace words
+      html = html.replace('|', '');
+      // only replace if still credits/credit
+      html = html.replace(/\bcredits\b/g, 'points');
+      html = html.replace(/\bcredit\b/g, 'point');
+      links[i].innerHTML = html;
+    }
+  });
 }
 
 // Tweak Login Href (idempotent per element)
-function tweakLoginHref(){
-    var pathname = window.location.pathname;
-    var els = document.querySelectorAll("a[href^='/login']");
-    var redirectUri = "login?target_uri=" + pathname;
-    for (var i = 0; i < els.length; i++) {
-        var el = els[i];
-        if (el.parentElement && el.parentElement.id === "user-nav" && !el.dataset.redirected) {
-            el.href = el.href.replace(/login/gi, redirectUri);
-            el.dataset.redirected = "true";
-        }
+function tweakLoginHref() {
+  var pathname = window.location.pathname;
+  var els = document.querySelectorAll("a[href^='/login']");
+  var redirectUri = "login?target_uri=" + pathname;
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    if (el.parentElement && el.parentElement.id === "user-nav" && !el.dataset.redirected) {
+      el.href = el.href.replace(/login/gi, redirectUri);
+      el.dataset.redirected = "true";
     }
+  }
 }
 
 // One-time header layout + links (idempotent)
-function setupHeaderNavOnce(){
+function setupHeaderNavOnce() {
   if ($("#app-header #user-nav #page-links").length) return; // already done
   $("#app-header div.col-xs-12.col-sm-6.col-md-7").attr("class", "col-xs-12 col-sm-12 col-md-4");
   $("#app-header div.col-xs-12.col-sm-6.col-md-5").attr("class", "col-xs-12 col-sm-12 col-md-8");
@@ -326,7 +343,7 @@ function setupHeaderNavOnce(){
 }
 
 // Main initializer â€” safe to call many times
-function initAll(){
+function initAll() {
   if (window.location.pathname.startsWith("/browse/infosharing")) {
     setupHeaderNavOnce();
     homePageCustomizations();
@@ -342,33 +359,33 @@ function initAll(){
 
 // Hide "Listings", "Browse Listings", and "There are no courses..." text
 // Only run if we're on the root path
-function hideListingsChrome(){
+function hideListingsChrome() {
   if (window.location.pathname.endswith !== '/browse/infosharing/') return;
   var hideListingsContent = setInterval(function () {
-      if ($('#main-heading h1, #listings h2, #listings .col-md-12 .h3').length) {
-          clearInterval(hideListingsContent);
+    if ($('#main-heading h1, #listings h2, #listings .col-md-12 .h3').length) {
+      clearInterval(hideListingsContent);
 
-          // Hide "Listings"
-          $('#main-heading h1').each(function () {
-              if ($(this).text().trim() === 'Listings') {
-                  $(this).hide();
-              }
-          });
+      // Hide "Listings"
+      $('#main-heading h1').each(function () {
+        if ($(this).text().trim() === 'Listings') {
+          $(this).hide();
+        }
+      });
 
-          // Hide "Browse Listings"
-          $('#listings h2').each(function () {
-              if ($(this).text().trim() === 'Browse Listings') {
-                  $(this).hide();
-              }
-          });
+      // Hide "Browse Listings"
+      $('#listings h2').each(function () {
+        if ($(this).text().trim() === 'Browse Listings') {
+          $(this).hide();
+        }
+      });
 
-          // Hide "There are no courses or programs to display."
-          $('#listings .col-md-12 .h3').each(function () {
-              if ($(this).text().includes('There are no courses')) {
-                  $(this).hide();
-              }
-          });
-      }
+      // Hide "There are no courses or programs to display."
+      $('#listings .col-md-12 .h3').each(function () {
+        if ($(this).text().includes('There are no courses')) {
+          $(this).hide();
+        }
+      });
+    }
   }, 50);
 }
 
@@ -382,7 +399,7 @@ $(function () {
       hideListingsChrome();
       return;
     }
-    setTimeout(function(){ waitForFeature(attempts + 1); }, 250);
+    setTimeout(function () { waitForFeature(attempts + 1); }, 250);
   })(0);
 });
 
@@ -395,10 +412,10 @@ window.addEventListener("pageshow", function (e) {
 });
 
 // SPA navigations (if used)
-document.addEventListener("turbolinks:load", function(){
+document.addEventListener("turbolinks:load", function () {
   initAll(); hideListingsChrome();
 });
-document.addEventListener("turbo:load", function(){
+document.addEventListener("turbo:load", function () {
   initAll(); hideListingsChrome();
 });
 
