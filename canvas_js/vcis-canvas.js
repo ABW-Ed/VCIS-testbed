@@ -676,11 +676,11 @@ async updateModuleCompletionStatus() {
 	    ["graded", "submitted"].includes(state) || (sub.graded_at != null);
 	  const hasSubmission = !!sub && Object.keys(sub).length > 0;
 	
-	  let statusText = "Completion: Not started";
+	  let statusText = "Status: Not started";
 	  let classname = "modcomp-notstart";
 	
 	  if (complete) {
-	    statusText = "Completion: Completed";
+	    statusText = "Status: Completed ✅";
 	    classname = "modcomp-complete";
 	
 	    // mark the module-button in this card as complete
@@ -692,7 +692,7 @@ async updateModuleCompletionStatus() {
 	      }
 	    }
 	  } else if (hasSubmission) {
-	    statusText = "Completion: Not Completed";
+	    statusText = "Status: Not Completed";
 	    classname = "modcomp-inprogress";
 	  } else {
 	    allComplete = false;
