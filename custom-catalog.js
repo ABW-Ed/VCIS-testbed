@@ -126,22 +126,6 @@
   });
 })();
 
-// =============================
-// 8. Specific Catalog page stuff
-// =============================
-
-const prodDetail = ENV.product_details;
-
-if (prodDetail.id === 16772) {
-  if ($(".ProductEnrollment__Notice").length) {
-    $(".ProductEnrollment__Notice").text(
-      "Hello! This course is currently not available. Enrolments will open from Monday 1 December."
-    );
-  }
-}
-
-
-
 
 // this section is experimental
 
