@@ -214,10 +214,10 @@ isStudent() {
       return;
     }
 
-    const newHref = `${catalogUrl}/dashboard?current_user_id=${encodeURIComponent(userId)}`;
-    dashboardLink.setAttribute("href", newHref);
+    const dashHref = `${catalogUrl}/dashboard/completed?current_user_id=${encodeURIComponent(userId)}`;
+    dashboardLink.setAttribute("href", dashHref);
 
-    console.log(`Updated Dashboard link → ${newHref}`);
+    console.log(`Updated Dashboard link → ${dashHref}`);
   }	
 
   hideAttemptBlock() {
