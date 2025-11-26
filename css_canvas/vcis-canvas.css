@@ -262,7 +262,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 #CompCertButton.in-progress {
   cursor: default !important;
   pointer-events: none;
-  background-color: #fff;
+  background-color: #888;
   
 }
 
@@ -300,7 +300,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* certificate unavailable */
 .cert-unavail {
-  color: #fff;
+  color: #888;
 }
 
 /* certificate available */
