@@ -127,6 +127,18 @@
   }
 }
 
+/* announcement header style */
+.announce-line {
+  font-size: 1.8vw;
+  margin-top: 10px;
+  height: unset;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  word-wrap: break-word;
+}
+
+
 
 #app-header {
     padding-bottom: 0px !important;
@@ -186,6 +198,7 @@
 #home-page .hero-container {
     margin: 5vw;
 }
+
 
 
 #search-refine-button--refine {
