@@ -197,6 +197,23 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   box-shadow: 0 0 10px rgba(0,0,0,0.15);
 }
 
+/* --- Module Card Colour Tones --- */
+.vcis-tone {
+	background-color: rgba(0, 76, 151, .1);
+}
+
+.cs-tone {
+	background-color: rgba(255, 158, 27, .1);
+}
+
+.dffh-tone {
+	background-color: rgba(0, 178, 169, .1);
+}
+
+.dh-tone {
+	background-color: rgba(175, 39, 47, .1);
+}
+
 /* --- Image Wrapper --- */
 .module-image-wrapper {
   width: 100%;
