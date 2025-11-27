@@ -388,7 +388,7 @@ function addAnnouncementBlock() {
   }
 
   // insert the announcement HTML block
-  fetch("https://webpage.github.io/testbed/html/catalog-announcements.html")
+  fetch("https://abw-ed.github.io/VCIS-testbed/html/catalog-announcements.html")
     .then(r => {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.text();
