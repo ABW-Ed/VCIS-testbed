@@ -63,6 +63,10 @@ class CanvasCustomizer {
 		"Protecting Children - Mandatory Reporting and Other Obligations for Non-Government Schools - Frequently Asked Questions"
 	];
 
+	this.blockedHelpItemsConditional2 = [
+		"Protecting Children - Mandatory Reporting and Other Obligations for Non-Government Schools - Frequently Asked Questions"
+	];
+
     this.observers = new Map();
 
     
@@ -135,6 +139,14 @@ isStudent() {
 
   isMRMod() {
     return ["217", "224"].includes(window.ENV?.COURSE_ID);
+  }
+
+  isMRModEC() {
+	return ["224"].includes(window.ENV?.COURSE_ID);
+  }
+
+  isMRModNG() {
+	return ["224"].includes(window.ENV?.COURSE_ID);
   }
 
   getCurrentUserId() {
@@ -254,9 +266,15 @@ isStudent() {
     // Start with the default blocked list
     let itemsToBlock = [...this.blockedHelpItems];
 
-    // If MR Mod detected, extend the list with the conditional ones
-    if (!this.isMRMod()) {
+    // If MR Mod NG detected, extend the list with the conditional ones
+    if (!this.isMRModNG()) {
       itemsToBlock = itemsToBlock.concat(this.blockedHelpItemsConditional);
+      console.log("Not MR page");
+    }
+
+	// If MR Mod EC detected, extend the list with the conditional ones
+    if (!this.isMRModEC()) {
+      itemsToBlock = itemsToBlock.concat(this.blockedHelpItemsConditional2);
       console.log("Not MR page");
     }
 
