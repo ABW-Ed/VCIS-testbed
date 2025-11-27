@@ -64,7 +64,7 @@ class CanvasCustomizer {
 	];
 
 	this.blockedHelpItemsConditional2 = [
-		"Protecting Children - Mandatory Reporting and Other Obligations for Non-Government Schools - Frequently Asked Questions"
+		"Protecting Children - Mandatory Reporting and Other Obligations for Early Childhood - Frequently Asked Questions"
 	];
 
     this.observers = new Map();
