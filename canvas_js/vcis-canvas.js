@@ -266,17 +266,16 @@ isStudent() {
     // Start with the default blocked list
     let itemsToBlock = [...this.blockedHelpItems];
 
-    // If MR Mod NG detected, extend the list with the conditional ones
-    if (!this.isMRModNG()) {
-      itemsToBlock = itemsToBlock.concat(this.blockedHelpItemsConditional);
-      console.log("Not MR page");
-    }
-
-	// If MR Mod EC detected, extend the list with the conditional ones
-    if (!this.isMRModEC()) {
-      itemsToBlock = itemsToBlock.concat(this.blockedHelpItemsConditional2);
-      console.log("Not MR page");
-    }
+	  // Apply correct conditional logic
+	  if (this.isMRModNG()) {
+	    itemsToBlock = itemsToBlock.concat(this.blockedHelpItemsConditional);
+	    console.log("MRModNG detected – applying conditional list 1");
+	  } else if (this.isMRModEC()) {
+	    itemsToBlock = itemsToBlock.concat(this.blockedHelpItemsConditional2);
+	    console.log("MRModEC detected – applying conditional list 2");
+	  } else {
+	    console.log("Neither MRModNG nor MRModEC detected – using default block list only");
+	  }
 
     buttons.forEach(el => {
       const text = el.innerText.trim();
