@@ -857,7 +857,7 @@ class CanvasManager {
             console.warn("Failed to setup SCORM on DOM change:", error);
           });
         }
-      }, 250);
+      }, 100);
     });
 
     observer.observe(document.body, { 
