@@ -123,9 +123,10 @@ $(function () {
   
   const prodDetail = ENV.product_details;
 
-if (prodDetail.id === 16772) {
-  if ($(".ProductEnrollment__Notice").length) {
-    $(".ProductEnrollment__Notice").text(
+if (window.ENV?.product_details?.id === 16772) {
+  const notice = $(".ProductEnrollment__Notice");
+  if (notice.length) {
+    notice.text(
       "Hello! This course is currently not available. Enrolments will open from Monday 1 December."
     );
   }
