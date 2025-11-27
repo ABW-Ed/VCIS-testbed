@@ -373,6 +373,32 @@ function hideListingsChrome() {
   }, 50);
 }
 
+function addAnnouncementBlock() {
+  const container = document.querySelector("#main-heading");
+  if (!container) return;
+
+  // delete 'listings'
+  const h1 = container.querySelector("h1");
+  if (h1) h1.remove();
+
+  // replace 'browse listings' with...
+  const listingsH2 = document.querySelector("#listings h2");
+  if (listingsH2) {
+    listingsH2.textContent = "Choose your category";
+  }
+
+  // insert the announcement HTML block
+  fetch("https://webpage.github.io/testbed/html/catalog-announcements.html")
+    .then(r => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    })
+    .then(html => {
+      container.insertAdjacentHTML("afterbegin", html);
+    })
+    .catch(err => console.error("Fetch error:", err));
+}
+
 // ---- Boot sequence ----
 
 // Run on normal load; wait for #feature if needed for hero sizing
@@ -381,6 +407,7 @@ $(function () {
     if ($("#feature").length || attempts > 60) {
       initAll();
       hideListingsChrome();
+      addAnnouncementBlock()
       return;
     }
     setTimeout(function () { waitForFeature(attempts + 1); }, 250);
@@ -392,15 +419,20 @@ window.addEventListener("pageshow", function (e) {
   if (e.persisted) {
     initAll();
     hideListingsChrome();
+    addAnnouncementBlock()
   }
 });
 
 // SPA navigations (if used)
 document.addEventListener("turbolinks:load", function () {
-  initAll(); hideListingsChrome();
+  initAll(); 
+  hideListingsChrome();
+  addAnnouncementBlock()
 });
 document.addEventListener("turbo:load", function () {
-  initAll(); hideListingsChrome();
+  initAll(); 
+  hideListingsChrome();
+  addAnnouncementBlock()
 });
 
 // Keep background edges aligned on resize
