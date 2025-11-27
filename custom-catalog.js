@@ -407,7 +407,7 @@ $(function () {
     if ($("#feature").length || attempts > 60) {
       initAll();
       hideListingsChrome();
-      addAnnouncementBlock()
+      addAnnouncementBlock();
       return;
     }
     setTimeout(function () { waitForFeature(attempts + 1); }, 250);
@@ -419,7 +419,7 @@ window.addEventListener("pageshow", function (e) {
   if (e.persisted) {
     initAll();
     hideListingsChrome();
-    addAnnouncementBlock()
+    addAnnouncementBlock();
   }
 });
 
@@ -427,12 +427,12 @@ window.addEventListener("pageshow", function (e) {
 document.addEventListener("turbolinks:load", function () {
   initAll(); 
   hideListingsChrome();
-  addAnnouncementBlock()
+  addAnnouncementBlock();
 });
 document.addEventListener("turbo:load", function () {
   initAll(); 
   hideListingsChrome();
-  addAnnouncementBlock()
+  addAnnouncementBlock();
 });
 
 // Keep background edges aligned on resize
