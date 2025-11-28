@@ -1,3 +1,17 @@
+
+// ===============================
+// CONFIG — reusable base URLs
+// ===============================
+const catalogurl = "https://training-infosharing.sydney.catalog.canvaslms.com";
+const canvasurl = "https://training-infosharing.instructure.com";
+const githubpage = "https://abw-ed.github.io/VCIS-testbed/";
+
+var deCatURL = "/browse/all/deworkforces"
+var dfCatURL = "/browse/all/dffhworkforces"
+var dhCatURL = "/browse/all/dhworkforces"
+var clCatURL = "/browse/all/cltraining"
+
+
 // custom-catalog.js
 (function () {
   // Wait until jQuery is available (Canvas loads it async sometimes)
@@ -34,7 +48,7 @@
       // ===============================
       // 1b. Load the external HTML into the modal
       // ===============================
-      fetch("https://abw-ed.github.io/VCIS-testbed/html/tnc-content.html")
+      fetch(githubpage + "html/tnc-content.html")
         .then((response) => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.text();
@@ -137,10 +151,12 @@ if (!document.getElementById('custom_color_banner')) {
 
 // Define Tile Text, Links and Public Image URL's
 var defineTiles = function () {
-  var tiles = [["Education Workforces", "/browse/all/deworkforces", "https://abw-ed.github.io/VCIS-testbed/assets/img/de-wf-tile.png"],
-  ["Families Fairness and Housing", "/browse/all/dffhworkforces", "https://abw-ed.github.io/VCIS-testbed/assets/img/dffh-wf-tile.png"],
-  ["Health Workforces", "/browse/all/dhworkforces", "https://abw-ed.github.io/VCIS-testbed/assets/img/dh-wf-tile.png"],
-  ["Child Link", "/browse/all/childlink", "https://abw-ed.github.io/VCIS-testbed/assets/img/childlink-logo.png"]];
+  var tiles = [
+    ["Education Workforces", deCatURL, githubpage + "assets/img/de-wf-tile.png"],
+    ["Families Fairness and Housing",dfCatURL, githubpage + "assets/img/dffh-wf-tile.png"],
+    ["Health Workforces", dhCatURL, githubpage + "assets/img/dh-wf-tile.png"],
+    ["Child Link", clCatURL, githubpage + "assets/img/childlink-logo.png"]
+  ];
   return tiles;
 };
 
@@ -192,6 +208,7 @@ function initHeroOnce() {
   if (!$('#custom-feature-container').length) {
     const $feature = $('#feature.feature-region');
 
+    // TODO - really need to make this a HTML element that's sideloaded
     const $container = $(`
     <div id="custom-feature-container" class="container-fluid d-flex">
       <div id="feature-bg-left" class="feature-side left flex-shrink-0"></div>
@@ -315,15 +332,25 @@ function tweakLoginHref() {
 }
 
 // One-time header layout + links (idempotent)
+// ===============================
+// Header nav setup
+// ===============================
 function setupHeaderNavOnce() {
-  if ($("#app-header #user-nav #page-links").length) return; // already done
-  $("#app-header div.col-xs-12.col-sm-6.col-md-7").attr("class", "col-xs-12 col-sm-12 col-md-4");
-  $("#app-header div.col-xs-12.col-sm-6.col-md-5").attr("class", "col-xs-12 col-sm-12 col-md-8");
-  $("#app-header #user-nav").prepend("<div id='page-links'><ul class='piped-list'>\
-    <li><a target='_blank' rel='noreferrer noopener' href='https://training-infosharing.instructure.com'>Canvas Home</a></li>\
-    <li><a href='https://training-infosharing.sydney.catalog.canvaslms.com'>Catalog Home</a></li>\
-    <li><a href='https://training-infosharing.sydney.catalog.canvaslms.com/dashboard'>Catalog Dashboard</a></li>\
-    </ul></div>");
+  if ($("#app-header #user-nav #page-links").length) return;
+
+  $("#app-header div.col-xs-12.col-sm-6.col-md-7")
+    .attr("class", "col-xs-12 col-sm-12 col-md-4");
+
+  $("#app-header div.col-xs-12.col-sm-6.col-md-5")
+    .attr("class", "col-xs-12 col-sm-12 col-md-8");
+
+  $("#app-header #user-nav").prepend(
+    "<div id='page-links'><ul class='piped-list'>\
+     <li><a target='_blank' rel='noreferrer noopener' href='" + canvasurl + "'>Canvas Home</a></li>\
+     <li><a href='" + catalogurl + "'>Catalog Home</a></li>\
+     <li><a href='" + catalogurl + "dashboard'>Catalog Dashboard</a></li>\
+     </ul></div>"
+  );
 }
 
 // Main initializer â€” safe to call many times
@@ -388,7 +415,7 @@ function addAnnouncementBlock() {
   }
 
   // insert the announcement HTML block
-  fetch("https://abw-ed.github.io/VCIS-testbed/html/catalog-announcements.html")
+  fetch(githubpage + "html/catalog-announcements.html")
     .then(r => {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.text();
