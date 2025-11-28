@@ -6,10 +6,10 @@ const catalogurl = "https://training-infosharing.sydney.catalog.canvaslms.com";
 const canvasurl = "https://training-infosharing.instructure.com";
 const githubpage = "https://abw-ed.github.io/VCIS-testbed/";
 
-var deCatURL = "/browse/all/deworkforces"
-var dfCatURL = "/browse/all/dffhworkforces"
-var dhCatURL = "/browse/all/dhworkforces"
-var clCatURL = "/browse/all/cltraining"
+var deCatURL = "/browse/all/deworkforces";
+var dfCatURL = "/browse/all/dffhworkforces";
+var dhCatURL = "/browse/all/dhworkforces";
+var clCatURL = "/browse/all/cltraining";
 
 
 // custom-catalog.js
