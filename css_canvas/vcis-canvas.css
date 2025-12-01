@@ -198,12 +198,12 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 }
 
 /* --- Module Card Colour Tones --- */
-.vcis-tone {
+.de-tone {
 	background-color: rgba(0, 76, 151, .1);
 }
 
 .cl-tone {
-	background-color: rgba(0, 76, 151, .1);
+	background-color: rgba(0, 82, 194, .1);
 }
 
 .cs-tone {
