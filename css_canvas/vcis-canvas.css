@@ -202,6 +202,10 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 	background-color: rgba(0, 76, 151, .1);
 }
 
+.cl-tone {
+	background-color: rgba(0, 76, 151, .1);
+}
+
 .cs-tone {
 	background-color: rgba(255, 158, 27, .1);
 }
