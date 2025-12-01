@@ -214,6 +214,10 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 	background-color: rgba(175, 39, 47, .1);
 }
 
+.djcs-tone {
+	background-color: rgba(0, 177, 64, .1);
+}
+
 /* --- Image Wrapper --- */
 .module-image-wrapper {
   width: 100%;
