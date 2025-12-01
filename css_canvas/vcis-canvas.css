@@ -336,8 +336,9 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 /* module name size */
 .module-name-wrapper {
   font-size: 0.8rem;
+  min-height: 3.5vw;
+  
 }
-
 /* module spacers */
 .mod-spacer-sml {
   font-size: 0.1rem;
