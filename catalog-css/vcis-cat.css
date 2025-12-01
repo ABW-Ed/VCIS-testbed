@@ -123,13 +123,13 @@
 @media (min-width: 992px) {
   #home-page #feature.feature-region,
   #home-page #feature.feature-region #custom-feature-container {
-    height: 220px;
+    height: 100px;
   }
 }
 
 /* announcement header style */
 .announce-line {
-  font-size: 1.8vw;
+  font-size: 1.2rem;
   margin-top: 10px;
   height: unset;
   margin-right: 10px;
