@@ -255,6 +255,11 @@
     display: none;
 }
 
+/* add slight drop shadow to tiles */
+.product-tile {
+    box-shadow: 5px 5px 5px #00000030;
+}
+
 .product-price {
     display: none !important;
 }
