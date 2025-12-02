@@ -13,8 +13,9 @@
 #app-header > div.container {
     padding-bottom:15px;
 }
+/* make blue bar thinner */
 #search-form .search-form-container {
-    padding: 10px 0px;
+    padding: 0px 0px;
     background-color: #041E42;
 }
 /* Scope everything under #home-page only */
