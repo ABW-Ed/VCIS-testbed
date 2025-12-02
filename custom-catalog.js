@@ -174,7 +174,7 @@ function onElementRendered(selector, cb, _attempts) {
 // Helper function to help build HTML for Custom tiles
 var buildTileHTML = function (tile) {
   // mark each as custom so we can detect/prevent duplicates
-  var tileHTML = '<div class="col-md-3 col-sm-6 row custom-home-tile"><a class="product-link" href="'
+  var tileHTML = '<div class="col-md-3 col-sm-6 custom-home-tile"><a class="product-link" href="'
     + tile[1] +
     '"><div class="product-tile course-tile" aria-hidden="true"><div class="product-image"><div class="image-container"><span class="image-wrapper" title="'
     + tile[0] +
@@ -215,7 +215,7 @@ function initHeroOnce() {
       <div id="feature-center" class="flex-grow-1 d-flex flex-column justify-content-center align-items-center text-white">
         <div class="hero-container text-center">
           <h1>Information Sharing and MARAM Online Learning System</h1>
-          <h2>Browse the available courses now</h2>
+          <!-- h2 element Browse the available courses now -->
         </div>
       </div>
       <div id="feature-bg-right" class="feature-side right flex-shrink-0"></div>
@@ -247,13 +247,17 @@ var homePageCustomizations = function () {
   if (window.location.pathname.startsWith("/browse/infosharing")) {
     // Only inject tiles if we haven't already
     if (!$("#listings .custom-home-tile").length) {
-      var tiles = defineTiles();
-      var tilesHTML = "";
+      const tiles = defineTiles();
+      let tilesHTML = "";
+    
       tiles.forEach(function (tile) {
         tilesHTML += buildTileHTML(tile);
       });
+    
       if ($("#listings").length) {
-        $("#listings").append(tilesHTML);
+        // Wrap tiles in a row
+        const rowHTML = `<div class="row">${tilesHTML}</div>`;
+        $("#listings").append(rowHTML);
       }
     }
 
