@@ -145,8 +145,9 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   align-items: center;
 }
 .course-banner img {
-	flex: 1 1 15vh;
-    height: 15vh;
+/*	flex: 1 1 15vh;
+    height: 15vh; */
+	max-height: 15vh;
     width: auto;
   	font-size: 15vh;         /* trick to make 1em ≈ image height */
  	padding: 0 0.2em;        /* roughly 20% of height */
