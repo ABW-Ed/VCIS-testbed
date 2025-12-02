@@ -139,6 +139,38 @@ async function registrationHeaderTweaker() {
   return false;
 }
 
+async function registrationHeaderTweaker2() {
+  if (!ENV?.isEnrollmentForm) return false;
+  if (ENV?.user?.id) return false;
+
+  const dateInfoSpan = document.querySelector(
+    "#registration .RegistrationHeader__DateInfo .css-a0y5mv-text"
+  );
+  if (!dateInfoSpan) return false;
+
+  const wrapper = dateInfoSpan.closest("span");
+  const container = wrapper.parentElement;
+
+  // Only insert once
+  if (!container.querySelector(".outer-accountproceed")) {
+    const outer = document.createElement("span");
+    outer.className = "outer-accountproceed";
+
+    const inner = document.createElement("span");
+    inner.className = "inner-accountproceed";
+    inner.textContent = "If you have an account proceed to Login to Enrol";
+
+    outer.appendChild(inner);
+
+    container.insertBefore(outer, wrapper.nextSibling);
+
+    console.log("✨ Nested additional message inserted.");
+    return true;
+  }
+
+  return false;
+}
+
 /**
  * Initialise a given feature with DOM ready + MutationObserver
  */
@@ -183,7 +215,15 @@ async function initCustomisations() {
   if (ENV.isEnrollmentForm && ENV.user?.id) {
     console.log("📄 Enrollment form detected — enabling header tweaker.");
     initFeature(registrationHeaderTweaker);
+    
   }
+
+    // Branch 4: Enrollment form → registration header tweak
+  if (ENV.isEnrollmentForm && !ENV.user) {
+    console.log("📄 Enrollment form detected — enabling header tweaker.");
+    initFeature(registrationHeaderTweaker2);
+  }
+  
 }
 
 // --------------------
