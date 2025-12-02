@@ -145,10 +145,11 @@
 }
 
 .announce-box {
-	height: unset;
+	margin-left: 10px;
+    margin-right: 10px;
 }
 
-.bg-box.highlight {
+.bghighlight {
     background-color: #dfefff;
 }
 
