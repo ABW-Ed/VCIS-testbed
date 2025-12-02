@@ -218,8 +218,8 @@ async function initCustomisations() {
     
   }
 
-    // Branch 4: Enrollment form → registration header tweak
-  if (ENV.isEnrollmentForm && !ENV.user) {
+    // Branch 4: Enrollment form → registration header tweak - logged out
+  if (ENV.isEnrollmentForm && !ENV.user?id) {
     console.log("📄 Enrollment form detected — enabling header tweaker.");
     initFeature(registrationHeaderTweaker2);
   }
