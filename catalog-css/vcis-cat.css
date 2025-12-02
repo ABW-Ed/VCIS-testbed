@@ -164,7 +164,18 @@
   word-wrap: break-word;
 }
 
+.inner-accountproceed {
+    transition: outline-color 0.2s, outline-offset 0.25s;
+}
 
+ .outer-accountproceed {   
+    transition: outline-color 0.2s, outline-offset 0.25s;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: visible;
+    display: block;
+    overscroll-behavior: auto;
+}
 
 #app-header {
     padding-bottom: 0px !important;
