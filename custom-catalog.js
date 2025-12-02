@@ -10,6 +10,8 @@ var deCatURL = "/browse/all/deworkforces";
 var dfCatURL = "/browse/all/dffhworkforces";
 var dhCatURL = "/browse/all/dhworkforces";
 var clCatURL = "/browse/all/cltraining";
+var csCatURL = "/browse/all/cstraining";
+var djCatURL = "/browse/all/djtraining";
 
 
 // custom-catalog.js
@@ -155,7 +157,10 @@ var defineTiles = function () {
     ["Education Workforces", deCatURL, githubpage + "assets/img/de-wf-tile.png"],
     ["Families Fairness and Housing",dfCatURL, githubpage + "assets/img/dffh-wf-tile.png"],
     ["Health Workforces", dhCatURL, githubpage + "assets/img/dh-wf-tile.png"],
-    ["Child Link", clCatURL, githubpage + "assets/img/childlink-logo.png"]
+    ["Community Service Workforces", csCatURL, githubpage + "assets/img/IS-DFFH-elearn-tile-resize.png"],
+    ["Child Link", clCatURL, githubpage + "assets/img/childlink-logo.png"],
+    ["Justice Training", djCatURL, githubpage + "assets/img/scales-3.png"]
+    
   ];
   return tiles;
 };
