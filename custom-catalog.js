@@ -250,7 +250,7 @@ function initHeroOnce() {
    Tiles + homepage customizations (idempotent)
 ----------------------------------------*/
 var homePageCustomizations = function () {
-  if (window.location.pathname.startsWith("/browse/infosharing")) {
+  if (window.location.pathname.startsWith(vciscaturl)) {
     // Only inject tiles if we haven't already
     if (!$("#listings .custom-home-tile").length) {
       const tiles = defineTiles();
@@ -363,9 +363,9 @@ function setupHeaderNavOnce() {
   );
 }
 
-// Main initializer â€” safe to call many times
+// Main initializer safe to call many times
 function initAll() {
-  if (window.location.pathname.startsWith(vciscaturl) {
+  if (window.location.pathname.startsWith(vciscaturl)) {
     setupHeaderNavOnce();
     homePageCustomizations();
     tweakLoginHref();
