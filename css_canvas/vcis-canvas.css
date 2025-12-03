@@ -260,6 +260,11 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   transform: translateY(-2px);
 }
 
+/* add to resources buttons to adjust size */
+.resource-button {
+min-width: 90%;
+}
+
 /* --- In Progress --- */
 .module-button.in-progress {
   background-color: #f57c00;
