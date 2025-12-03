@@ -7,6 +7,13 @@
     background-color: #041E42;
 } */
 
+/* correct dashboard image ratio issue */
+.DashboardProduct__ImageWrapper { 
+	padding-bottom: 60.72%; 
+	position: relative; 
+	background-color: #e6e6e6; 
+}
+
 #accountDropdown {
     color: #FFFFFF;
 }
