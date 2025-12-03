@@ -5,6 +5,7 @@
 const catalogurl = "https://training-infosharing.sydney.catalog.canvaslms.com";
 const canvasurl = "https://training-infosharing.instructure.com";
 const githubpage = "https://abw-ed.github.io/VCIS-testbed/";
+const vciscaturl = "/browse/infosharing";
 
 var deCatURL = "/browse/all/deworkforces";
 var dfCatURL = "/browse/all/dffhworkforces";
@@ -364,7 +365,7 @@ function setupHeaderNavOnce() {
 
 // Main initializer â€” safe to call many times
 function initAll() {
-  if (window.location.pathname.startsWith("/browse/infosharing")) {
+  if (window.location.pathname.startsWith(vciscaturl) {
     setupHeaderNavOnce();
     homePageCustomizations();
     tweakLoginHref();
@@ -380,7 +381,7 @@ function initAll() {
 // Hide "Listings", "Browse Listings", and "There are no courses..." text
 // Only run if we're on the root path
 function hideListingsChrome() {
-  if (window.location.pathname.endswith !== '/browse/infosharing/') return;
+  if (!window.location.pathname.endsWith(vciscaturl)) return;
   var hideListingsContent = setInterval(function () {
     if ($('#main-heading h1, #listings h2, #listings .col-md-12 .h3').length) {
       clearInterval(hideListingsContent);
