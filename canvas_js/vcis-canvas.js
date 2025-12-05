@@ -186,6 +186,94 @@ class CanvasCustomizer {
   // ----------------------------
   // Style Management  
   // ----------------------------
+
+
+function makeHomeButton() {
+  const left = document.querySelector(".module-sequence-footer-left");
+  const right = document.querySelector(".module-sequence-footer-right");
+  if (!left || !right) return;
+
+  const prevBtn = left.querySelector(".module-sequence-footer-button--previous");
+  if (!prevBtn) return;
+
+  // Deep clone the entire previous-button element
+  const clone = prevBtn.cloneNode(true);
+
+  // -------------------------------
+  // Remove the IconMiniArrowStart SVG (or any SVG inside if needed)
+  // -------------------------------
+  const arrowIcon = clone.querySelector("svg.IconMiniArrowStart");
+  if (arrowIcon) arrowIcon.remove();
+  // (If Canvas ever nests it inside a button wrapper, this still works)
+
+  // -------------------------------
+  // Modify anchor attributes
+  // -------------------------------
+  const link = clone.querySelector("a[aria-label], a[href]");
+  if (link) {
+    // Update aria-label
+    link.setAttribute("aria-label", "Return to Course Page");
+
+    // Update href to the course root level (extract /courses/<id>/ from the existing href)
+    const hrefStr = link.getAttribute("href") || link.href || "";
+    const match = hrefStr.match(/\/courses\/(\d+)\/?/);
+    if (match) {
+      link.setAttribute("href", `/courses/${match[1]}/`);
+    } else if (link.href) {
+      const absMatch = link.href.match(/\/courses\/(\d+)\/?/);
+      if (absMatch) link.setAttribute("href", `/courses/${absMatch[1]}/`);
+    }
+  }
+
+  // -------------------------------
+  // Replace only the visible "Previous" text node
+  // -------------------------------
+  function replaceTextNode(root, searchRegex, replacement) {
+    const walker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          return searchRegex.test(node.nodeValue)
+            ? NodeFilter.FILTER_ACCEPT
+            : NodeFilter.FILTER_REJECT;
+        },
+      },
+      false
+    );
+
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    for (const textNode of nodes) {
+      textNode.nodeValue = textNode.nodeValue.replace(searchRegex, replacement);
+    }
+
+    return nodes.length > 0;
+  }
+
+  const replaced = replaceTextNode(clone, /Previous/i, "Return to Course Page");
+
+  // Fallback to element-level replacement
+  if (!replaced) {
+    const textCandidates = Array.from(clone.querySelectorAll("span, strong, em, b, i, p"));
+    for (let i = textCandidates.length - 1; i >= 0; i--) {
+      const el = textCandidates[i];
+      if (el.textContent.trim() && /Previous/i.test(el.textContent)) {
+        el.textContent = el.textContent.replace(/Previous/i, "Return to Course Page");
+        break;
+      }
+    }
+  }
+
+  // -------------------------------
+  // Insert into right footer
+  // -------------------------------
+  right.appendChild(clone);
+}
+
+  
   async applyStudentStyles() {
     const styleId = "canvas-student-customizations";
 
