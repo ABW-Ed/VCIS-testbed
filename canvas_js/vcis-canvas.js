@@ -6,7 +6,7 @@
 
 // Constructor - this is where we assign regularly used values for later on that cannot be 'programmatically' assigned easily
 class CanvasCustomizer {
-  
+
   constructor() {
     this.config = {
       SCORM_TOOL_ID: "207",
@@ -291,44 +291,44 @@ class CanvasCustomizer {
   }
 
   createHomepageButton() {
-  const left = document.querySelector(".module-sequence-footer-left");
-  const right = document.querySelector(".module-sequence-footer-right");
-  if (!left || !right) return;
+    const left = document.querySelector(".module-sequence-footer-left");
+    const right = document.querySelector(".module-sequence-footer-right");
+    if (!left || !right) return;
 
-  const prevSpan = left.querySelector(".module-sequence-footer-button--previous");
-  if (!prevSpan) return;
+    const prevSpan = left.querySelector(".module-sequence-footer-button--previous");
+    if (!prevSpan) return;
 
-  // Full clone
-  const clone = prevSpan.cloneNode(true);
+    // Full clone
+    const clone = prevSpan.cloneNode(true);
 
-  // Remove previous-arrow SVG
-  const svg = clone.querySelector('svg[name="IconMiniArrowStart"]');
-  if (svg) svg.remove();
+    // Remove previous-arrow SVG
+    const svg = clone.querySelector('svg[name="IconMiniArrowStart"]');
+    if (svg) svg.remove();
 
-  // Update aria-label
-  const link = clone.querySelector("a[aria-label]");
-  if (link) {
-    link.setAttribute("aria-label", "Return to Course Page");
+    // Update aria-label
+    const link = clone.querySelector("a[aria-label]");
+    if (link) {
+      link.setAttribute("aria-label", "Return to Course Page");
 
-    // Rewrite href to course root
-    const href = link.getAttribute("href");
-    const courseMatch = href.match(/\/courses\/\d+/);
-    if (courseMatch) {
-      link.setAttribute("href", courseMatch[0] + "/");
+      // Rewrite href to course root
+      const href = link.getAttribute("href");
+      const courseMatch = href.match(/\/courses\/\d+/);
+      if (courseMatch) {
+        link.setAttribute("href", courseMatch[0] + "/");
+      }
     }
+
+    // Replace visible text
+    const textSpan = clone.querySelector("span");
+    if (textSpan) {
+      textSpan.textContent = "Return to Course Page";
+    }
+
+    // Insert into right side
+    right.prepend(clone);
+
+    return clone;
   }
-
-  // Replace visible text
-  const textSpan = clone.querySelector("span");
-  if (textSpan) {
-    textSpan.textContent = "Return to Course Page";
-  }
-
-  // Insert into right side
-  right.prepend(clone);
-
-  return clone;
-}
 
   // ----------------------------
   // SCORM Handling
@@ -563,8 +563,8 @@ class CanvasCustomizer {
   }
 
   async highlightFirstIncompleteModule() {
-    if (!this.isHomePage()) {
-      console.log("Not on home page, skipping module highlighting");
+    if (!this.isHomePage() && !this.isWikiPage()) {
+      console.log("Not on modules home page, skipping module highlighting");
       return;
     }
 
