@@ -742,7 +742,17 @@ async updateModuleCompletionStatus() {
         return;
       }
 
-      const complete = !!item.completion_requirement?.completed;
+      // Find the parent module for this item
+      const parentModule = modules.find(m => m.id === item.module_id);
+      
+      // Item-level completion (assignments, must view etc)
+      const itemComplete = !!item.completion_requirement?.completed;
+      
+      // Module-level completion (surveys, some quizzes)
+      const moduleComplete = parentModule?.state === "completed" || !!parentModule?.completed_at;
+      
+      // Treat as complete if EITHER is true
+      const complete = itemComplete || moduleComplete;
 
       // Locked = not started
       const locked = !!item.content_details?.locked_for_user;
