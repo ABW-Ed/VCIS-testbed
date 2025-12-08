@@ -107,7 +107,7 @@ class CanvasCustomizer {
       if (this.isQuizPage() || this.isSCORMContext()) {
       console.log("HP button check");
     
-      const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
+      const nextBtn = document.querySelector('aria-label="Next Module Item"]');
     
       if (!nextBtn) {
         await this.createHomeButtons();
