@@ -105,11 +105,16 @@ class CanvasCustomizer {
       }
 
       if (this.isQuizPage() || this.isSCORMContext()) {
-        console.log("HP button check");
+      console.log("HP button check");
+    
+      const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
+    
+      if (!nextBtn) {
         await this.createHomeButtons();
+      } else {
+        console.log("Next button exists — skipping custom home buttons");
       }
-
-
+    }
 
       this.state.isInitialized = true;
       console.log("Canvas customizations initialized successfully");
