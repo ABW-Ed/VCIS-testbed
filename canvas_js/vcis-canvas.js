@@ -963,7 +963,7 @@ class CanvasCustomizer {
             certButton.style.cursor = "pointer";
 
             const catalogUrl = this.catalogBaseUrl;
-            certButton.setAttribute("href", `${catalogUrl}/dashboard`);
+            certButton.setAttribute("href", `${catalogUrl}/dashboard/completed`);
           }
         } else {
           certElement.textContent = "Course Incomplete";
