@@ -7,12 +7,12 @@ const canvasurl = "https://training-infosharing.instructure.com";
 const githubpage = "https://abw-ed.github.io/VCIS-testbed/";
 const vciscaturl = "/browse/infosharing";
 
-var deCatURL = "/browse/all/deworkforces";
-var dfCatURL = "/browse/all/dffhworkforces";
-var dhCatURL = "/browse/all/dhworkforces";
-var clCatURL = "/browse/all/cltraining";
-var csCatURL = "/browse/all/cstraining";
-var djCatURL = "/browse/all/djtraining";
+var deworkforces = "";
+var dffhworkforces = "";
+var dhworkforces = "";
+var childlink = "";
+var csworkforces = "";
+var djcsworkforces = "";
 
 
 // custom-catalog.js
@@ -145,6 +145,45 @@ var djCatURL = "/browse/all/djtraining";
 
 
 // this section is experimental
+function loadCategoryURLs() {
+  fetch("/browse/infosharing/categories.json")
+    .then(r => r.json())
+    .then(data => {
+      if (!data.categories) return;
+
+      data.categories.forEach(cat => {
+        const safeName = cat.name
+          .replace(/\s+/g, "")
+          .replace(/[^a-zA-Z0-9]/g, "");
+        console.log('safename variable:', safeName);
+
+        // Build expected variable name
+        const varName = safeName.charAt(0).toLowerCase() + safeName.slice(1);
+        console.log('varname variable:', varName);
+
+        // Only assign if the variable already exists
+        if (typeof window[varName] !== "undefined") {
+          const url =
+            "/browse/infosharing?category%5Bid%5D=" + cat.id +
+            "&category%5Bname%5D=" + encodeURIComponent(cat.name) +
+            "#";
+          console.log('url variable:', url);
+
+          window[varName] = url;
+        }
+      });
+
+      console.log("Populated category URLs:", {
+        deworkforces,
+        csworkforces,
+        dffhworkforces,
+        dhworkforces,
+        djcsworkforces,
+        childlink
+      });
+    })
+    .catch(err => console.error("Failed to load categories:", err));
+}
 
 //Add color Banner (idempotent)
 if (!document.getElementById('custom_color_banner')) {
@@ -153,15 +192,16 @@ if (!document.getElementById('custom_color_banner')) {
 }
 
 // Define Tile Text, Links and Public Image URL's
-var defineTiles = function () {
+var defineTiles = async function () {
+  await loadCategoryURLs();
   var tiles = [
-    ["Education Workforces", deCatURL, githubpage + "assets/img/de-wf-tile.png"],
-    ["Families Fairness and Housing",dfCatURL, githubpage + "assets/img/dffh-wf-tile.png"],
-    ["Health Workforces", dhCatURL, githubpage + "assets/img/dh-wf-tile.png"],
-    ["Community Service Workforces", csCatURL, githubpage + "assets/img/IS-DFFH-elearn-tile-resize.png"],
-    ["Child Link", clCatURL, githubpage + "assets/img/childlink-logo.png"],
-    ["Justice Training", djCatURL, githubpage + "assets/img/scales-3.png"]
-    
+    ["Education Workforces", deworkforces, githubpage + "assets/img/de-wf-tile.png"],
+    ["Families Fairness and Housing", dffhworkforces, githubpage + "assets/img/dffh-wf-tile.png"],
+    ["Health Workforces", dhworkforces, githubpage + "assets/img/dh-wf-tile.png"],
+    ["Community Service Workforces", csworkforces, githubpage + "assets/img/IS-DFFH-elearn-tile-resize.png"],
+    ["Child Link", childink, githubpage + "assets/img/childlink-logo.png"],
+    ["Justice Training", djcsworkforces, githubpage + "assets/img/scales-3.png"]
+
   ];
   return tiles;
 };
@@ -249,23 +289,29 @@ function initHeroOnce() {
 /* ---------------------------------------
    Tiles + homepage customizations (idempotent)
 ----------------------------------------*/
-var homePageCustomizations = function () {
+
+
+var homePageCustomizations = async function () {
   if (window.location.pathname.startsWith(vciscaturl)) {
     // Only inject tiles if we haven't already
     if (!$("#listings .custom-home-tile").length) {
-      const tiles = defineTiles();
+      
+      // Wait for async tiles to be built
+      const tiles = await defineTiles();
       let tilesHTML = "";
-    
+
       tiles.forEach(function (tile) {
         tilesHTML += buildTileHTML(tile);
       });
-    
+
       if ($("#listings").length) {
         // Wrap tiles in a row
         const rowHTML = `<div class="row">${tilesHTML}</div>`;
         $("#listings").append(rowHTML);
       }
     }
+
+
 
     // cache-safe hero
     initHeroOnce();
@@ -462,12 +508,12 @@ window.addEventListener("pageshow", function (e) {
 
 // SPA navigations (if used)
 document.addEventListener("turbolinks:load", function () {
-  initAll(); 
+  initAll();
   hideListingsChrome();
   addAnnouncementBlock();
 });
 document.addEventListener("turbo:load", function () {
-  initAll(); 
+  initAll();
   hideListingsChrome();
   addAnnouncementBlock();
 });
