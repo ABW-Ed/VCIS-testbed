@@ -902,7 +902,7 @@ class CanvasCustomizer {
         let classname = "modcomp-notstart";
 
         if (complete) {
-          statusText = "Status: Completed ✅";
+          statusText = "Status: Completed";
           classname = "modcomp-complete";
 
           const card = el.closest(".module-card");
