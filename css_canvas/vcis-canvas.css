@@ -263,6 +263,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 /* add to resources buttons to adjust size */
 .resource-button {
   min-width: 90%;
+  min-height: 20%;
   align-content: center;
 }
 
