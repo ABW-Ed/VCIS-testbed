@@ -413,7 +413,7 @@ function setupHeaderNavOnce() {
 function initAll() {
   if (window.location.pathname.startsWith(vciscaturl)) {
     setupHeaderNavOnce();
-    homePageCustomizations();
+    async homePageCustomizations();
     tweakLoginHref();
     changeCredits();
 
