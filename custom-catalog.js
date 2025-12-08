@@ -146,7 +146,7 @@ var djcsworkforces = "";
 
 // this section is experimental
 function loadCategoryURLs() {
-  fetch("/browse/infosharing/categories.json")
+  return fetch("/browse/infosharing/categories.json")
     .then(r => r.json())
     .then(data => {
       if (!data.categories) return;
@@ -194,6 +194,7 @@ if (!document.getElementById('custom_color_banner')) {
 // Define Tile Text, Links and Public Image URL's
 var defineTiles = async function () {
   await loadCategoryURLs();
+  console.log("deworkforces URL:", deworkforces);
   var tiles = [
     ["Education Workforces", deworkforces, githubpage + "assets/img/de-wf-tile.png"],
     ["Families Fairness and Housing", dffhworkforces, githubpage + "assets/img/dffh-wf-tile.png"],
