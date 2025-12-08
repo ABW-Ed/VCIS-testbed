@@ -138,6 +138,10 @@ class CanvasCustomizer {
     return !!window.ENV?.WIKI_PAGES_PATH;
   }
 
+  isQuizPage() {
+    return window.ENV?.active_context_tab === "quizzes";
+  }
+
   isMRMod() {
     return ["217", "224"].includes(window.ENV?.COURSE_ID);
   }
@@ -211,6 +215,7 @@ class CanvasCustomizer {
     this.hideAttemptBlock();
     this.customizeHelpTray();
     this.updateDashboardLink();
+    this.createHomeButtons();
   }
 
   updateDashboardLink() {
@@ -328,6 +333,85 @@ class CanvasCustomizer {
     right.prepend(clone);
 
     return clone;
+  }
+
+  async createHomeButtons() {
+    try {
+      // Wait for ENV to stabilize
+      await this.waitFor(
+        () => window.ENV?.current_user_roles,
+        () => { },
+        this.config.TIMEOUTS.SCORM_SETUP
+      );
+
+      // Only run in SCORM or Quiz
+      if (!this.isSCORMContext() && !this.isQuizPage()) {
+        return;
+      }
+
+      console.log("SCORM/Quiz context confirmed — checking next button state");
+
+      // If the real Next button exists, do nothing
+      const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
+      if (nextBtn) {
+        console.log("Next button exists — skipping homepage button creation");
+        return;
+      }
+
+      // Grab course ID
+      const courseId = window.ENV?.COURSE_ID;
+      if (!courseId) {
+        console.warn("No course ID found — cannot check module completion.");
+        return;
+      }
+
+      // Fetch modules + items
+      const res = await fetch(
+        `/api/v1/courses/${courseId}/modules?include[]=items&include[]=content_details`,
+        {
+          credentials: "include",
+          headers: { "Accept": "application/json" }
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Failed to fetch modules:", res.status);
+        return;
+      }
+
+      const modules = await res.json();
+
+      if (!Array.isArray(modules)) {
+        console.warn("Modules response was not an array.");
+        return;
+      }
+
+      // Extract ONLY required items
+      const requiredItems = modules
+        .flatMap(m => m.items || [])
+        .filter(item => !!item.completion_requirement); // only required ones
+
+      if (!requiredItems.length) {
+        console.log("No required modules found — treating as complete");
+        this.createHomepageButton();
+        return;
+      }
+
+      // See if any required items are incomplete
+      const hasIncompleteRequired = requiredItems.some(item => {
+        return item.completion_requirement.completed === false;
+      });
+
+      if (!hasIncompleteRequired) {
+        console.log("All required modules completed — creating homepage button");
+        this.createHomepageButton();
+      } else {
+        console.log("Required modules still incomplete — no action taken");
+      }
+
+    } catch (err) {
+      console.warn("createHomeButtons failed:", err.message);
+    }
   }
 
   // ----------------------------
@@ -679,171 +763,171 @@ class CanvasCustomizer {
   // if one is found, it will update the element
   // this is largely used to show completion for eLearn modules
   // ----------------------------
-async updateModuleCompletionStatus() {
-  try {
-    const courseId = window.ENV?.COURSE_ID;
-    if (!courseId) {
-      console.warn("No course ID found — cannot update module completions.");
-      return;
-    }
-
-    // Collect ModComp and ModButton elements
-    const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
-    const modButtons = Array.from(document.querySelectorAll("[id^='ModButton']"));
-
-    if (modElements.length === 0) {
-      console.log("No ModComp elements found on this page.");
-      return;
-    }
-
-    // ⬇️ Fetch Modules + Items + completion info
-    const res = await fetch(
-      `/api/v1/courses/${courseId}/modules?include[]=items&include[]=content_details`,
-      {
-        credentials: "include",
-        headers: { "Accept": "application/json" }
-      }
-    );
-
-    if (!res.ok) {
-      console.error("Failed to fetch modules:", res.status);
-      return;
-    }
-
-    const modules = await res.json();
-    if (!modules || !modules.length) {
-      console.warn("No modules returned.");
-      return;
-    }
-
-    // 🔧 Flatten all module items into a single list
-    const allItems = modules.flatMap(mod => mod.items || []);
-
-    let allComplete = true;
-
-    // Loop through each ModComp element and match by index
-    modElements.forEach((el, index) => {
-      const item = allItems[index];
-      const button = modButtons[index];
-
-      const isOptional = el.dataset.req === "no";
-
-      if (isOptional) {
-        console.log(`Skipping optional module: ${el.id}`);
-      }
-
-      if (!item) {
-        el.textContent = "Completion (no module item)";
-        el.classList.add("modcomp-noassign");
-
-        if (button) button.classList.remove("completed", "in-progress");
-
-        if (!isOptional) allComplete = false;
+  async updateModuleCompletionStatus() {
+    try {
+      const courseId = window.ENV?.COURSE_ID;
+      if (!courseId) {
+        console.warn("No course ID found — cannot update module completions.");
         return;
       }
 
-      // Find the parent module for this item
-      const parentModule = modules.find(m => m.id === item.module_id);
-      
-      // Item-level completion (assignments, must view etc)
-      const itemComplete = !!item.completion_requirement?.completed;
-      
-      // Module-level completion (surveys, some quizzes)
-      const moduleComplete = parentModule?.state === "completed" || !!parentModule?.completed_at;
-      
-      // Treat as complete if EITHER is true
-      const complete = itemComplete || moduleComplete;
+      // Collect ModComp and ModButton elements
+      const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
+      const modButtons = Array.from(document.querySelectorAll("[id^='ModButton']"));
 
-      // Locked = not started
-      const locked = !!item.content_details?.locked_for_user;
-
-      let statusText = "Status: Not started";
-      let classname = "modcomp-notstart";
-
-      if (complete) {
-        statusText = "Status: Completed ✅";
-        classname = "modcomp-complete";
-
-        const card = el.closest(".module-card");
-        if (card) {
-          const cardButton = card.querySelector(".module-button");
-          if (cardButton) cardButton.classList.add("completed");
-        }
-
-      } else if (!locked) {
-        // Item visible/unlocked but not complete
-        statusText = "Status: Not Completed";
-        classname = "modcomp-inprogress";
-      } else {
-        if (!isOptional) allComplete = false;
+      if (modElements.length === 0) {
+        console.log("No ModComp elements found on this page.");
+        return;
       }
 
-      el.textContent = statusText;
-      el.classList.add(classname);
+      // ⬇️ Fetch Modules + Items + completion info
+      const res = await fetch(
+        `/api/v1/courses/${courseId}/modules?include[]=items&include[]=content_details`,
+        {
+          credentials: "include",
+          headers: { "Accept": "application/json" }
+        }
+      );
 
-      if (button) {
-        button.classList.remove(
-          "completed",
-          "in-progress",
-          "modcomp-complete",
-          "modcomp-inprogress",
-          "modcomp-notstart",
-          "modcomp-noassign"
-        );
+      if (!res.ok) {
+        console.error("Failed to fetch modules:", res.status);
+        return;
+      }
+
+      const modules = await res.json();
+      if (!modules || !modules.length) {
+        console.warn("No modules returned.");
+        return;
+      }
+
+      // 🔧 Flatten all module items into a single list
+      const allItems = modules.flatMap(mod => mod.items || []);
+
+      let allComplete = true;
+
+      // Loop through each ModComp element and match by index
+      modElements.forEach((el, index) => {
+        const item = allItems[index];
+        const button = modButtons[index];
+
+        const isOptional = el.dataset.req === "no";
+
+        if (isOptional) {
+          console.log(`Skipping optional module: ${el.id}`);
+        }
+
+        if (!item) {
+          el.textContent = "Completion (no module item)";
+          el.classList.add("modcomp-noassign");
+
+          if (button) button.classList.remove("completed", "in-progress");
+
+          if (!isOptional) allComplete = false;
+          return;
+        }
+
+        // Find the parent module for this item
+        const parentModule = modules.find(m => m.id === item.module_id);
+
+        // Item-level completion (assignments, must view etc)
+        const itemComplete = !!item.completion_requirement?.completed;
+
+        // Module-level completion (surveys, some quizzes)
+        const moduleComplete = parentModule?.state === "completed" || !!parentModule?.completed_at;
+
+        // Treat as complete if EITHER is true
+        const complete = itemComplete || moduleComplete;
+
+        // Locked = not started
+        const locked = !!item.content_details?.locked_for_user;
+
+        let statusText = "Status: Not started";
+        let classname = "modcomp-notstart";
 
         if (complete) {
-          button.classList.add("completed", "modcomp-complete");
+          statusText = "Status: Completed ✅";
+          classname = "modcomp-complete";
+
+          const card = el.closest(".module-card");
+          if (card) {
+            const cardButton = card.querySelector(".module-button");
+            if (cardButton) cardButton.classList.add("completed");
+          }
+
         } else if (!locked) {
-          button.classList.add("in-progress", "modcomp-inprogress");
+          // Item visible/unlocked but not complete
+          statusText = "Status: Not Completed";
+          classname = "modcomp-inprogress";
+        } else {
+          if (!isOptional) allComplete = false;
+        }
+
+        el.textContent = statusText;
+        el.classList.add(classname);
+
+        if (button) {
+          button.classList.remove(
+            "completed",
+            "in-progress",
+            "modcomp-complete",
+            "modcomp-inprogress",
+            "modcomp-notstart",
+            "modcomp-noassign"
+          );
+
+          if (complete) {
+            button.classList.add("completed", "modcomp-complete");
+          } else if (!locked) {
+            button.classList.add("in-progress", "modcomp-inprogress");
+          }
+        }
+
+        if (!complete && !isOptional) {
+          allComplete = false;
+        }
+      });
+
+      // ----------------------------
+      //  Certificate logic (unchanged)
+      // ----------------------------
+      const certElement = document.querySelector("[id^='CompCertificate']");
+      const certButton = document.querySelector("[id^='CompCertButton']");
+
+      if (certElement) {
+        if (allComplete) {
+          certElement.textContent = "Certificate Available";
+          certElement.classList.remove("cert-unavail");
+          certElement.classList.add("cert-avail");
+
+          if (certButton) {
+            certButton.classList.remove("in-progress");
+            certButton.classList.add("completed");
+            certButton.style.pointerEvents = "auto";
+            certButton.style.cursor = "pointer";
+
+            const catalogUrl = this.catalogBaseUrl;
+            certButton.setAttribute("href", `${catalogUrl}/dashboard`);
+          }
+        } else {
+          certElement.textContent = "Course Incomplete";
+          certElement.classList.add("cert-unavail");
+
+          if (certButton) {
+            certButton.classList.remove("completed");
+            certButton.classList.add("in-progress");
+            certButton.style.pointerEvents = "none";
+            certButton.style.cursor = "default";
+            certButton.removeAttribute("href");
+          }
         }
       }
 
-      if (!complete && !isOptional) {
-        allComplete = false;
-      }
-    });
+      console.log("Module completion statuses updated.");
 
-    // ----------------------------
-    //  Certificate logic (unchanged)
-    // ----------------------------
-    const certElement = document.querySelector("[id^='CompCertificate']");
-    const certButton = document.querySelector("[id^='CompCertButton']");
-
-    if (certElement) {
-      if (allComplete) {
-        certElement.textContent = "Certificate Available";
-        certElement.classList.remove("cert-unavail");
-        certElement.classList.add("cert-avail");
-
-        if (certButton) {
-          certButton.classList.remove("in-progress");
-          certButton.classList.add("completed");
-          certButton.style.pointerEvents = "auto";
-          certButton.style.cursor = "pointer";
-
-          const catalogUrl = this.catalogBaseUrl;
-          certButton.setAttribute("href", `${catalogUrl}/dashboard`);
-        }
-      } else {
-        certElement.textContent = "Course Incomplete";
-        certElement.classList.add("cert-unavail");
-
-        if (certButton) {
-          certButton.classList.remove("completed");
-          certButton.classList.add("in-progress");
-          certButton.style.pointerEvents = "none";
-          certButton.style.cursor = "default";
-          certButton.removeAttribute("href");
-        }
-      }
+    } catch (error) {
+      console.error("Error updating module completion status:", error);
     }
-
-    console.log("Module completion statuses updated.");
-
-  } catch (error) {
-    console.error("Error updating module completion status:", error);
   }
-}
   // ----------------------------
   // Cleanup
   // ----------------------------
