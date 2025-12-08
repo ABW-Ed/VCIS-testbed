@@ -200,7 +200,7 @@ var defineTiles = async function () {
     ["Families Fairness and Housing", dffhworkforces, githubpage + "assets/img/dffh-wf-tile.png"],
     ["Health Workforces", dhworkforces, githubpage + "assets/img/dh-wf-tile.png"],
     ["Community Service Workforces", csworkforces, githubpage + "assets/img/IS-DFFH-elearn-tile-resize.png"],
-    ["Child Link", childink, githubpage + "assets/img/childlink-logo.png"],
+    ["Child Link", childlink, githubpage + "assets/img/childlink-logo.png"],
     ["Justice Training", djcsworkforces, githubpage + "assets/img/scales-3.png"]
 
   ];
