@@ -215,7 +215,7 @@ class CanvasCustomizer {
     this.hideAttemptBlock();
     this.customizeHelpTray();
     this.updateDashboardLink();
-    this.createHomeButtons();
+    // this.createHomeButtons();
   }
 
   updateDashboardLink() {
