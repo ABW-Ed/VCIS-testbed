@@ -94,6 +94,7 @@ class CanvasCustomizer {
         this.applyStudentStyles(),
         this.setupUICustomizations(),
         this.setupSCORMHandling()
+        
       ]);
 
       await this.highlightFirstIncompleteModule();
@@ -101,6 +102,11 @@ class CanvasCustomizer {
       if (this.isWikiPage()) {
         console.log("Found wiki page");
         await this.updateModuleCompletionStatus();
+      }
+
+      if (this.isQuizPage() || this.isSCORMContext()) {
+        console.log("HP button check");
+        await this.createHomeButtons();
       }
 
 
