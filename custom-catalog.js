@@ -515,6 +515,16 @@ function addAnnouncementBlock() {
 
 // loader code
 
+function showVCISCatalogLoader() {
+  if (document.getElementById("catalog-loader")) return;
+
+  const loader = document.createElement("div");
+  loader.id = "catalog-loader";
+  loader.innerHTML = `<div class="spinner"></div>`;
+
+  document.body.appendChild(loader);
+}
+
 function hideVCISCatalogLoader() {
   const loader = document.getElementById("catalog-loader");
   if (!loader) return;
