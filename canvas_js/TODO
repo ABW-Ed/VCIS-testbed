@@ -1,0 +1,6 @@
+Still need to correct issue with Canvas pages not adding a 'homepage' button when there is one module in the course. This seems to happen in courses that have a single requirement.
+
+example courses are
+
+DJCS FVISS 
+SHRFV Antenatal
