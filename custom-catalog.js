@@ -297,8 +297,9 @@ var homePageCustomizations = async function () {
     // Only inject tiles if we haven't already
     if (!$("#listings .custom-home-tile").length) {
 
-      // get rid of existing listings for front page
+      // get rid of existing listings for front page including pagination
       $('#listings [role="listitem"]').remove();
+      $('nav[data-automation="Pagination"]').remove();
       
       // Wait for async tiles to be built
       const tiles = await defineTiles();
