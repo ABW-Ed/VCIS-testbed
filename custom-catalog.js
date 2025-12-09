@@ -512,15 +512,40 @@ function addAnnouncementBlock() {
   }
 }
 
-// ---- Boot sequence ----
 
-// Run on normal load; wait for #feature if needed for hero sizing
+// loader code
+
+function showVCISCatalogLoader() {
+  if (document.getElementById("catalog-loader")) return;
+
+  const loader = document.createElement("div");
+  loader.id = "catalog-loader";
+  loader.innerHTML = `<div class="spinner"></div>`;
+
+  document.body.appendChild(loader);
+}
+
+function hideVCISCatalogLoader() {
+  const loader = document.getElementById("catalog-loader");
+  if (loader) loader.remove();
+}
+
+
+// ---- Boot sequence with loader ----
+
 $(function () {
+  showVCISCatalogLoader();   // blur and spinner on
+
   (function waitForFeature(attempts) {
     if ($("#feature").length || attempts > 60) {
+
       initAll();
       hideListingsChrome();
       addAnnouncementBlock();
+
+      // ✅ Let DOM settle a beat, then remove loader
+      setTimeout(hideVCISCatalogLoader, 150);
+
       return;
     }
     setTimeout(function () { waitForFeature(attempts + 1); }, 250);
@@ -530,25 +555,38 @@ $(function () {
 // Re-run on bfcache restore
 window.addEventListener("pageshow", function (e) {
   if (e.persisted) {
+    showVCISCatalogLoader();
+
     initAll();
     hideListingsChrome();
     addAnnouncementBlock();
+
+    setTimeout(hideVCISCatalogLoader, 150);
   }
 });
 
-// SPA navigations (if used)
+// SPA navigations
 document.addEventListener("turbolinks:load", function () {
+  showVCISCatalogLoader();
+
   initAll();
   hideListingsChrome();
   addAnnouncementBlock();
-});
-document.addEventListener("turbo:load", function () {
-  initAll();
-  hideListingsChrome();
-  addAnnouncementBlock();
+
+  setTimeout(hideVCISCatalogLoader, 150);
 });
 
-// Keep background edges aligned on resize
+document.addEventListener("turbo:load", function () {
+  showVCISCatalogLoader();
+
+  initAll();
+  hideListingsChrome();
+  addAnnouncementBlock();
+
+  setTimeout(hideVCISCatalogLoader, 150);
+});
+
+// Keep background aligned on resize
 window.addEventListener("resize", function () {
   requestAnimationFrame(initHeroOnce);
 });
