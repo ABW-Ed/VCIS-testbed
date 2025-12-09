@@ -541,7 +541,7 @@ function hideVCISCatalogLoader() {
 // ---- Boot sequence with loader ----
 
 $(function () {
-  showVCISCatalogLoader();   // blur and spinner on
+  // showVCISCatalogLoader();   // blur and spinner on
 
   (function waitForFeature(attempts) {
     if ($("#feature").length || attempts > 60) {
@@ -551,7 +551,7 @@ $(function () {
       addAnnouncementBlock();
 
       // ✅ Let DOM settle a beat, then remove loader
-      setTimeout(hideVCISCatalogLoader, 150);
+    //  setTimeout(hideVCISCatalogLoader, 150);
 
       return;
     }
@@ -562,33 +562,33 @@ $(function () {
 // Re-run on bfcache restore
 window.addEventListener("pageshow", function (e) {
   if (e.persisted) {
-    showVCISCatalogLoader();
+    // showVCISCatalogLoader();
 
     initAll();
     hideListingsChrome();
     addAnnouncementBlock();
 
-    setTimeout(hideVCISCatalogLoader, 150);
+   // setTimeout(hideVCISCatalogLoader, 150);
   }
 });
 
 // SPA navigations
 document.addEventListener("turbolinks:load", function () {
-  showVCISCatalogLoader();
+  // showVCISCatalogLoader();
 
   initAll();
   hideListingsChrome();
   addAnnouncementBlock();
 
-  setTimeout(hideVCISCatalogLoader, 150);
+ // setTimeout(hideVCISCatalogLoader, 150);
 });
 
 document.addEventListener("turbo:load", function () {
-  showVCISCatalogLoader();
+  // showVCISCatalogLoader();
 
   initAll();
   hideListingsChrome();
-  addAnnouncementBlock();
+ // addAnnouncementBlock();
 
   setTimeout(hideVCISCatalogLoader, 150);
 });
