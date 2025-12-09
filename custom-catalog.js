@@ -516,14 +516,14 @@ function addAnnouncementBlock() {
 // loader code
 
 function showVCISCatalogLoader() {
-  if (document.getElementById("catalog-loader")) return;
+  const loader = document.getElementById('catalog-loader');
 
-  const loader = document.createElement("div");
-  loader.id = "catalog-loader";
-  loader.innerHTML = `<div class="spinner"></div>`;
-
-  document.body.appendChild(loader);
+  setTimeout(() => {
+    loader.classList.add('fade-out');
+    setTimeout(() => loader.remove(), 400);
+  }, 2200); // match animation duration
 }
+
 
 function hideVCISCatalogLoader() {
   const loader = document.getElementById("catalog-loader");
@@ -541,7 +541,7 @@ function hideVCISCatalogLoader() {
 // ---- Boot sequence with loader ----
 
 $(function () {
-  // showVCISCatalogLoader();   // blur and spinner on
+  showVCISCatalogLoader();   // blur and spinner on
 
   (function waitForFeature(attempts) {
     if ($("#feature").length || attempts > 60) {
@@ -574,7 +574,7 @@ window.addEventListener("pageshow", function (e) {
 
 // SPA navigations
 document.addEventListener("turbolinks:load", function () {
-  // showVCISCatalogLoader();
+  showVCISCatalogLoader();
 
   initAll();
   hideListingsChrome();
@@ -588,9 +588,9 @@ document.addEventListener("turbo:load", function () {
 
   initAll();
   hideListingsChrome();
- // addAnnouncementBlock();
+  addAnnouncementBlock();
 
-  setTimeout(hideVCISCatalogLoader, 150);
+  // setTimeout(hideVCISCatalogLoader, 150);
 });
 
 // Keep background aligned on resize
