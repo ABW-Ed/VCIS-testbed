@@ -293,7 +293,9 @@ function initHeroOnce() {
 
 
 var homePageCustomizations = async function () {
-  if (window.location.pathname.startsWith(vciscaturl)) {
+  
+  if (window.location.pathname.startsWith(vciscaturl) &&
+  !window.location.search.includes("category[")) {
     // Only inject tiles if we haven't already
     if (!$("#listings .custom-home-tile").length) {
 
