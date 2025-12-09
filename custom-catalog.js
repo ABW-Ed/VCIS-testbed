@@ -470,36 +470,48 @@ function hideListingsChrome() {
 }
 
 function addAnnouncementBlock() {
-    if (
+  if (
     window.location.pathname.startsWith(vciscaturl) &&
     !window.location.search.toLowerCase().includes("category%5b") &&
     !window.location.search.includes("category[")
   ) {
-  const container = document.querySelector("#main-heading");
-  if (!container) return;
 
-  // delete 'listings'
-  const h1 = container.querySelector("h1");
-  if (h1) h1.remove();
+    // ✅ Prevent double-loading
+    if (document.querySelector("#announcement-block")) {
+      return;
+    }
 
-  // replace 'browse listings' with...
-  const listingsH2 = document.querySelector("#listings h2");
-  if (listingsH2) {
-    listingsH2.textContent = "Choose your category";
+    const container = document.querySelector("#main-heading");
+    if (!container) return;
+
+    // delete 'listings'
+    const h1 = container.querySelector("h1");
+    if (h1) h1.remove();
+
+    // replace 'browse listings' with...
+    const listingsH2 = document.querySelector("#listings h2");
+    if (listingsH2) {
+      listingsH2.textContent = "Choose your category";
+    }
+
+    // insert the announcement HTML block
+    fetch(githubpage + "html/catalog-announcements.html")
+      .then(r => {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(html => {
+
+        // ✅ Double-check before inserting (race condition safe)
+        if (!document.querySelector("#announcement-block")) {
+          container.insertAdjacentHTML("afterbegin", html);
+        }
+
+      })
+      .catch(err => console.error("Fetch error:", err));
   }
-
-  // insert the announcement HTML block
-  fetch(githubpage + "html/catalog-announcements.html")
-    .then(r => {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.text();
-    })
-    .then(html => {
-      container.insertAdjacentHTML("afterbegin", html);
-    })
-    .catch(err => console.error("Fetch error:", err));
- }
 }
+
 // ---- Boot sequence ----
 
 // Run on normal load; wait for #feature if needed for hero sizing
