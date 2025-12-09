@@ -120,6 +120,11 @@
   margin: 0;
 }
 
+/* make header work more better */
+#home-page #feature.feature-region #custom-feature-container .text-center h1 {
+  text-align: center;
+}
+
 #home-page #feature.feature-region #custom-feature-container h2 {
   font-size: 1.1em;
   text-align: left;
