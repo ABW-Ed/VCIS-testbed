@@ -261,7 +261,7 @@ function initHeroOnce() {
       <div id="feature-bg-left" class="feature-side left flex-shrink-0"></div>
       <div id="feature-center" class="flex-grow-1 d-flex flex-column justify-content-center align-items-center text-white">
         <div class="hero-container text-center">
-          <h1>Information Sharing and MARAM Online Learning System</h1>
+          <h1 class="text-center">Information Sharing and MARAM Online Learning System</h1>
           <!-- h2 element Browse the available courses now -->
         </div>
       </div>
