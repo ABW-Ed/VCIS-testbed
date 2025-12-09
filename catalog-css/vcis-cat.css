@@ -409,6 +409,34 @@
 }
 
 
+/* Loader overlay */
+#catalog-loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Throbber */
+#catalog-loader .spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #ccc;
+  border-top-color: #0074d9;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
 /* this mod seems to break the admin menu - let's remove it */
 /* div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a,
 div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
