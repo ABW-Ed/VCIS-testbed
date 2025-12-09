@@ -296,6 +296,9 @@ var homePageCustomizations = async function () {
   if (window.location.pathname.startsWith(vciscaturl)) {
     // Only inject tiles if we haven't already
     if (!$("#listings .custom-home-tile").length) {
+
+      // get rid of existing listings for front page
+      $('#listings [role="listitem"]').remove();
       
       // Wait for async tiles to be built
       const tiles = await defineTiles();
