@@ -466,6 +466,11 @@ function hideListingsChrome() {
 }
 
 function addAnnouncementBlock() {
+    if (
+    window.location.pathname.startsWith(vciscaturl) &&
+    !window.location.search.toLowerCase().includes("category%5b") &&
+    !window.location.search.includes("category[")
+  ) {
   const container = document.querySelector("#main-heading");
   if (!container) return;
 
@@ -489,8 +494,8 @@ function addAnnouncementBlock() {
       container.insertAdjacentHTML("afterbegin", html);
     })
     .catch(err => console.error("Fetch error:", err));
+ }
 }
-
 // ---- Boot sequence ----
 
 // Run on normal load; wait for #feature if needed for hero sizing
