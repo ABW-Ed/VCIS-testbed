@@ -515,14 +515,16 @@ function addAnnouncementBlock() {
 
 // loader code
 
-function showVCISCatalogLoader() {
-  if (document.getElementById("catalog-loader")) return;
+function hideCatalogLoader() {
+  const loader = document.getElementById("catalog-loader");
+  if (!loader) return;
 
-  const loader = document.createElement("div");
-  loader.id = "catalog-loader";
-  loader.innerHTML = `<div class="spinner"></div>`;
+  loader.classList.add("fade-out");
 
-  document.body.appendChild(loader);
+  // loader goes away after fade completes
+  setTimeout(() => {
+    if (loader) loader.remove();
+  }, 400);
 }
 
 function hideVCISCatalogLoader() {
