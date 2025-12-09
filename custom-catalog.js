@@ -516,13 +516,32 @@ function addAnnouncementBlock() {
 // loader code
 
 function showVCISCatalogLoader() {
-  const loader = document.getElementById('catalog-loader');
+ // Don't double-create
+  if (document.getElementById("catalog-loader")) return;
 
+  // Create loader
+  const loader = document.createElement("div");
+  loader.id = "catalog-loader";
+
+  // Insert your SVG logo instead of spinner
+  loader.innerHTML = `
+    <img src="/path/to/your-logo.svg" class="batman-logo" alt="Loading">
+  `;
+
+  document.body.appendChild(loader);
+
+  // Start fade-out after animation completes
   setTimeout(() => {
-    loader.classList.add('fade-out');
-    setTimeout(() => loader.remove(), 400);
-  }, 2200); // match animation duration
+    loader.classList.add("fade-out");
+
+    // Remove from DOM after fade
+    setTimeout(() => {
+      loader.remove();
+    }, 400);
+
+  }, 2200); // match your CSS animation duration
 }
+
 
 
 function hideVCISCatalogLoader() {
