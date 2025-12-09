@@ -410,22 +410,7 @@
 
 
 /* Loader overlay */
-#catalog-loader {
-  position: fixed;
-  inset: 0;
-  /* background: rgba(255, 255, 255, 0.6); */
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 99999;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Fade animation */
-  opacity: 1;
-  transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
-}
 
 /* When fading out */
 #catalog-loader.fade-out {
@@ -447,11 +432,7 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-/* this mod seems to break the admin menu - let's remove it */
-/* div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a,
-div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
-  color: white !important;
-} */
+
 
 /* joke loader */
 
@@ -459,31 +440,24 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   position: fixed;
   inset: 0;
   background: white;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 99999;
-
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 1;
+  transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
 }
 
 /* The animated logo */
-#catalog-loader .batman-logo {
+#catalog-loader .vicman-logo {
   width: 120px;
   opacity: 0;
   transform-origin: center;
   animation: vicman-logo 2.2s ease-in-out forwards;
 }
 
-#catalog-loader::before {
-  content: "";
-  width: 120px;
-  height: 120px;
-  background-image: url("https://abw-ed.github.io/VCIS-testbed/assets/svg/Victoria_State_Government_logo.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  animation: batman-logo 2.2s ease-in-out forwards;
-}
 
 /* Batman 60s style flip-and-burst animation */
 @keyframes vicman-logo {
@@ -511,6 +485,12 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   }
 }
 
+
+/* this mod seems to break the admin menu - let's remove it */
+/* div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a,
+div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
+  color: white !important;
+} */
 
 /* existing changes */
 
