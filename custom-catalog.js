@@ -231,7 +231,7 @@ var buildTileHTML = function (tile) {
     + tile[0] +
     ' Courses" class="product-title">'
     + tile[0] +
-    '</h3></div><div class="product-footer"><div class="learn-more"><div class="product-dates home-page-tile-browse-text" style="padding-top: 10px;overflow: visible !important;">Browse Courses Now</div></div></div></div><div class="sr-only"><div>Browse '
+    '</h3></div><div class="product-footer"><div class="learn-more"><div class="product-dates home-page-tile-browse-text" style="padding-top: 10px;overflow: visible !important;">Browse courses now</div></div></div></div><div class="sr-only"><div>Browse '
     + tile[0] +
     '</div><div></div></div></a></div>';
   return tileHTML;
