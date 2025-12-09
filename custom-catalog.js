@@ -293,6 +293,11 @@ function initHeroOnce() {
 
 
 var homePageCustomizations = async function () {
+
+    // create cache-safe hero banner before injecting tiles
+  
+    initHeroOnce();
+  
   if (
     window.location.pathname.startsWith(vciscaturl) &&
     !window.location.search.toLowerCase().includes("category%5b") &&
@@ -322,8 +327,7 @@ var homePageCustomizations = async function () {
 
 
 
-    // cache-safe hero
-    initHeroOnce();
+
 
     // Hides No Courses found text
     var hideNoCoursesText = setInterval(function () {
