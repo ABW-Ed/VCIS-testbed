@@ -474,6 +474,17 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   animation: vicman-logo 2.2s ease-in-out forwards;
 }
 
+#catalog-loader::before {
+  content: "";
+  width: 120px;
+  height: 120px;
+  background-image: url("https://abw-ed.github.io/VCIS-testbed/assets/svg/your-logo.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: batman-logo 2.2s ease-in-out forwards;
+}
+
 /* Batman 60s style flip-and-burst animation */
 @keyframes vicman-logo {
   0% {
