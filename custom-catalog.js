@@ -515,7 +515,7 @@ function addAnnouncementBlock() {
 
 // loader code
 
-function hideCatalogLoader() {
+function hideVCISCatalogLoader() {
   const loader = document.getElementById("catalog-loader");
   if (!loader) return;
 
@@ -525,11 +525,6 @@ function hideCatalogLoader() {
   setTimeout(() => {
     if (loader) loader.remove();
   }, 400);
-}
-
-function hideVCISCatalogLoader() {
-  const loader = document.getElementById("catalog-loader");
-  if (loader) loader.remove();
 }
 
 
