@@ -145,6 +145,18 @@ var djcsworkforces = "";
 
 
 // this section is experimental
+
+function isCatalogFrontPage() {
+  const path = window.location.pathname;
+  const search = window.location.search.toLowerCase();
+
+  return (
+    path.startsWith(vciscaturl) &&
+    !search.includes("category%5b") &&
+    !search.includes("category[")
+  );
+}
+
 function loadCategoryURLs() {
   return fetch("/browse/infosharing/categories.json")
     .then(r => r.json())
@@ -518,6 +530,8 @@ function addAnnouncementBlock() {
 function showVCISCatalogLoader() {
  // Don't double-create
   if (document.getElementById("catalog-loader")) return;
+
+  if (!isCatalogFrontPage()) return;
 
   // Create loader
   const loader = document.createElement("div");
