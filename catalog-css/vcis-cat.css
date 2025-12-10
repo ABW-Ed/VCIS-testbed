@@ -398,6 +398,21 @@
     display: none;
 }
 
+
+/* new home and login buttons */
+
+#search-form .vcis-home-button::before {
+  content: attr(data-icon) "\e61d";
+  
+}
+
+#search-form .vcis-home-login::before {
+  content: attr(data-icon) "\e616";
+}
+
+
+
+
 #page-links>ul>li:nth-child(3):after {
     content: "|";
     color: #ffffff;
@@ -412,6 +427,19 @@
     float: right;
     margin-bottom: 5px;
 }
+
+
+
+#search-form .vcis-home-button::before {
+  content: attr(data-icon) "\e61d";
+  
+}
+
+#search-form .vcis-home-login::before {
+  content: attr(data-icon) "\e616";
+}
+
+
 
 
 /* Loader overlay */
