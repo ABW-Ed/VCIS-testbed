@@ -375,7 +375,7 @@ var homePageCustomizations = async function () {
       '\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
       '<div class="search-refine-button__contents">' +
       '<div class="search-refine-button__text">Return Home</div>' +
-      '<div class="vcis-home-button" aria-hidden="true" style="color:#ffffff;padding-left: 160px;"></div>' +
+      '<div class="vcis-home-button" aria-hidden="true" style="color:#ffffff;padding-left: 120px;"></div>' +
       '</div>' +
       '</button>' +
       '</span>'
