@@ -356,6 +356,11 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   font-size: 0.05rem;
 }
 
+/* replacement 'home' button */
+.vcis-layout-rightbutton {
+    float: right;
+    padding: 0px 48px 0px 48px;
+}
 
 .scorm-nav-btn {
   font-size: 16px;
