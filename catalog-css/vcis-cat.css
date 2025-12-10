@@ -68,13 +68,13 @@
   z-index: 2;
 }
 
-/* Angled color shapes */
+/* Angled color shapes  - the width parameter adjusts the width between the stripes*/
 #home-page #feature.feature-region::before,
 #home-page #feature.feature-region::after {
   content: "";
   position: absolute;
   top: 0;
-  width: 25%;
+  width: 20%;
   height: 100%;
   transform: skewX(-20deg);
   z-index: 1;
