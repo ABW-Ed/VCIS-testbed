@@ -233,7 +233,7 @@ function onElementRendered(selector, cb, _attempts) {
 // Helper function to help build HTML for Custom tiles
 var buildTileHTML = function (tile) {
   // mark each as custom so we can detect/prevent duplicates
-  var tileHTML = '<div class="col-md-3 col-sm-6 custom-home-tile"><a class="product-link" href="'
+  var tileHTML = '<div class="col-md-4 col-sm-12 custom-home-tile"><a class="product-link" href="'
     + tile[1] +
     '"><div class="product-tile course-tile" aria-hidden="true"><div class="product-image"><div class="image-container"><span class="image-wrapper" title="'
     + tile[0] +
