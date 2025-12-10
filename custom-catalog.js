@@ -379,6 +379,16 @@ var homePageCustomizations = async function () {
       '</div>' +
       '</button>' +
       '</span>'
+      '<span>' +
+      '<div class="sr-only">Use the following button to be redirected to your Student Dashboard</div>' +
+      '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + vciscaturl + 
+      '\login'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
+      '<div class="search-refine-button__contents">' +
+      '<div class="search-refine-button__text">Student Dashboard</div>' +
+      '<div class="vcis-login-button" aria-hidden="true" style="color:#ffffff;padding-left: 120px;"></div>' +
+      '</div>' +
+      '</button>' +
+      '</span>'
     );
   }
 };
