@@ -398,6 +398,10 @@
     display: none;
 }
 
+/* hide search category button */
+.search-category-button {
+	display: none;
+}
 
 /* new home and login buttons */
 
