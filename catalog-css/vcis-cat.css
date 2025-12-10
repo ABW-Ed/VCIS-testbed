@@ -401,6 +401,30 @@
 
 /* new home and login buttons */
 
+#search-form .vcis-home-button {
+  border: none;
+  background-color: transparent;
+  position: absolute;
+  color: #343c44;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  padding-left: 0px;
+}
+
+#search-form .vcis-home-login {
+  border: none;
+  background-color: transparent;
+  position: absolute;
+  color: #343c44;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  padding-left: 0px;
+}
+
 #search-form .vcis-home-button::before {
   content: attr(data-icon) "\e61d";
   
@@ -426,17 +450,6 @@
     margin-top: 15px;
     float: right;
     margin-bottom: 5px;
-}
-
-
-
-#search-form .vcis-home-button::before {
-  content: attr(data-icon) "\e61d";
-  
-}
-
-#search-form .vcis-home-login::before {
-  content: attr(data-icon) "\e616";
 }
 
 
