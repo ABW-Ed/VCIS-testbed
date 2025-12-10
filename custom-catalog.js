@@ -306,10 +306,10 @@ function initHeroOnce() {
 
 var homePageCustomizations = async function () {
 
-    // create cache-safe hero banner before injecting tiles
-  
-    initHeroOnce();
-  
+  // create cache-safe hero banner before injecting tiles
+
+  initHeroOnce();
+
   if (
     window.location.pathname.startsWith(vciscaturl) &&
     !window.location.search.toLowerCase().includes("category%5b") &&
@@ -321,7 +321,7 @@ var homePageCustomizations = async function () {
       // get rid of existing listings for front page including pagination
       $('#listings [role="listitem"]').remove();
       $('nav[data-automation="Pagination"]').remove();
-      
+
       // Wait for async tiles to be built
       const tiles = await defineTiles();
       let tilesHTML = "";
@@ -371,7 +371,7 @@ var homePageCustomizations = async function () {
     $(actionsSel).append(
       '<span>' +
       '<div class="sr-only">Use the following button to be redirected to the Catalog categories page</div>' +
-      '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + vciscaturl + 
+      '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + vciscaturl +
       '\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
       '<div class="search-refine-button__contents">' +
       '<div class="search-refine-button__text">Return Home</div>' +
@@ -379,10 +379,11 @@ var homePageCustomizations = async function () {
       '</div>' +
       '</button>' +
       '</span>' +
+
       '<span>' +
       '<div class="sr-only">Use the following button to be redirected to your Student Dashboard</div>' +
-      '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + vciscaturl + 
-      '\login'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
+      '<button type="button" id="search-dashboard-btn" onclick="location.href=\'' + window.location.origin + vciscaturl + '/login' +
+      '\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
       '<div class="search-refine-button__contents">' +
       '<div class="search-refine-button__text">Student Dashboard</div>' +
       '<div class="vcis-login-button" aria-hidden="true" style="color:#ffffff;padding-left: 120px;"></div>' +
@@ -539,7 +540,7 @@ function addAnnouncementBlock() {
 // loader code
 
 function showVCISCatalogLoader() {
- // Don't double-create
+  // Don't double-create
   if (document.getElementById("catalog-loader")) return;
 
   if (!isCatalogFrontPage()) return;
@@ -595,7 +596,7 @@ $(function () {
       addAnnouncementBlock();
 
       // ✅ Let DOM settle a beat, then remove loader
-    //  setTimeout(hideVCISCatalogLoader, 150);
+      //  setTimeout(hideVCISCatalogLoader, 150);
 
       return;
     }
@@ -612,7 +613,7 @@ window.addEventListener("pageshow", function (e) {
     hideListingsChrome();
     addAnnouncementBlock();
 
-   // setTimeout(hideVCISCatalogLoader, 150);
+    // setTimeout(hideVCISCatalogLoader, 150);
   }
 });
 
@@ -624,7 +625,7 @@ document.addEventListener("turbolinks:load", function () {
   hideListingsChrome();
   addAnnouncementBlock();
 
- // setTimeout(hideVCISCatalogLoader, 150);
+  // setTimeout(hideVCISCatalogLoader, 150);
 });
 
 document.addEventListener("turbo:load", function () {
