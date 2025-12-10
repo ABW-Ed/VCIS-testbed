@@ -249,7 +249,10 @@
     margin: 5vw;
 }
 
-
+#announcement-block {
+	padding-left: 0px;
+    padding-right: 0px;
+}
 
 #search-refine-button--refine {
     display: none;
