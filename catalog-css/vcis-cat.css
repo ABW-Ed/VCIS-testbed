@@ -399,8 +399,9 @@
 }
 
 /* hide search category button */
-.search-categories-button {
-	display: none;
+
+#search-form .search-categories-button {
+		display: none!important;
 }
 
 /* new home and login buttons */
