@@ -94,7 +94,7 @@ class CanvasCustomizer {
         this.applyStudentStyles(),
         this.setupUICustomizations(),
         this.setupSCORMHandling()
-        
+
       ]);
 
       await this.highlightFirstIncompleteModule();
@@ -105,16 +105,16 @@ class CanvasCustomizer {
       }
 
       if (this.isQuizPage() || this.isSCORMContext()) {
-      console.log("HP button check");
-    
-      const nextBtn = document.querySelector('[aria-label="Next Module Item"]');
-    
-      if (!nextBtn) {
-        await this.createHomeButtons();
-      } else {
-        console.log("Next button exists — skipping custom home buttons");
+        console.log("HP button check");
+
+        const nextBtn = document.querySelector('[aria-label="Next Module Item"]');
+
+        if (!nextBtn) {
+          await this.createHomeButtons();
+        } else {
+          console.log("Next button exists — skipping custom home buttons");
+        }
       }
-    }
 
       this.state.isInitialized = true;
       console.log("Canvas customizations initialized successfully");
@@ -309,87 +309,112 @@ class CanvasCustomizer {
   createHomepageButton() {
     const left = document.querySelector(".module-sequence-footer-left");
     const right = document.querySelector(".module-sequence-footer-right");
-    if (!left || !right) return;
 
-    const prevBtn = left.querySelector(".module-sequence-footer-button--previous");
-    if (!prevBtn) return;
+    let clone = null;
 
-    // Deep clone the entire previous-button element
-    const clone = prevBtn.cloneNode(true);
+    // -------------------------------------------------
+    // Normal path: try to clone the Previous button
+    // -------------------------------------------------
+    if (left) {
+      const prevBtn = left.querySelector(".module-sequence-footer-button--previous");
+      if (prevBtn) {
+        clone = prevBtn.cloneNode(true);
 
-    // -------------------------------
-    // Remove the IconMiniArrowStart SVG (or any SVG inside if needed)
-    // -------------------------------
-    const arrowIcon = clone.querySelector("svg.IconMiniArrowStart");
-    if (arrowIcon) arrowIcon.remove();
-    // (If Canvas ever nests it inside a button wrapper, this still works)
+        // Remove SVG arrow
+        const arrowIcon = clone.querySelector("svg.IconMiniArrowStart");
+        if (arrowIcon) arrowIcon.remove();
 
-    // -------------------------------
-    // Modify anchor attributes
-    // -------------------------------
-    const link = clone.querySelector("a[aria-label], a[href]");
-    if (link) {
-      // Update aria-label
-      link.setAttribute("aria-label", "Return to Course Page");
+        // Modify link + text as before
+        const link = clone.querySelector("a[aria-label], a[href]");
+        if (link) {
+          link.setAttribute("aria-label", "Return to Course Page");
 
-      // Update href to the course root level (extract /courses/<id>/ from the existing href)
-      const hrefStr = link.getAttribute("href") || link.href || "";
-      const match = hrefStr.match(/\/courses\/(\d+)\/?/);
-      if (match) {
-        link.setAttribute("href", `/courses/${match[1]}/`);
-      } else if (link.href) {
-        const absMatch = link.href.match(/\/courses\/(\d+)\/?/);
-        if (absMatch) link.setAttribute("href", `/courses/${absMatch[1]}/`);
-      }
-    }
+          const hrefStr = link.getAttribute("href") || link.href || "";
+          const match = hrefStr.match(/\/courses\/(\d+)\/?/);
+          if (match) {
+            link.setAttribute("href", `/courses/${match[1]}/`);
+          } else if (link.href) {
+            const absMatch = link.href.match(/\/courses\/(\d+)\/?/);
+            if (absMatch) link.setAttribute("href", `/courses/${absMatch[1]}/`);
+          }
+        }
 
-    // -------------------------------
-    // Replace only the visible "Previous" text node
-    // -------------------------------
-    function replaceTextNode(root, searchRegex, replacement) {
-      const walker = document.createTreeWalker(
-        root,
-        NodeFilter.SHOW_TEXT,
-        {
-          acceptNode(node) {
-            if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
-            return searchRegex.test(node.nodeValue)
-              ? NodeFilter.FILTER_ACCEPT
-              : NodeFilter.FILTER_REJECT;
-          },
-        },
-        false
-      );
+        function replaceTextNode(root, searchRegex, replacement) {
+          const walker = document.createTreeWalker(
+            root,
+            NodeFilter.SHOW_TEXT,
+            {
+              acceptNode(node) {
+                if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+                return searchRegex.test(node.nodeValue)
+                  ? NodeFilter.FILTER_ACCEPT
+                  : NodeFilter.FILTER_REJECT;
+              },
+            },
+            false
+          );
 
-      const nodes = [];
-      while (walker.nextNode()) nodes.push(walker.currentNode);
+          const nodes = [];
+          while (walker.nextNode()) nodes.push(walker.currentNode);
 
-      for (const textNode of nodes) {
-        textNode.nodeValue = textNode.nodeValue.replace(searchRegex, replacement);
-      }
+          for (const textNode of nodes) {
+            textNode.nodeValue = textNode.nodeValue.replace(searchRegex, replacement);
+          }
 
-      return nodes.length > 0;
-    }
+          return nodes.length > 0;
+        }
 
-    const replaced = replaceTextNode(clone, /Previous/i, "Return to Course Page");
+        const replaced = replaceTextNode(clone, /Previous/i, "Return to Course Page");
 
-    // Fallback to element-level replacement
-    if (!replaced) {
-      const textCandidates = Array.from(clone.querySelectorAll("span, strong, em, b, i, p"));
-      for (let i = textCandidates.length - 1; i >= 0; i--) {
-        const el = textCandidates[i];
-        if (el.textContent.trim() && /Previous/i.test(el.textContent)) {
-          el.textContent = el.textContent.replace(/Previous/i, "Return to Course Page");
-          break;
+        if (!replaced) {
+          const textCandidates = Array.from(clone.querySelectorAll("span, strong, em, b, i, p"));
+          for (let i = textCandidates.length - 1; i >= 0; i--) {
+            const el = textCandidates[i];
+            if (el.textContent.trim() && /Previous/i.test(el.textContent)) {
+              el.textContent = el.textContent.replace(/Previous/i, "Return to Course Page");
+              break;
+            }
+          }
         }
       }
     }
 
-    // -------------------------------
-    // Insert into right footer
-    // -------------------------------
-    right.appendChild(clone);
+    // -------------------------------------------------
+    // FAILSAFE PATH: build a button manually
+    // -------------------------------------------------
+    if (!clone) {
+      const courseId = window.ENV?.COURSE_ID;
+      if (!courseId) {
+        console.warn("No course ID; cannot create homepage button");
+        return;
+      }
+
+      clone = document.createElement("div");
+      clone.className = "content-box vcis-layout-rightbutton";
+      clone.innerHTML = `
+      <a href="/courses/${courseId}" class="Button icon">
+        <span aria-hidden="true">Return to Course Page</span>
+        <span class="screenreader-only">Return to Course Page</span>
+      </a>
+    `;
+
+      // Insert before closing </div> of #main.ic-Layout-columns
+      const main = document.querySelector('#main.ic-Layout-columns');
+      if (main) {
+        main.appendChild(clone);
+      }
+
+      return; // stop here — no footer insert when using fallback
+    }
+
+    // -------------------------------------------------
+    // Normal insertion path (cloned version)
+    // -------------------------------------------------
+    if (right && clone) {
+      right.appendChild(clone);
+    }
   }
+
 
 
   async createHomeButtons() {
