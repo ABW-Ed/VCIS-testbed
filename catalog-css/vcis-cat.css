@@ -418,12 +418,12 @@
   content: attr(data-icon) "\e61d";      
 }
 
-#search-form .vcis-home-login::before {
+#search-form .vcis-login-button::before {
   content: attr(data-icon) "\e616";
 }
 
-#search-form .vcis-home-login, .vcis-home-button::before{
-font-family: 'catalog';
+#search-form .vcis-login-button, .vcis-home-button::before{
+  font-family: 'catalog'!important;
   display: inline-block;
   speak: none;
   text-transform: none !important;
