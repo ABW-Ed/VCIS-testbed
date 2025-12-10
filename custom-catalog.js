@@ -370,11 +370,11 @@ var homePageCustomizations = async function () {
   if ($(actionsSel).length && !document.getElementById('search-all-courses-btn')) {
     $(actionsSel).append(
       '<span>' +
-      '<div class="sr-only">Use the following button to be redirected to a URL with all available courses</div>' +
-      '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + '/browse/all?sort=date\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
+      '<div class="sr-only">Use the following button to be redirected to the Catalog categories page</div>' +
+      '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + vciscaturl" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
       '<div class="search-refine-button__contents">' +
-      '<div class="search-refine-button__text">Search All Courses</div>' +
-      '<div class="search-submit" aria-hidden="true" style="color:#ffffff;padding-left: 160px;"></div>' +
+      '<div class="search-refine-button__text">Return Home</div>' +
+      '<div class="vcis-home-button" aria-hidden="true" style="color:#ffffff;padding-left: 160px;"></div>' +
       '</div>' +
       '</button>' +
       '</span>'
