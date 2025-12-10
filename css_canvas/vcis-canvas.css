@@ -240,7 +240,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 .module-image-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* keeps size uniform, allows side clipping */
+  object-fit: scale-down; /* makes the image smaller so it fits in the wrapper */
 }
 
 /* --- Base Button --- */
