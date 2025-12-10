@@ -378,7 +378,7 @@ var homePageCustomizations = async function () {
       '<div class="vcis-home-button" aria-hidden="true" style="color:#ffffff;padding-left: 120px;"></div>' +
       '</div>' +
       '</button>' +
-      '</span>'
+      '</span>' +
       '<span>' +
       '<div class="sr-only">Use the following button to be redirected to your Student Dashboard</div>' +
       '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + vciscaturl + 
