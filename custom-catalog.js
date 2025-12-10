@@ -198,9 +198,11 @@ function loadCategoryURLs() {
 }
 
 //Add color Banner (idempotent)
-if (!document.getElementById('custom_color_banner')) {
-  var color_banner = $('<div id="custom_color_banner" style="height: 15px; background-repeat: no-repeat;"></div>');
-  $('#app-header > div.container').after(color_banner);
+function injectBannerStripe() {
+  if (!document.getElementById('custom_color_banner')) {
+    var color_banner = $('<div id="custom_color_banner" style="height: 15px; background-repeat: no-repeat;"></div>');
+    $('#app-header > div.container').after(color_banner);
+  }
 }
 
 // Define Tile Text, Links and Public Image URL's
@@ -453,6 +455,7 @@ function initAll() {
     homePageCustomizations();
     tweakLoginHref();
     changeCredits();
+    injectBannerStripe();
 
     // prevent stacking scroll handlers by namespacing
     $(window).off('scroll.ocpsCredits').on('scroll.ocpsCredits', function () {
