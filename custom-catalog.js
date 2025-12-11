@@ -176,7 +176,8 @@ function isCatalogFrontPage() {
   return (
     path.startsWith(vciscaturl) &&
     !search.includes("category%5b") &&
-    !search.includes("category[")
+    !search.includes("category[") &&
+    !search.includes("courses")
   );
 }
 
