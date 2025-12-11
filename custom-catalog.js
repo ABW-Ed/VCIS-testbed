@@ -439,7 +439,7 @@ var homePageCustomizations = async function () {
 
       '<span>' +
       '<div class="sr-only">Use the following button to be redirected to your Student Dashboard</div>' +
-      '<button type="button" id="search-dashboard-btn" onclick="location.href=\'' + window.location.origin + '/login' +
+      '<button type="button" id="search-dashboard-btn" onclick="location.href=\'' + window.location.origin + '/dashboard' +
       '\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 0px;">' +
       '<div class="search-refine-button__contents">' +
       '<div class="search-refine-button__text">Student Dashboard</div>' +
