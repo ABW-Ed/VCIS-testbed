@@ -504,7 +504,7 @@ function initAll() {
 // Hide "Listings", "Browse Listings", and "There are no courses..." text
 // Only run if we're on the root path
 function hideListingsChrome() {
-  if (!window.location.pathname.endsWith(vciscaturl)) return;
+  if (!isCatalogFrontPage()) return;
   var hideListingsContent = setInterval(function () {
     if ($('#main-heading h1, #listings h2, #listings .col-md-12 .h3').length) {
       clearInterval(hideListingsContent);
