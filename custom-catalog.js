@@ -234,20 +234,36 @@ function updateListingHeadingFromCategory() {
     return;
   }
 
-  // Extract the ID from the encoded URL
+  // Extract ID
   const match = window.location.href.match(/category%5Bid%5D=(\d+)/);
   if (!match || !match[1]) return;
 
   const categoryId = match[1];
 
-  // Lookup label (category_lookup stored elsewhere)
+  // Lookup label
   const label = category_lookup[categoryId];
   if (!label) return;
 
-  // Wait for the React element to appear
+  // Wait for React to actually render the target element
   onElementRendered('#listings h2', function (el) {
-    // Replace the content completely
+    
+    // Apply the label immediately
     el.text(label);
+
+    // --- Prevent React from overriding our change ---
+    const targetNode = el[0];
+    const observer = new MutationObserver(() => {
+      // If React overwrites it, put our text back
+      if (targetNode.textContent !== label) {
+        targetNode.textContent = label;
+      }
+    });
+
+    observer.observe(targetNode, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
   });
 }
 
