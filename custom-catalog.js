@@ -7,6 +7,17 @@ const canvasurl = "https://training-infosharing.instructure.com";
 const githubpage = "https://abw-ed.github.io/VCIS-testbed/";
 const vciscaturl = "/browse/infosharing";
 
+  // category labels
+  const category_lookup = {
+    "64838": "Child Link Training",
+    "64840": "Community Services Workforces",
+    "64839": "Education Workforces",
+    "64841": "Families, Fairness and Housing Workforces",
+    "64842": "Health Workforces",
+    "64843": "Justice Workforces"
+  };
+
+
 var deworkforces = "";
 var dffhworkforces = "";
 var dhworkforces = "";
@@ -205,6 +216,31 @@ function injectBannerStripe() {
   }
 }
 
+function updateListingHeadingFromCategory() {
+  // Only run if the encoded category ID exists in the URL
+  if (!window.location.href.includes('category%5Bid%5D=')) {
+    return;
+  }
+
+
+  // Extract the ID from the encoded URL
+  const match = window.location.href.match(/category%5Bid%5D=(\d+)/);
+  if (!match || !match[1]) return;
+
+  const categoryId = match[1];
+
+  // See if we have a label for it
+  const label = category_lookup[categoryId];
+  if (!label) return;
+
+  // Find the <h2> inside #listings and fully replace its contents
+  const heading = document.querySelector('#listings h2');
+  if (!heading) return;
+
+  heading.textContent = label;
+}
+
+
 // Define Tile Text, Links and Public Image URL's
 var defineTiles = async function () {
   await loadCategoryURLs();
@@ -367,7 +403,7 @@ var homePageCustomizations = async function () {
     }, 50);
   }
 
-  // Add the Search All Courses Link (idempotent)
+  // Add the Home and Login links (idempotent)
   var actionsSel = "#search-form >div.search-form-container > div.container > div.search-form > div.search-form__actions.pull-right";
   if ($(actionsSel).length && !document.getElementById('search-all-courses-btn')) {
     $(actionsSel).append(
@@ -456,6 +492,7 @@ function initAll() {
     tweakLoginHref();
     changeCredits();
     injectBannerStripe();
+    updateListingHeadingFromCategory();
 
     // prevent stacking scroll handlers by namespacing
     $(window).off('scroll.ocpsCredits').on('scroll.ocpsCredits', function () {
