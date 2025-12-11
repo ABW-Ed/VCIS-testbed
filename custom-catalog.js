@@ -248,6 +248,7 @@ function updateListingHeadingFromCategory() {
   onElementRendered('#listings h2', function (el) {
     
     // Apply the label immediately
+    $('#main-heading h1').remove();
     el.text(label);
 
     // --- Prevent React from overriding our change ---
