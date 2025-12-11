@@ -157,6 +157,18 @@ var djcsworkforces = "";
 
 // this section is experimental
 
+// Helper function for checking if an element has been rendered yet
+function onElementRendered(selector, cb, _attempts) {
+  var el = $(selector);
+  _attempts = ++_attempts || 1;
+  if (el.length) return cb(el);
+  if (_attempts == 60) return;
+  setTimeout(function () {
+    onElementRendered(selector, cb, _attempts);
+  }, 250);
+};
+
+
 function isCatalogFrontPage() {
   const path = window.location.pathname;
   const search = window.location.search.toLowerCase();
@@ -222,22 +234,21 @@ function updateListingHeadingFromCategory() {
     return;
   }
 
-
   // Extract the ID from the encoded URL
   const match = window.location.href.match(/category%5Bid%5D=(\d+)/);
   if (!match || !match[1]) return;
 
   const categoryId = match[1];
 
-  // See if we have a label for it
+  // Lookup label (category_lookup stored elsewhere)
   const label = category_lookup[categoryId];
   if (!label) return;
 
-  // Find the <h2> inside #listings and fully replace its contents
-  const heading = document.querySelector('#listings h2');
-  if (!heading) return;
-
-  heading.textContent = label;
+  // Wait for the React element to appear
+  onElementRendered('#listings h2', function (el) {
+    // Replace the content completely
+    el.text(label);
+  });
 }
 
 
@@ -257,16 +268,6 @@ var defineTiles = async function () {
   return tiles;
 };
 
-// Helper function for checking if an element has been rendered yet
-function onElementRendered(selector, cb, _attempts) {
-  var el = $(selector);
-  _attempts = ++_attempts || 1;
-  if (el.length) return cb(el);
-  if (_attempts == 60) return;
-  setTimeout(function () {
-    onElementRendered(selector, cb, _attempts);
-  }, 250);
-};
 
 // Helper function to help build HTML for Custom tiles
 var buildTileHTML = function (tile) {
