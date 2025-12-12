@@ -136,6 +136,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* --- Banner Section --- */
 .course-banner {
+  display: none
   background-color: #f5f5f5;
   padding: 2rem;
   border-radius: 0.5rem;
