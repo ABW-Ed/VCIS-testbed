@@ -541,8 +541,8 @@ class CanvasCustomizer {
         return item.completion_requirement.completed === false;
       });
 
-      if (!hasIncompleteRequired) {
-        console.log("All required modules completed — creating homepage button");
+      if (!hasIncompleteRequired || this.isProblemSCORM()) {
+        console.log("All required modules completed or prob scorm page — creating homepage button");
         this.createHomepageButton();
       } else {
         console.log("Required modules still incomplete — no action taken");
