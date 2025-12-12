@@ -824,7 +824,9 @@ class CanvasCustomizer {
 
       return true;
     } else {
+          if (!this.isProblemScorm) {
       nextBtn.style.display = "none";
+          }
       console.log(`Current grade: ${submission?.grade || 'No grade'} (not passing)`);
 
       return false;
