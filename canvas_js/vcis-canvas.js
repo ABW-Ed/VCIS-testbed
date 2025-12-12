@@ -143,7 +143,7 @@ class CanvasCustomizer {
 
         const nextBtn = document.querySelector('[aria-label="Next Module Item"]');
 
-        if (!nextBtn) {
+        if (!nextBtn || this.isProblemSCORM()) {
           await this.createHomeButtons();
         } else {
           console.log("Next button exists — skipping custom home buttons");
