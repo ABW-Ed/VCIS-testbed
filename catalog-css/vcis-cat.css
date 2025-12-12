@@ -460,50 +460,25 @@
 
 
 
-/* Loader overlay */
-
-
-/* Loader overlay (unchanged) */
-#catalog-loader {
-  position: fixed;
-  inset: 0;
-  background: white;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 99999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
-}
-
-/* Fade-out (unchanged) */
-#catalog-loader.fade-out {
-  opacity: 0;
-  backdrop-filter: blur(0px);
-}
-
-/* Simple throbber spinner */
 #catalog-loader .spinner {
   width: 60px;
   height: 60px;
   border: 6px solid #ccc;
   border-top-color: #0074d9;
   border-radius: 50%;
-  animation: 
-	spin 1s linear infinite,
-    pulse 1.8s ease-in-out infinite;
+  animation: spinAndPulse 1.8s linear infinite;
 }
 
-/* Spinner rotation */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.25); }
+@keyframes spinAndPulse {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.25) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
 }
 
 /* The silly animated logo 
@@ -541,6 +516,7 @@
     opacity: 0;
   }
 }
+
 */
 
 
