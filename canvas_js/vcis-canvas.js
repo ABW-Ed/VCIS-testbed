@@ -313,6 +313,22 @@ class CanvasCustomizer {
 
   }
 
+  hideHomeButtons() {
+  try {
+    // Hide custom right button
+    document.querySelectorAll(".vcis-layout-rightbutton")
+      .forEach(el => el.style.display = "none");
+
+    // Hide "Return to Course Page" via aria-label
+    const ariaBtn = document.querySelector('[aria-label="Return to Course Page"]');
+    if (ariaBtn) ariaBtn.style.display = "none";
+
+    console.log("🏠 Home buttons hidden after completion");
+  } catch (e) {
+    console.warn("Error hiding home buttons:", e);
+  }
+}
+
   customizeHelpTray() {
     const tray = this.$(this.selectors.helpTray);
     if (!tray) return;
@@ -700,7 +716,8 @@ class CanvasCustomizer {
 
       if (this.isProblemSCORM()) {
         this.setupXHRWatcher(courseId, assignmentId);
-        console.log("Problem SCORM detected → XHR watcher enabled");
+        this.createHomeButtons();         // ← added
+        console.log("Problem SCORM detected → XHR watcher + home buttons enabled");
       }
 
       // Still watch iframe changes normally
@@ -792,26 +809,31 @@ class CanvasCustomizer {
   }
 
   async checkGradeAndHighlight(courseId, assignmentId) {
-    try {
-      console.log("Checking current grade status...");
-      const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
-      const submission = await this.checkSubmissionStatus(courseId, assignmentId);
+  try {
+    console.log("Checking current grade status...");
+    const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
+    const submission = await this.checkSubmissionStatus(courseId, assignmentId);
 
-      if (this.isPassingGrade(submission?.grade)) {
-        console.log(`Passing grade found: ${submission.grade}`);
-        nextBtn.style.display = ""; // ensure it's visible
-        this.highlightNextButton();
-        return true; // Indicates passing grade found
-      } else {
-        nextBtn.style.display = "none";
-        console.log(`Current grade: ${submission?.grade || 'No grade'} (not passing)`);
-        return false;
-      }
-    } catch (error) {
-      console.warn("Could not check grade status:", error.message);
+    if (this.isPassingGrade(submission?.grade)) {
+      console.log(`Passing grade found: ${submission.grade}`);
+      nextBtn.style.display = ""; // ensure it's visible
+      this.highlightNextButton();
+
+      // 🔥 NEW: hide home buttons once completed
+      this.hideHomeButtons();
+
+      return true;
+    } else {
+      nextBtn.style.display = "none";
+      console.log(`Current grade: ${submission?.grade || 'No grade'} (not passing)`);
+
       return false;
     }
+  } catch (error) {
+    console.warn("Could not check grade status:", error.message);
+    return false;
   }
+}
 
 
   async checkSubmissionStatus(courseId, assignmentId) {
