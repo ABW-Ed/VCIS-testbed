@@ -130,8 +130,8 @@ async function registrationHeaderTweaker() {
 
   if (!dateInfoSpan) return false;
 
-  if (dateInfoSpan.textContent.trim() !== "Additional Information Required") {
-    dateInfoSpan.textContent = "Additional Information Required";
+  if (dateInfoSpan.textContent.trim() !== "") {
+    dateInfoSpan.textContent = "";
     console.log("✅ Registration header text updated.");
     return true;
   }
