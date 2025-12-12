@@ -597,8 +597,8 @@ class CanvasCustomizer {
         const url = args[0];
 
         // Detect Canvas SCORM submission events
-        if (typeof url === "string" && url.includes("/submissions/self")) {
-          console.log("🎯 XHR fetch detected Canvas submission poll:", url);
+        if (typeof url === "string" && !url.includes("/submissions/self")) {
+          console.log("🎯 XHR fetch detected", url);
 
           // Debounce repeated calls
           clearTimeout(this._xhrDebounce);
