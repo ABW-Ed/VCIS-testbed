@@ -590,22 +590,44 @@ class CanvasCustomizer {
     console.log("🛰️ XHR watcher activated for Problem SCORM");
 
     const originalFetch = window.fetch;
+    const origOpen = XMLHttpRequest.prototype.open;
 
-    // ---- FETCH WRAPPER ----
+    // 🌟 NEW inactivity failsafe timer
+    const FAILSAFE_TIME = 30000; // 30 seconds
+    let inactivityTimer = null;
+
+    const resetInactivityTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        console.log("⏳ No XHR activity for 30s → Failsafe grade check triggered");
+        this.checkGradeAndHighlight(courseId, assignmentId);
+      }, FAILSAFE_TIME);
+    };
+
+    // Start timer immediately
+    resetInactivityTimer();
+
+
+    // -----------------------------------
+    // FETCH WRAPPER
+    // -----------------------------------
     window.fetch = async (...args) => {
       try {
         const url = args[0];
 
-        // Detect Canvas SCORM submission events
-        if (typeof url === "string" && !url.includes("/submissions/self")) {
-          console.log("🎯 XHR fetch detected", url);
+        if (typeof url === "string") {
+          console.log("🎯 XHR fetch detected:", url);
 
-          // Debounce repeated calls
+          // Debounce normal reactions
           clearTimeout(this._xhrDebounce);
           this._xhrDebounce = setTimeout(() => {
             this.checkGradeAndHighlight(courseId, assignmentId);
           }, 300);
+
+          // Reset failsafe timer
+          resetInactivityTimer();
         }
+
       } catch (e) {
         console.warn("XHR watcher fetch error:", e);
       }
@@ -613,18 +635,24 @@ class CanvasCustomizer {
       return originalFetch.apply(this, args);
     };
 
-    // ---- XHR WRAPPER ----
-    const origOpen = XMLHttpRequest.prototype.open;
+
+    // -----------------------------------
+    // XHR.open WRAPPER
+    // -----------------------------------
     XMLHttpRequest.prototype.open = function (method, url, ...rest) {
       try {
-        if (typeof url === "string" && url.includes("/submissions/self")) {
-          console.log("🎯 XHR open detected Canvas submission poll:", url);
+        if (typeof url === "string") {
+          console.log("🎯 XHR open detected:", url);
 
           clearTimeout(window._xhrDebounce);
           window._xhrDebounce = setTimeout(() => {
             window.__SCORMWatcher.checkGradeAndHighlight(courseId, assignmentId);
           }, 300);
+
+          // Reset failsafe timer
+          resetInactivityTimer();
         }
+
       } catch (e) {
         console.warn("XHR watcher XHR error:", e);
       }
@@ -632,7 +660,8 @@ class CanvasCustomizer {
       return origOpen.call(this, method, url, ...rest);
     };
 
-    // Store reference so XHR wrapper can call back
+
+    // Store reference for XHR callbacks
     window.__SCORMWatcher = this;
   }
 
