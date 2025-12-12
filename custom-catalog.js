@@ -426,27 +426,37 @@ var homePageCustomizations = async function () {
   var actionsSel = "#search-form >div.search-form-container > div.container > div.search-form > div.search-form__actions.pull-right";
   if ($(actionsSel).length && !document.getElementById('search-all-courses-btn')) {
     $(actionsSel).append(
-      '<span>' +
-      '<div class="sr-only">Use the following button to be redirected to the Catalog categories page</div>' +
-      '<button type="button" id="search-all-courses-btn" onclick="location.href=\'' + window.location.origin + vciscaturl +
-      '\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 40px;">' +
-      '<div class="search-refine-button__contents">' +
-      '<div class="search-refine-button__text">Return Home</div>' +
-      '<div class="vcis-home-button" aria-hidden="true" style="color:#ffffff;padding-left: 120px;"></div>' +
-      '</div>' +
-      '</button>' +
-      '</span>' +
+    `<span>
+       <div class="sr-only">Use the following button to be redirected to the Catalog categories page</div>
+       <button type="button"
+               id="search-all-courses-btn"
+               onclick="location.href='${window.location.origin + vciscaturl}'"
+               class="search-refine-button btn btn-lg"
+               aria-expanded="false"
+               aria-haspopup="false"
+               style="padding-left: 16px; padding-right: 40px;">
+         <div class="search-refine-button__contents">
+           <div class="search-refine-button__text">Return Home</div>
+           <div class="vcis-home-button" aria-hidden="true" style="color:#ffffff;padding-left: 120px;"></div>
+         </div>
+       </button>
+     </span>
 
-      '<span>' +
-      '<div class="sr-only">Use the following button to be redirected to your Student Dashboard</div>' +
-      '<button type="button" id="search-dashboard-btn" onclick="location.href=\'' + window.location.origin + '\dashboard\completed' +
-      '\'" class="search-refine-button btn btn-lg" aria-expanded="false" aria-haspopup="false" style="padding-left: 16px; padding-right: 0px;">' +
-      '<div class="search-refine-button__contents">' +
-      '<div class="search-refine-button__text">Student Dashboard</div>' +
-      '<div class="vcis-login-button" aria-hidden="true" style="color:#ffffff;padding-left: 10px;"></div>' +
-      '</div>' +
-      '</button>' +
-      '</span>'
+     <span>
+       <div class="sr-only">Use the following button to be redirected to your Student Dashboard</div>
+       <button type="button"
+               id="search-dashboard-btn"
+               onclick="location.href='${window.location.origin}/dashboard/completed'"
+               class="search-refine-button btn btn-lg"
+               aria-expanded="false"
+               aria-haspopup="false"
+               style="padding-left: 16px; padding-right: 0px;">
+         <div class="search-refine-button__contents">
+           <div class="search-refine-button__text">Student Dashboard</div>
+           <div class="vcis-login-button" aria-hidden="true" style="color:#ffffff;padding-left: 10px;"></div>
+         </div>
+       </button>
+     </span>`
     );
   }
 };
