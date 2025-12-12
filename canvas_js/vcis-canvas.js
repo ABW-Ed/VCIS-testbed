@@ -615,7 +615,7 @@ class CanvasCustomizer {
       try {
         const url = args[0];
 
-        if (typeof url === "string") {
+        if (typeof url === "string" && !url.includes("/submissions/self) {
           console.log("🎯 XHR fetch detected:", url);
 
           // Debounce normal reactions
