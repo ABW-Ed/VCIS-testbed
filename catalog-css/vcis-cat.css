@@ -491,12 +491,19 @@
   border: 6px solid #ccc;
   border-top-color: #0074d9;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: 
+	spin 1s linear infinite,
+    pulse 1.8s ease-in-out infinite;
 }
 
 /* Spinner rotation */
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
 }
 
 /* The silly animated logo 
