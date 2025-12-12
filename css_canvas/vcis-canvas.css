@@ -148,6 +148,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 .course-banner img {
 /*	flex: 1 1 15vh;
     height: 15vh; */
+	display: none
 	max-height: 15vh;
     width: auto;
   	font-size: 15vh;         /* trick to make 1em ≈ image height */
@@ -155,6 +156,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 }
 
 .course-banner-cl img {
+	display: none
 	flex: 1 1 15vh;
     height: 20vh;
     width: auto;
