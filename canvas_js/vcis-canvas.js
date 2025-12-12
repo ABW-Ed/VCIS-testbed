@@ -72,9 +72,36 @@ class CanvasCustomizer {
 
     // problem SCORMs, mostly MARAM ones
     this.ProblemSCORMs = [
-      "/courses/236/assignments/310",
+      "/assignments/301",
+      "/assignments/302",
+      "/assignments/303",
+      "/assignments/305",
+      "/assignments/306",
+      "/assignments/307",
+      "/assignments/310",
+      "/assignments/311",
+      "/assignments/312",
+      "/assignments/323",
+      "/assignments/324",
+      "/assignments/325",
+      "/assignments/326",
+      "/assignments/327",
+      "/assignments/328",
+      "/assignments/329",
+      "/assignments/330",
+      "/assignments/331",
+      "/assignments/340",
+      "/assignments/341",
+      "/assignments/342",
+      "/assignments/344",
+      "/assignments/345",
+      "/assignments/346",
+      "/assignments/352",
+      "/assignments/353",
+      "/assignments/354",
       "/courses/236/assignments/311",
-      "/courses/236/assignments/312"
+      "/courses/236/assignments/312",
+      "/courses/236/assignments/330"
     ];
 
 
