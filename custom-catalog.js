@@ -620,7 +620,7 @@ function showVCISCatalogLoader() {
 
   // Insert your SVG logo instead of spinner
   loader.innerHTML = `
-    <img src="https://abw-ed.github.io/VCIS-testbed/assets/svg/Victoria_State_Government_logo.svg" class="vicman-logo" alt="Loading">
+    <div class="spinner"></div>
   `;
 
   document.body.appendChild(loader);
