@@ -70,6 +70,13 @@ class CanvasCustomizer {
 
     this.observers = new Map();
 
+    // problem SCORMs, mostly MARAM ones
+    this.ProblemSCORMs = [
+      "/courses/236/assignments/310",
+      "/courses/236/assignments/311",
+      "/courses/236/assignments/312"
+    ];
+
 
     this.catalogBaseUrl = this.isMRMod()
       ? "https://protectngstraining.education.vic.gov.au"
@@ -139,6 +146,13 @@ class CanvasCustomizer {
 
   isSCORMContext() {
     return String(window.ENV?.LTI_TOOL_ID) === this.config.SCORM_TOOL_ID;
+  }
+
+
+  // for problematic SCORMs that don't have a close button
+  isProblemSCORM() {
+    const path = window.location.pathname;
+    return this.ProblemSCORMs.some(p => path.includes(p));
   }
 
   isHomePage() {
@@ -542,6 +556,59 @@ class CanvasCustomizer {
     }
   }
 
+  setupXHRWatcher(courseId, assignmentId) {
+    if (this.state.xhrWatcherStarted) return;
+    this.state.xhrWatcherStarted = true;
+
+    console.log("🛰️ XHR watcher activated for Problem SCORM");
+
+    const originalFetch = window.fetch;
+
+    // ---- FETCH WRAPPER ----
+    window.fetch = async (...args) => {
+      try {
+        const url = args[0];
+
+        // Detect Canvas SCORM submission events
+        if (typeof url === "string" && url.includes("/submissions/self")) {
+          console.log("🎯 XHR fetch detected Canvas submission poll:", url);
+
+          // Debounce repeated calls
+          clearTimeout(this._xhrDebounce);
+          this._xhrDebounce = setTimeout(() => {
+            this.checkGradeAndHighlight(courseId, assignmentId);
+          }, 300);
+        }
+      } catch (e) {
+        console.warn("XHR watcher fetch error:", e);
+      }
+
+      return originalFetch.apply(this, args);
+    };
+
+    // ---- XHR WRAPPER ----
+    const origOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, ...rest) {
+      try {
+        if (typeof url === "string" && url.includes("/submissions/self")) {
+          console.log("🎯 XHR open detected Canvas submission poll:", url);
+
+          clearTimeout(window._xhrDebounce);
+          window._xhrDebounce = setTimeout(() => {
+            window.__SCORMWatcher.checkGradeAndHighlight(courseId, assignmentId);
+          }, 300);
+        }
+      } catch (e) {
+        console.warn("XHR watcher XHR error:", e);
+      }
+
+      return origOpen.call(this, method, url, ...rest);
+    };
+
+    // Store reference so XHR wrapper can call back
+    window.__SCORMWatcher = this;
+  }
+
   hideFeedbackButtons() {
     this.$$(this.selectors.viewFeedbackButton).forEach(el => {
       el.style.display = "none";
@@ -575,8 +642,16 @@ class CanvasCustomizer {
         return;
       }
 
+      if (this.isProblemSCORM()) {
+        this.setupXHRWatcher(courseId, assignmentId);
+        console.log("Problem SCORM detected → XHR watcher enabled");
+      }
+
+      // Still watch iframe changes normally
       this.setupIframeWatcher(iframe, courseId, assignmentId);
       console.log("SCORM watcher initialized successfully");
+
+
 
       // 🔽 Scroll iframe into center view once it's ready, slight adjustment to scorm window height
       try {
