@@ -463,30 +463,7 @@
 /* Loader overlay */
 
 
-/* When fading out */
-#catalog-loader.fade-out {
-  opacity: 0;
-  backdrop-filter: blur(0px);
-  -webkit-backdrop-filter: blur(0px);
-}
-
-/* Throbber */
-#catalog-loader .spinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid #ccc;
-  border-top-color: #0074d9;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-
-/* joke loader */
-
+/* Loader overlay (unchanged) */
 #catalog-loader {
   position: fixed;
   inset: 0;
@@ -501,7 +478,28 @@
   transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
 }
 
-/* The animated logo */
+/* Fade-out (unchanged) */
+#catalog-loader.fade-out {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+}
+
+/* Simple throbber spinner */
+#catalog-loader .spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #ccc;
+  border-top-color: #0074d9;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Spinner rotation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* The silly animated logo 
 #catalog-loader .vicman-logo {
   width: 120px;
   opacity: 0;
@@ -509,9 +507,9 @@
   animation: vicman-logo 2.2s ease-in-out forwards;
   
 }
+*/
 
-
-/* Batman 60s style flip-and-burst animation */
+/* Batman 60s style flip-and-burst animation 
 @keyframes vicman-logo {
   0% {
     transform: scale(0.2) rotateY(0deg);
@@ -536,6 +534,7 @@
     opacity: 0;
   }
 }
+*/
 
 
 /* this mod seems to break the admin menu - let's remove it */
