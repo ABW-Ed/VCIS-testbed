@@ -492,7 +492,7 @@ class CanvasCustomizer {
 
       // If the real Next button exists, do nothing
       const nextBtn = document.querySelector('[data-testid="next-assignment-btn"]');
-      if (nextBtn) {
+      if (nextBtn && !this.isProblemSCORM()) {
         console.log("Next button exists — skipping homepage button creation");
         return;
       }
