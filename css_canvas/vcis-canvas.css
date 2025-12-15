@@ -10,6 +10,10 @@
     border-radius: 5px;
 }
 
+.ic-Login-header__links {
+    display: none;
+}
+
 /* remove scorm background */
 .theme-classic {
     background: #5f6da017 !important; 
