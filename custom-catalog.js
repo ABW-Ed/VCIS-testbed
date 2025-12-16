@@ -2,10 +2,10 @@
 // ===============================
 // CONFIG — reusable base URLs
 // ===============================
-const catalogurl = "https://training-infosharing.sydney.catalog.canvaslms.com";
+const catalogurl = "https://training.infosharing.vic.gov.au";
 const canvasurl = "https://training-infosharing.instructure.com";
 const githubpage = "https://abw-ed.github.io/VCIS-testbed/";
-const vciscaturl = "/browse/infosharing";
+const vciscaturl = "/";
 
   // category labels
   const category_lookup = {
