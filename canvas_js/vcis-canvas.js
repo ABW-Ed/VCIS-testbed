@@ -107,7 +107,7 @@ class CanvasCustomizer {
 
     this.catalogBaseUrl = this.isMRMod()
       ? "https://protectngstraining.education.vic.gov.au"
-      : "https://training-infosharing.sydney.catalog.canvaslms.com";
+      : "https://training.infosharing.vic.gov.au";
   }
 
   // ----------------------------
