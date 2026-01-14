@@ -175,6 +175,27 @@ class CanvasCustomizer {
     return String(window.ENV?.LTI_TOOL_ID) === this.config.SCORM_TOOL_ID;
   }
 
+  isCalendarPage() {
+  return window.location.pathname.startsWith('/calendar');
+    }
+
+  isAgendaView() {
+      const params = new URLSearchParams(location.hash.slice(1));
+      return params.get('view_name') === 'agenda';
+    }
+    
+  hasWebinarContext() {
+      const webinarCourses = ['course_212', 'course_254', 'course_255', 'course_256', 'course_257'];
+      const contexts = window.ENV?.CALENDAR?.SELECTED_CONTEXTS ?? [];
+      return contexts.some(c => webinarCourses.includes(c));
+    }
+    
+  isWebinarAppPage() {
+      return this.isCalendarPage()
+          && this.isAgendaView()
+          && this.hasWebinarContext();
+    }
+
 
   // for problematic SCORMs that don't have a close button
   isProblemSCORM() {
