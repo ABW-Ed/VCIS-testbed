@@ -276,6 +276,24 @@ class CanvasCustomizer {
         });
     }
 
+    hideSchedulerDialog() {
+        if (document.getElementById('hide-scheduler-dialog-style')) return;
+
+        const style = document.createElement('style');
+        style.id = 'hide-scheduler-dialog-style';
+        style.textContent = `
+    form[role="dialog"] {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  `;
+        document.head.appendChild(style);
+    }
+
+    showSchedulerDialog() {
+        document.getElementById('hide-scheduler-dialog-style')?.remove();
+    }
+
     // Global Customisations
 
     setupGlobalCustomisations() {
@@ -334,48 +352,62 @@ class CanvasCustomizer {
     }
 
     autoSelectWebinarAppointment() {
-        // Only run on calendar pages with webinar context
         if (!this.isCalendarPage() || !this.hasWebinarContext()) {
             console.log('No webinar context or calendar page context');
             return;
         }
 
-        // Prevent repeated firing (important on SPA re-renders)
         if (this.state.webinarAppointmentSelected) {
-            console.log('State.webinarAppointmentSelected is already true');
             return;
         }
+
+        console.log('Auto-selecting webinar appointment');
 
         this.waitFor(
             () => document.querySelector('#FindAppointmentButton'),
             (findButton) => {
-                console.log('Loading appointment');
+                // Hide modal BEFORE opening
+                this.hideSchedulerDialog();
+
                 findButton.click();
 
-                // Give modal a brief moment to render
-                setTimeout(() => {
-                    const select = document.querySelector('select[data-testid="select-course"]');
-                    if (select) {
-                        select.value = "212"; // webinar course ID
+                // Wait for the specific course option to exist (API finished)
+                this.waitFor(
+                    () => {
+                        const select = document.querySelector('select[data-testid="select-course"]');
+                        if (!select) return null;
+
+                        const option = [...select.options].find(o => o.value === "212");
+                        return option ? select : null;
+                    },
+                    (select) => {
+                        console.log('Course options fully loaded');
+
+                        select.value = "212";
                         select.dispatchEvent(new Event('change', { bubbles: true }));
-                    }
 
-                    const submitButton = document.querySelector(
-                        'form[role="dialog"] button[type="submit"]'
-                    );
+                        const submitButton = document.querySelector(
+                            'form[role="dialog"] button[type="submit"]'
+                        );
 
-                    if (submitButton) {
-                        submitButton.click();
-                    }
+                        if (submitButton) {
+                            submitButton.click();
+                        }
 
-                    this.state.webinarAppointmentSelected = true;
-                    console.log('Webinar appointment auto-selected');
-                }, 500);
+                        this.state.webinarAppointmentSelected = true;
+                        console.log('Webinar appointment auto-selected');
+
+                        // Restore UI
+                        setTimeout(() => this.showSchedulerDialog(), 50);
+                    },
+                    10000 // allow slow API
+                ).catch(err => {
+                    console.warn('Course list never loaded', err);
+                    this.showSchedulerDialog();
+                });
             },
-            this.config.TIMEOUTS.DEFAULT
-        ).catch(error => {
-            console.warn('Failed to auto-select webinar appointment:', error);
-        });
+            8000
+        ).catch(err => console.warn('Find Appointment button not ready', err));
     }
 
 
