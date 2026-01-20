@@ -289,9 +289,60 @@ class CanvasCustomizer {
     this.customizeHelpTray();
     this.updateDashboardLink();
     // this.createHomeButtons();
+    await this.autoSelectWebinarAppointment();
     await this.insertWebinarEventInformation();
+ 
     
   }
+
+  async autoSelectWebinarAppointment() {
+  // Only run on calendar pages with webinar context
+  if (!this.isCalendarPage() || !this.hasWebinarContext()) {
+    return;
+  }
+
+  // Prevent repeated firing (important on SPA re-renders)
+  if (this.state.webinarAppointmentSelected) {
+    return;
+  }
+
+  try {
+    // 1. Wait for and click "Find Appointment"
+    const findButton = await this.waitFor(
+      () => document.querySelector('#FindAppointmentButton'),
+      btn => btn,
+      this.config.TIMEOUTS.DEFAULT
+    );
+
+    findButton.click();
+
+    // 2. Small delay to allow modal to render
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // 3. Select course
+    const select = document.querySelector('select[data-testid="select-course"]');
+    if (select) {
+      select.value = "212"; // webinar course ID
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // 4. Submit modal
+    const submitButton = document.querySelector(
+      'form[role="dialog"] button[type="submit"]'
+    );
+
+    if (submitButton) {
+      submitButton.click();
+    }
+
+    this.state.webinarAppointmentSelected = true;
+    console.log('Webinar appointment auto-selected');
+
+  } catch (error) {
+    console.warn('Failed to auto-select webinar appointment:', error);
+  }
+}
+
 
   async insertWebinarEventInformation() {
   // Only run on the webinar agenda calendar view
