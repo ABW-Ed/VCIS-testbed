@@ -289,13 +289,13 @@ class CanvasCustomizer {
     this.customizeHelpTray();
     this.updateDashboardLink();
     // this.createHomeButtons();
-    await this.autoSelectWebinarAppointment();
-    await this.insertWebinarEventInformation();
+    this.autoSelectWebinarAppointment();
+    this.insertWebinarEventInformation();
  
     
   }
 
-  async autoSelectWebinarAppointment() {
+autoSelectWebinarAppointment() {
   // Only run on calendar pages with webinar context
   if (!this.isCalendarPage() || !this.hasWebinarContext()) {
     return;
@@ -306,45 +306,39 @@ class CanvasCustomizer {
     return;
   }
 
-  try {
-    // 1. Wait for and click "Find Appointment"
-    const findButton = await this.waitFor(
-      () => document.querySelector('#FindAppointmentButton'),
-      btn => btn,
-      this.config.TIMEOUTS.DEFAULT
-    );
+  this.waitFor(
+    () => document.querySelector('#FindAppointmentButton'),
+    (findButton) => {
+      findButton.click();
 
-    findButton.click();
+      // Give modal a brief moment to render
+      setTimeout(() => {
+        const select = document.querySelector('select[data-testid="select-course"]');
+        if (select) {
+          select.value = "212"; // webinar course ID
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
 
-    // 2. Small delay to allow modal to render
-    await new Promise(resolve => setTimeout(resolve, 100));
+        const submitButton = document.querySelector(
+          'form[role="dialog"] button[type="submit"]'
+        );
 
-    // 3. Select course
-    const select = document.querySelector('select[data-testid="select-course"]');
-    if (select) {
-      select.value = "212"; // webinar course ID
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-    }
+        if (submitButton) {
+          submitButton.click();
+        }
 
-    // 4. Submit modal
-    const submitButton = document.querySelector(
-      'form[role="dialog"] button[type="submit"]'
-    );
-
-    if (submitButton) {
-      submitButton.click();
-    }
-
-    this.state.webinarAppointmentSelected = true;
-    console.log('Webinar appointment auto-selected');
-
-  } catch (error) {
+        this.state.webinarAppointmentSelected = true;
+        console.log('Webinar appointment auto-selected');
+      }, 100);
+    },
+    this.config.TIMEOUTS.DEFAULT
+  ).catch(error => {
     console.warn('Failed to auto-select webinar appointment:', error);
-  }
+  });
 }
 
 
-  async insertWebinarEventInformation() {
+insertWebinarEventInformation() {
   // Only run on the webinar agenda calendar view
   if (!this.isWebinarAppPage()) {
     return;
@@ -355,25 +349,28 @@ class CanvasCustomizer {
     return;
   }
 
-  try {
-    await this.waitFor(
-      () => document.getElementById('calendar-app'),
-      (calendarApp) => {
-        const wrapper = document.createElement('div');
-        wrapper.id = 'webinar-event-information';
-        wrapper.innerHTML = `
-          <p><b>Placeholder Event Name</b></p>
-        `;
+  this.waitFor(
+    () => document.getElementById('calendar-app'),
+    (calendarApp) => {
+      // Double-check idempotency after wait
+      if (document.getElementById('webinar-event-information')) {
+        return;
+      }
 
-        calendarApp.parentNode.insertBefore(wrapper, calendarApp);
+      const wrapper = document.createElement('div');
+      wrapper.id = 'webinar-event-information';
+      wrapper.innerHTML = `
+        <p><b>Placeholder Event Name</b></p>
+      `;
 
-        console.log('Inserted webinar event information block');
-      },
-      this.config.TIMEOUTS.DEFAULT
-    );
-  } catch (error) {
+      calendarApp.parentNode.insertBefore(wrapper, calendarApp);
+
+      console.log('Inserted webinar event information block');
+    },
+    this.config.TIMEOUTS.DEFAULT
+  ).catch(error => {
     console.warn('Failed to insert webinar event information:', error);
-  }
+  });
 }
   
 
