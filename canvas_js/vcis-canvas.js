@@ -289,7 +289,42 @@ class CanvasCustomizer {
     this.customizeHelpTray();
     this.updateDashboardLink();
     // this.createHomeButtons();
+    await this.insertWebinarEventInformation();
+    
   }
+
+  async insertWebinarEventInformation() {
+  // Only run on the webinar agenda calendar view
+  if (!this.isWebinarAppPage()) {
+    return;
+  }
+
+  // Avoid duplicate insertion
+  if (document.getElementById('webinar-event-information')) {
+    return;
+  }
+
+  try {
+    await this.waitFor(
+      () => document.getElementById('calendar-app'),
+      (calendarApp) => {
+        const wrapper = document.createElement('div');
+        wrapper.id = 'webinar-event-information';
+        wrapper.innerHTML = `
+          <p><b>Placeholder Event Name</b></p>
+        `;
+
+        calendarApp.parentNode.insertBefore(wrapper, calendarApp);
+
+        console.log('Inserted webinar event information block');
+      },
+      this.config.TIMEOUTS.DEFAULT
+    );
+  } catch (error) {
+    console.warn('Failed to insert webinar event information:', error);
+  }
+}
+  
 
   updateDashboardLink() {
     const catalogUrl = this.catalogBaseUrl;
