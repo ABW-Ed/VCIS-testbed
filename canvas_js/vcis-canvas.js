@@ -336,17 +336,20 @@ class CanvasCustomizer {
     autoSelectWebinarAppointment() {
         // Only run on calendar pages with webinar context
         if (!this.isCalendarPage() || !this.hasWebinarContext()) {
+            console.log('No webinar context or calendar page context');
             return;
         }
 
         // Prevent repeated firing (important on SPA re-renders)
         if (this.state.webinarAppointmentSelected) {
+            console.log('State.webinarAppointmentSelected is already true');
             return;
         }
 
         this.waitFor(
             () => document.querySelector('#FindAppointmentButton'),
             (findButton) => {
+                console.log('Loading appointment');
                 findButton.click();
 
                 // Give modal a brief moment to render
