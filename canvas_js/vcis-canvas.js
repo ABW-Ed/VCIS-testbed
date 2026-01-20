@@ -364,15 +364,27 @@ class CanvasCustomizer {
 
         console.log('Auto-selecting webinar appointment');
 
+        // --- Step 0: hide all "No events" spans via global CSS ---
+        const styleId = 'hide-no-assignments';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = 'span.agendaView--no-assignments { display: none !important; }';
+            document.head.appendChild(style);
+        }
+
+        // --- Step 1: wait for the "No events" span or Find Appointment button to exist ---
         this.waitFor(
-            () => document.querySelector('#FindAppointmentButton'),
-            (findButton) => {
+            () => document.querySelector('span.agendaView--no-assignments')
+                || document.querySelector('#FindAppointmentButton'),
+            (triggerEl) => {
                 // Hide modal BEFORE opening
                 this.hideSchedulerDialog();
 
-                findButton.click();
+                const findButton = document.querySelector('#FindAppointmentButton');
+                if (findButton) findButton.click();
 
-                // Wait for the specific course option to exist (API finished)
+                // --- Step 2: wait for the course options to appear ---
                 this.waitFor(
                     () => {
                         const select = document.querySelector('select[data-testid="select-course"]');
@@ -391,25 +403,37 @@ class CanvasCustomizer {
                             'form[role="dialog"] button[type="submit"]'
                         );
 
-                        if (submitButton) {
-                            submitButton.click();
-                        }
+                        if (submitButton) submitButton.click();
 
                         this.state.webinarAppointmentSelected = true;
                         console.log('Webinar appointment auto-selected');
 
-                        // Restore UI
-                        setTimeout(() => this.showSchedulerDialog(), 50);
+                        // --- Step 3: restore UI ---
+                        setTimeout(() => {
+                            this.showSchedulerDialog();
+                            // Remove the CSS that hid the spans
+                            const style = document.getElementById(styleId);
+                            if (style) style.remove();
+                        }, 50);
                     },
                     10000 // allow slow API
                 ).catch(err => {
                     console.warn('Course list never loaded', err);
                     this.showSchedulerDialog();
+                    // Restore hidden spans on failure
+                    const style = document.getElementById(styleId);
+                    if (style) style.remove();
                 });
             },
             8000
-        ).catch(err => console.warn('Find Appointment button not ready', err));
+        ).catch(err => {
+            console.warn('No events span or Find Appointment button not ready', err);
+            // Restore hidden spans on failure
+            const style = document.getElementById(styleId);
+            if (style) style.remove();
+        });
     }
+
 
 
     insertWebinarEventInformation() {
