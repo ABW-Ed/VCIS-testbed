@@ -367,7 +367,7 @@ class CanvasCustomizer {
 
                     this.state.webinarAppointmentSelected = true;
                     console.log('Webinar appointment auto-selected');
-                }, 100);
+                }, 500);
             },
             this.config.TIMEOUTS.DEFAULT
         ).catch(error => {
