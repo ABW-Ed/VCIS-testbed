@@ -29,7 +29,8 @@ class CanvasCustomizer {
             isInitialized: false,
             activePollingAssignments: new Set(), // Track which assignments are being polled
             globalSetupComplete: false,
-            adminSetupComplete: false
+            adminSetupComplete: false,
+            webinarAppointmentInProgress: false,
         };
 
         this.selectors = {
