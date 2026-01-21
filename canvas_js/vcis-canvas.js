@@ -354,104 +354,100 @@ class CanvasCustomizer {
 
     autoSelectWebinarAppointment() {
         if (!this.isCalendarPage() || !this.hasWebinarContext()) {
-            console.log('No webinar context or calendar page context');
             return;
         }
 
-        if (this.state.webinarAppointmentSelected || this.state.autoSelectingWebinar) {
-            console.log('Webinar auto-select already in progress or done');
+        if (this.state.autoSelectingWebinar || this.state.webinarAppointmentSelected) {
             return;
         }
+
         this.state.autoSelectingWebinar = true;
-
         console.log('Auto-selecting webinar appointment');
+
+        const MAX_ATTEMPTS = 5;
+        const RETRY_DELAY = 2000;
+        let attempt = 0;
 
         const styleId = 'hide-no-assignments';
         if (!document.getElementById(styleId)) {
             const style = document.createElement('style');
             style.id = styleId;
-            style.textContent = 'span.agendaView--no-assignments { display: none !important; }';
+            style.textContent = `
+          span.agendaView--no-assignments {
+            display: none !important;
+          }
+        `;
             document.head.appendChild(style);
         }
 
-        // --- Step 0: wait for ENV.CALENDAR to be ready ---
-        const waitForEnvCalendar = () => {
-            return new Promise((resolve, reject) => {
-                const start = Date.now();
-                const timer = setInterval(() => {
-                    if (window.ENV?.CALENDAR?.SELECTED_CONTEXTS) {
-                        clearInterval(timer);
-                        resolve(window.ENV.CALENDAR);
-                    } else if (Date.now() - start > 10000) {
-                        clearInterval(timer);
-                        reject(new Error('ENV.CALENDAR not loaded in time'));
-                    }
-                }, 100);
-            });
+        const finish = () => {
+            this.showSchedulerDialog();
+            const style = document.getElementById(styleId);
+            if (style) style.remove();
+            this.state.autoSelectingWebinar = false;
+            this.state.webinarAppointmentSelected = true;
+            console.log('Webinar auto-select finished');
         };
 
-        waitForEnvCalendar()
-            .then(() => {
-                console.log('ENV.CALENDAR ready');
+        const tryOnce = () => {
+            attempt++;
 
-                // Step 1: wait for "No events" span or FindAppointmentButton
-                return new Promise((resolve, reject) => {
-                    this.waitFor(
-                        () => document.querySelector('span.agendaView--no-assignments') || document.querySelector('#FindAppointmentButton'),
-                        resolve,
-                        8000
-                    );
-                });
-            })
-            .then(triggerEl => {
+            const noEventsSpan = document.querySelector('span.agendaView--no-assignments');
+
+            // If no "no events" message exists, stop retrying
+            if (!noEventsSpan) {
+                console.log('Webinar events detected, stopping retries');
+                finish();
+                return;
+            }
+
+            if (attempt > MAX_ATTEMPTS) {
+                console.log('Max webinar retries reached');
+                finish();
+                return;
+            }
+
+            console.log(`Webinar attempt ${attempt}/${MAX_ATTEMPTS}`);
+
+            const findButton = document.querySelector('#FindAppointmentButton');
+            if (findButton) {
                 this.hideSchedulerDialog();
+                findButton.click();
+            }
 
+            setTimeout(() => {
                 const select = document.querySelector('select[data-testid="select-course"]');
-                const findButton = document.querySelector('#FindAppointmentButton');
-                if (findButton && select) findButton.click();
+                const option =
+                    select && [...select.options].find(o => o.value === "212");
 
-                if (select) {
-                    // Step 2: wait for the desired course option
-                    return new Promise((resolve, reject) => {
-                        this.waitFor(
-                            () => [...select.options].find(o => o.value === "212") ? select : null,
-                            resolve,
-                            10000
-                        );
-                    });
-                } else {
-                    return null;
-                }
-            })
-            .then(selectReady => {
-                if (selectReady) {
-                    selectReady.value = "212";
-                    selectReady.dispatchEvent(new Event('change', { bubbles: true }));
+                if (select && option) {
+                    select.value = "212";
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
 
-                    const submitButton = document.querySelector('form[role="dialog"] button[type="submit"]');
+                    const submitButton = document.querySelector(
+                        'form[role="dialog"] button[type="submit"]'
+                    );
                     if (submitButton) submitButton.click();
 
-                    this.state.webinarAppointmentSelected = true;
-                    console.log('Webinar appointment auto-selected');
+                    console.log('Webinar course selected');
                 } else {
-                    console.log('No webinar events available');
+                    console.log('Course not available yet');
                 }
 
-                // Restore UI
-                setTimeout(() => {
-                    this.showSchedulerDialog();
-                    const style = document.getElementById(styleId);
-                    if (style) style.remove();
-                    this.state.autoSelectingWebinar = false;
-                }, 50);
-            })
-            .catch(err => {
-                console.warn('Failed to auto-select webinar appointment:', err);
-                this.showSchedulerDialog();
-                const style = document.getElementById(styleId);
-                if (style) style.remove();
-                this.state.autoSelectingWebinar = false;
-            });
+                // Retry again after delay
+                setTimeout(tryOnce, RETRY_DELAY);
+            }, 200);
+        };
+
+        // Wait until calendar framework is present before first attempt
+        this.waitFor(
+            () => window.ENV?.CALENDAR,
+            () => tryOnce(),
+            10000
+        ).catch(err => {
+            console.warn('Calendar never initialized', err);
+            finish();
+        });
     }
 
 
