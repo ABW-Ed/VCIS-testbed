@@ -475,7 +475,9 @@ class CanvasCustomizer {
                 const wrapper = document.createElement('div');
                 wrapper.id = 'webinar-event-information';
                 wrapper.innerHTML = `
-        <p><b>Placeholder Event Name</b></p>
+        <p><b>Information Sharing for Education Professionals</b></p>
+<p>This course is for people working in schools or education and care services who are likely to share information and require a detailed operational understanding of the reforms. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas gravida nisi risus, at ultrices lectus consectetur eget. Morbi malesuada ut orci quis dictum.</p>
+<p>Webinars are held online via Webex.</p>
       `;
 
                 calendarApp.parentNode.insertBefore(wrapper, calendarApp);
