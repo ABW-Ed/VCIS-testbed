@@ -129,6 +129,20 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
   box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
 }
 
+
+/* css for webinar calendar changes */
+
+.agenda-event__item-container {
+    transition: background-color .1s linear;
+}
+
+.agenda-event__item-container:hover {
+    background-position: 0 -15px;
+    background-color: #eee;
+}
+
+
+
 /* course pages CSS */
 
 
