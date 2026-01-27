@@ -201,7 +201,7 @@ class CanvasCustomizer {
     }
 
     hasWebinarContext() {
-        const webinarCourses = ['course_212', 'course_254', 'course_255', 'course_256', 'course_257'];
+        const webinarCourses = ['course_212', 'course_254', 'course_255', 'course_256', 'course_257', 'course_258', 'course_259];
         const contexts = window.ENV?.CALENDAR?.SELECTED_CONTEXTS ?? [];
         return contexts.some(c => webinarCourses.includes(c));
     }
