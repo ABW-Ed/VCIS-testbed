@@ -56,7 +56,7 @@ class CanvasCustomizer {
         ];
 
         // list of courses that have webinars
-        this.webinar_calendar_contexts = [
+        this.webinarCalendarContexts = [
             'course_212',
             'course_254',
             'course_255',
@@ -65,7 +65,6 @@ class CanvasCustomizer {
             'course_258',
             'course_259'
         ];
-
 
         // list of Help items that are blocked from Nav menu
         this.blockedHelpItems = [
