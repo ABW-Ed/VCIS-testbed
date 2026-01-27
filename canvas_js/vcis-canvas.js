@@ -15,7 +15,6 @@ class CanvasCustomizer {
             PASSING_GRADE: 90,
             HIGHLIGHT_FLASH_COUNT: 10,
             NEXT_BTN_FLASH_COUNT: 20,
-            HTML_ROOT: "https://abw-ed.github.io/VCIS-testbed/html",
             TIMEOUTS: {
                 DEFAULT: 3000,
                 SCORM_SETUP: 8000, // 8 seconds should be enough
@@ -24,6 +23,8 @@ class CanvasCustomizer {
             }
 
         };
+
+        this.HTML_ROOT = "https://abw-ed.github.io/VCIS-testbed/html";
 
         this.state = {
             scormWatcherStarted: false,
