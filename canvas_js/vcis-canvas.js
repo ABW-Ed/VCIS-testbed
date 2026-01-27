@@ -15,12 +15,14 @@ class CanvasCustomizer {
             PASSING_GRADE: 90,
             HIGHLIGHT_FLASH_COUNT: 10,
             NEXT_BTN_FLASH_COUNT: 20,
+            HTML_ROOT: "https://abw-ed.github.io/VCIS-testbed/html",
             TIMEOUTS: {
                 DEFAULT: 3000,
                 SCORM_SETUP: 8000, // 8 seconds should be enough
                 IFRAME_READY: 15000,  // Time to wait for iframe
                 NAVMENU_READY: 2000
             }
+
         };
 
         this.state = {
@@ -51,6 +53,17 @@ class CanvasCustomizer {
             "course-show-secondary",
             "right-side-wrapper",
             "global_nav_calendar_link"
+        ];
+
+        // list of courses that have webinars
+        this.webinar_calendar_contexts = [
+            'course_212',
+            'course_254',
+            'course_255',
+            'course_256',
+            'course_257',
+            'course_258',
+            'course_259'
         ];
 
 
@@ -201,9 +214,29 @@ class CanvasCustomizer {
     }
 
     hasWebinarContext() {
-        const webinarCourses = ['course_212', 'course_254', 'course_255', 'course_256', 'course_257', 'course_258', 'course_259];
         const contexts = window.ENV?.CALENDAR?.SELECTED_CONTEXTS ?? [];
-        return contexts.some(c => webinarCourses.includes(c));
+        return contexts.some(c => this.webinarCalendarContexts.includes(c));
+    }
+
+    getWebinarCourseIdFromCalendar() {
+        const contexts = window.ENV?.CALENDAR?.SELECTED_CONTEXTS ?? [];
+        const match = contexts.find(c =>
+            this.webinarCalendarContexts.includes(c)
+        );
+        return match ? match.replace('course_', '') : null;
+    }
+
+    getWebinarHtmlUrl() {
+        const courseId = this.getWebinarCourseIdFromCalendar();
+
+        if (!courseId) {
+            return null;
+        }
+
+        // Example:
+        // HTML_ROOT = https://githubpage.com/webinars
+        // → https://githubpage.com/webinars/212-webinar.html
+        return `${this.HTML_ROOT}/${courseId}-webinar.html`;
     }
 
     isWebinarAppPage() {
@@ -473,39 +506,69 @@ class CanvasCustomizer {
 
 
     insertWebinarEventInformation() {
-        // Only run on the webinar agenda calendar view
+        // Only run on webinar agenda calendar view
         if (!this.isWebinarAppPage()) {
             return;
         }
 
-        // Avoid duplicate insertion
+        // Only run if we actually have a webinar context
+        if (!this.hasWebinarContext()) {
+            return;
+        }
+
+        // Prevent duplicate insertion
         if (document.getElementById('webinar-event-information')) {
+            return;
+        }
+
+        const contentUrl = this.getWebinarHtmlUrl();
+        if (!contentUrl) {
+            console.warn('Webinar context detected but no matching HTML found');
             return;
         }
 
         this.waitFor(
             () => document.getElementById('calendar-app'),
-            (calendarApp) => {
-                // Double-check idempotency after wait
+            async (calendarApp) => {
+                // Re-check idempotency after wait (SPA-safe)
                 if (document.getElementById('webinar-event-information')) {
                     return;
                 }
 
-                const wrapper = document.createElement('div');
-                wrapper.id = 'webinar-event-information';
-                wrapper.innerHTML = `
-        <p><b>Information Sharing for Education Professionals</b></p>
-<p>This course is for people working in schools or education and care services who are likely to share information and require a detailed operational understanding of the reforms. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas gravida nisi risus, at ultrices lectus consectetur eget. Morbi malesuada ut orci quis dictum.</p>
-<p>Webinars are held online via Webex.</p>
-      `;
+                try {
+                    const response = await fetch(contentUrl, {
+                        credentials: 'omit',   // GitHub Pages / public CDN safe
+                        cache: 'no-cache'
+                    });
 
-                calendarApp.parentNode.insertBefore(wrapper, calendarApp);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
 
-                console.log('Inserted webinar event information block');
+                    const html = await response.text();
+
+                    const wrapper = document.createElement('div');
+                    wrapper.id = 'webinar-event-information';
+                    wrapper.innerHTML = html;
+
+                    calendarApp.parentNode.insertBefore(wrapper, calendarApp);
+
+                    console.log(
+                        `Inserted webinar event information (${contentUrl})`
+                    );
+                } catch (error) {
+                    console.warn(
+                        `Failed to load webinar HTML from ${contentUrl}`,
+                        error
+                    );
+                }
             },
             this.config.TIMEOUTS.DEFAULT
         ).catch(error => {
-            console.warn('Failed to insert webinar event information:', error);
+            console.warn(
+                'Calendar app not available for webinar event insertion',
+                error
+            );
         });
     }
 
