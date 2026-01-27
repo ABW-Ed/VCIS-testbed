@@ -365,12 +365,18 @@ class CanvasCustomizer {
         console.log('Webinar auto-select finished');
     };
 
+    // Extract courseId from URL hash
+    const getCourseIdFromUrl = () => {
+        const hashParams = new URLSearchParams(window.location.hash.slice(1));
+        const code = hashParams.get('context_code'); // e.g., "course_257"
+        return code ? code.replace('course_', '') : null;
+    };
+
     const tryOnce = () => {
         attempt++;
 
         const noEventsSpan = document.querySelector('span.agendaView--no-assignments');
 
-        // If no "no events" message exists, stop retrying
         if (!noEventsSpan) {
             console.log('Webinar events detected, stopping retries');
             finish();
@@ -393,23 +399,37 @@ class CanvasCustomizer {
 
         setTimeout(() => {
             const select = document.querySelector('select[data-testid="select-course"]');
+            const urlCourseId = getCourseIdFromUrl();
 
-            // Get the course id dynamically from the calendar context
-            const courseId = this.getWebinarCourseIdFromCalendar(); // e.g., "212"
-            const option = select && [...select.options].find(o => o.value === courseId);
+            if (select && urlCourseId) {
+                const option = [...select.options].find(o => o.value === urlCourseId);
 
-            if (select && option) {
-                select.value = courseId;
-                select.dispatchEvent(new Event('change', { bubbles: true }));
+                if (option) {
+                    // ✅ Matching course exists → select it
+                    select.value = urlCourseId;
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
 
-                const submitButton = document.querySelector(
-                    'form[role="dialog"] button[type="submit"]'
-                );
-                if (submitButton) submitButton.click();
+                    const submitButton = document.querySelector(
+                        'form[role="dialog"] button[type="submit"]'
+                    );
+                    if (submitButton) submitButton.click();
 
-                console.log(`Webinar course ${courseId} selected`);
+                    console.log(`Webinar course ${urlCourseId} selected`);
+                } else {
+                    // ⚠ No matching course → click the close button
+                    const closeButton = document.querySelector(
+                        'button.css-16y8pl-view--inlineBlock-baseButton'
+                    );
+                    if (closeButton) {
+                        closeButton.click();
+                        console.log(`No matching course for ${urlCourseId}, closed modal`);
+                        finish();
+                        return;
+                    }
+                    console.log(`No matching course for ${urlCourseId}, close button not found`);
+                }
             } else {
-                console.log('Course not available yet');
+                console.log('Course select not available yet or URL course missing');
             }
 
             // Retry again after delay
@@ -417,7 +437,6 @@ class CanvasCustomizer {
         }, 200);
     };
 
-    // Wait until calendar framework is present before first attempt
     this.waitFor(
         () => window.ENV?.CALENDAR,
         () => tryOnce(),
