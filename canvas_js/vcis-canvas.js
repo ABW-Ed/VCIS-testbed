@@ -295,63 +295,6 @@ class CanvasCustomizer {
         document.getElementById('hide-scheduler-dialog-style')?.remove();
     }
 
-    // Global Customisations
-
-    setupGlobalCustomisations() {
-        if (this.state.globalSetupComplete) return;
-
-        console.log("Initializing Canvas global customizations");
-        this.state.globalSetupComplete = true;
-
-        // Runs for *all* roles (including admins)
-        this.insertWebinarEventInformation();
-    }
-
-    setupAdminCustomisations() {
-        if (this.state.adminSetupComplete) return;
-
-        console.log("Initializing Canvas admin-only customizations");
-        this.state.adminSetupComplete = true;
-
-        // Admin-only UI hooks
-        // this.injectAdminTools();
-    }
-
-
-    // ----------------------------
-    // Style Management  
-    // ----------------------------
-    async applyStudentStyles() {
-        const styleId = "canvas-student-customizations";
-
-        if (this.$(styleId)) return;
-
-        const styles = this.hiddenElements
-            .map(id => `#${id} { display: none !important; }`)
-            .join('\n');
-
-        const styleEl = document.createElement("style");
-        styleEl.id = styleId;
-        styleEl.textContent = styles;
-        document.head.appendChild(styleEl);
-
-        console.log("Applied student CSS customizations");
-    }
-
-    // ----------------------------
-    // UI Customizations
-    // ----------------------------
-    async setupUICustomizations() {
-        this.hideAttemptBlock();
-        this.customizeHelpTray();
-        this.updateDashboardLink();
-        // this.createHomeButtons();
-        this.autoSelectWebinarAppointment();
-        this.insertWebinarEventInformation();
-
-
-    }
-
     autoSelectWebinarAppointment() {
         if (!this.isCalendarPage() || !this.hasWebinarContext()) {
             return;
@@ -451,6 +394,82 @@ class CanvasCustomizer {
     }
 
 
+    // Global Customisations
+
+    setupGlobalCustomisations() {
+        if (this.state.globalSetupComplete) return;
+
+        console.log("Initializing Canvas global customizations");
+        this.state.globalSetupComplete = true;
+
+        // Runs for *all* roles (including admins)
+        this.insertWebinarEventInformation();
+    }
+
+    setupAdminCustomisations() {
+        if (this.state.adminSetupComplete) return;
+
+        console.log("Initializing Canvas admin-only customizations");
+        this.state.adminSetupComplete = true;
+
+        // Admin-only UI hooks
+        // this.injectAdminTools();
+    }
+
+
+    // ----------------------------
+    // Style Management  
+    // ----------------------------
+    async applyStudentStyles() {
+        const styleId = "canvas-student-customizations";
+
+        if (this.$(styleId)) return;
+
+        const styles = this.hiddenElements
+            .map(id => `#${id} { display: none !important; }`)
+            .join('\n');
+
+        const styleEl = document.createElement("style");
+        styleEl.id = styleId;
+        styleEl.textContent = styles;
+        document.head.appendChild(styleEl);
+
+        console.log("Applied student CSS customizations");
+    }
+
+    // ----------------------------
+    // UI Customizations
+    // ----------------------------
+    async setupUICustomizations() {
+        this.hideAttemptBlock();
+        this.customizeHelpTray();
+        this.updateDashboardLink();
+        // this.createHomeButtons();
+        this.insertWebinarEventInformation();
+        this.queueWebinarAutoSelect();
+
+
+    }
+
+    queueWebinarAutoSelect() {
+        if (!this.isCalendarPage() || !this.hasWebinarContext()) return;
+
+        if (this.state.webinarAutoQueued) return;
+        this.state.webinarAutoQueued = true;
+
+        console.log('Waiting for calendar hydration before auto-select');
+
+        this.waitFor(
+            () => document.querySelector('#calendar-app .agendaView'),
+            () => {
+                console.log('Calendar agenda view hydrated');
+                this.autoSelectWebinarAppointment();
+            },
+            15000
+        ).catch(err => {
+            console.warn('Calendar agenda view never stabilized', err);
+        });
+    }
 
 
     insertWebinarEventInformation() {
