@@ -507,23 +507,19 @@ class CanvasCustomizer {
 
     insertWebinarEventInformation() {
         // Only run on webinar agenda calendar view
-        if (!this.isWebinarAppPage()) {
-            return;
-        }
-
-        // Only run if we actually have a webinar context
-        if (!this.hasWebinarContext()) {
-            return;
-        }
+        if (!this.isWebinarAppPage() || !this.hasWebinarContext()) return;
 
         // Prevent duplicate insertion
-        if (document.getElementById('webinar-event-information')) {
-            return;
-        }
+        if (document.getElementById('webinar-event-information')) return;
+
+        // Prevent multiple simultaneous fetches
+        if (this.state.webinarInsertInProgress) return;
+        this.state.webinarInsertInProgress = true;
 
         const contentUrl = this.getWebinarHtmlUrl();
         if (!contentUrl) {
             console.warn('Webinar context detected but no matching HTML found');
+            this.state.webinarInsertInProgress = false;
             return;
         }
 
@@ -532,12 +528,13 @@ class CanvasCustomizer {
             async (calendarApp) => {
                 // Re-check idempotency after wait (SPA-safe)
                 if (document.getElementById('webinar-event-information')) {
+                    this.state.webinarInsertInProgress = false;
                     return;
                 }
 
                 try {
                     const response = await fetch(contentUrl, {
-                        credentials: 'omit',   // GitHub Pages / public CDN safe
+                        credentials: 'omit',
                         cache: 'no-cache'
                     });
 
@@ -553,14 +550,12 @@ class CanvasCustomizer {
 
                     calendarApp.parentNode.insertBefore(wrapper, calendarApp);
 
-                    console.log(
-                        `Inserted webinar event information (${contentUrl})`
-                    );
+                    console.log(`Inserted webinar event information (${contentUrl})`);
                 } catch (error) {
-                    console.warn(
-                        `Failed to load webinar HTML from ${contentUrl}`,
-                        error
-                    );
+                    console.warn(`Failed to load webinar HTML from ${contentUrl}`, error);
+                } finally {
+                    // Always reset the in-progress flag
+                    this.state.webinarInsertInProgress = false;
                 }
             },
             this.config.TIMEOUTS.DEFAULT
@@ -569,6 +564,7 @@ class CanvasCustomizer {
                 'Calendar app not available for webinar event insertion',
                 error
             );
+            this.state.webinarInsertInProgress = false;
         });
     }
 
