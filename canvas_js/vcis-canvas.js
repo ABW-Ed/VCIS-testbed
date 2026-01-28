@@ -1347,9 +1347,10 @@ class CanvasCustomizer {
                 return;
             }
 
-            // Collect ModComp and ModButton elements
+            // Collect ModComp and ModButton elements, including  webinar info
             const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
             const modButtons = Array.from(document.querySelectorAll("[id^='ModButton']"));
+            const isWebinarSession = el.hasAttribute("data-web-session");
 
 
             if (modElements.length === 0) {
@@ -1431,16 +1432,26 @@ class CanvasCustomizer {
                         if (cardButton) cardButton.classList.add("completed");
                     }
 
-                } else if (!locked) {
-                    // Item visible/unlocked but not complete
-                    statusText = "Status: Not Completed";
-                    classname = "modcomp-inprogress";
-                } else {
-                    if (!isOptional) allComplete = false;
-                }
+} else if (!locked) {
 
-                el.textContent = statusText;
-                el.classList.add(classname);
+    // ⛔ Webinar modules defer status handling
+    if (isWebinarSession && this.isWebinarAppPage()) {
+        // Do nothing here — webinar logic will handle it later
+        classname = "modcomp-webinar-pending";
+    } else {
+        statusText = "Status: Not Completed";
+        classname = "modcomp-inprogress";
+    }
+
+} else {
+    if (!isOptional) allComplete = false;
+}
+
+
+if (statusText) {
+    el.textContent = statusText;
+}
+el.classList.add(classname);
 
                 if (button) {
                     button.classList.remove(
