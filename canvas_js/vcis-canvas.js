@@ -214,8 +214,40 @@ class CanvasCustomizer {
     }
 
     hasWebinarContext() {
-        const contexts = window.ENV?.CALENDAR?.SELECTED_CONTEXTS ?? [];
-        return contexts.some(c => this.webinarCalendarContexts.includes(c));
+
+        // ----------------------------
+        // Primary: Canvas ENV contexts
+        // ----------------------------
+        const contexts = window.ENV?.CALENDAR?.SELECTED_CONTEXTS;
+
+        if (Array.isArray(contexts)) {
+            return contexts.some(c =>
+                this.webinarCalendarContexts.includes(c)
+            );
+        }
+
+        // ----------------------------
+        // Fallback: calendar URL hash
+        // ----------------------------
+        const hash = window.location.hash;
+
+        // Must be calendar agenda view with a course context
+        if (
+            !hash.includes("view_name=agenda") ||
+            !hash.includes("context_code=course_")
+        ) {
+            return false;
+        }
+
+        const params = new URLSearchParams(hash.replace(/^#/, ""));
+        const contextCode = params.get("context_code");
+
+        if (!contextCode?.startsWith("course_")) {
+            return false;
+        }
+
+        // Validate against allowed webinar contexts
+        return this.webinarCalendarContexts.includes(contextCode);
     }
 
     getWebinarCourseIdFromCalendar() {
