@@ -1342,223 +1342,157 @@ class CanvasCustomizer {
     async updateModuleCompletionStatus() {
         try {
             const courseId = window.ENV?.COURSE_ID;
-            if (!courseId) {
-                console.warn("No course ID found — cannot update module completions.");
-                return;
-            }
+            if (!courseId) return;
 
-            // Collect ModComp and ModButton elements
             const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
             const modButtons = Array.from(document.querySelectorAll("[id^='ModButton']"));
 
-            if (modElements.length === 0) {
-                console.log("No ModComp elements found on this page.");
-                return;
-            }
+            if (!modElements.length) return;
 
-            // Fetch modules
             const res = await fetch(
                 `/api/v1/courses/${courseId}/modules?include[]=items&include[]=content_details`,
-                {
-                    credentials: "include",
-                    headers: { Accept: "application/json" }
-                }
+                { credentials: "include", headers: { Accept: "application/json" } }
             );
 
-            if (!res.ok) {
-                console.error("Failed to fetch modules:", res.status);
-                return;
-            }
+            if (!res.ok) return;
 
             const modules = await res.json();
-            if (!modules?.length) {
-                console.warn("No modules returned.");
-                return;
-            }
-
             const allItems = modules.flatMap(m => m.items || []);
+
             let allComplete = true;
 
             // ----------------------------
-            // Module completion logic
+            // Module status loop
             // ----------------------------
             modElements.forEach((el, index) => {
+
                 const isWebinarSession = el.dataset.webSession === "true";
+                const isOptional = el.dataset.req === "no";
                 const item = allItems[index];
                 const button = modButtons[index];
-                const isOptional = el.dataset.req === "no";
 
                 if (!item) {
                     el.textContent = "Completion (no module item)";
-                    el.classList.add("modcomp-noassign");
+                    el.className = "module-status modcomp-noassign";
                     if (!isOptional) allComplete = false;
                     return;
                 }
 
                 const parentModule = modules.find(m => m.id === item.module_id);
-                const itemComplete = !!item.completion_requirement?.completed;
+
+                const itemComplete =
+                    !!item.completion_requirement?.completed;
+
                 const moduleComplete =
-                    parentModule?.state === "completed" || !!parentModule?.completed_at;
+                    parentModule?.state === "completed" ||
+                    !!parentModule?.completed_at;
 
                 const complete = itemComplete || moduleComplete;
                 const locked = !!item.content_details?.locked_for_user;
 
-                let statusText = null;
-                let classname = "modcomp-notstart";
+                // 🔑 WEBINAR MODULES: skip generic text handling
+                if (isWebinarSession) {
+                    if (!complete && !isOptional) allComplete = false;
+                    return;
+                }
+
+                // Normal modules only
+                el.classList.remove(
+                    "modcomp-complete",
+                    "modcomp-inprogress",
+                    "modcomp-notstart"
+                );
 
                 if (complete) {
-                    statusText = "Status: Completed";
-                    classname = "modcomp-complete";
-
+                    el.textContent = "Status: Completed";
+                    el.classList.add("modcomp-complete");
                 } else if (!locked) {
-                    // Webinar rows defer incomplete handling
-                    if (isWebinarSession && this.isWebinarAppPage()) {
-                        classname = "modcomp-webinar-pending";
-                    } else {
-                        statusText = "Status: Not Completed";
-                        classname = "modcomp-inprogress";
-                    }
-
+                    el.textContent = "Status: Not Completed";
+                    el.classList.add("modcomp-inprogress");
+                    if (!isOptional) allComplete = false;
                 } else {
+                    el.classList.add("modcomp-notstart");
                     if (!isOptional) allComplete = false;
                 }
 
-                if (statusText !== null) {
-                    el.textContent = statusText;
-                }
-
-                el.classList.add(classname);
-
                 if (button) {
-                    button.classList.remove(
-                        "completed",
-                        "in-progress",
-                        "modcomp-complete",
-                        "modcomp-inprogress",
-                        "modcomp-notstart",
-                        "modcomp-noassign"
-                    );
-
-                    if (complete) {
-                        button.classList.add("completed", "modcomp-complete");
-                    } else if (!locked && !isWebinarSession) {
-                        button.classList.add("in-progress", "modcomp-inprogress");
-                    }
-                }
-
-                if (!complete && !isOptional) {
-                    allComplete = false;
+                    button.classList.remove("completed", "in-progress");
+                    if (complete) button.classList.add("completed");
+                    else if (!locked) button.classList.add("in-progress");
                 }
             });
 
-            // ----------------------------------
-            // Webinar session status logic
-            // ----------------------------------
-            if (this.isWebinarAppPage() && !allComplete) {
+            // ----------------------------
+            // Webinar session logic
+            // ----------------------------
+            if (this.isWebinarAppPage()) {
                 try {
                     const res = await fetch(
                         `/api/v1/appointment_groups?include[]=reserved_times&include[]=participant_count&include_past_appointments=true&per_page=50`,
-                        {
-                            credentials: "include",
-                            headers: { Accept: "application/json" }
-                        }
+                        { credentials: "include", headers: { Accept: "application/json" } }
                     );
 
-                    if (!res.ok) {
-                        console.warn("Failed to fetch appointment groups");
-                        return;
+                    if (res.ok) {
+                        const groups = await res.json();
+                        const now = new Date();
+
+                        const courseGroups = groups.filter(g =>
+                            g.context_codes?.includes(`course_${courseId}`)
+                        );
+
+                        document
+                            .querySelectorAll("[id^='ModComp'][data-web-session='true']")
+                            .forEach(el => {
+
+                                let statusText = "No Sessions Available";
+                                let classname = "modcomp-nosessions";
+
+                                const futureGroups = courseGroups.filter(
+                                    g => new Date(g.end_at) > now
+                                );
+
+                                const booked = futureGroups.find(
+                                    g => g.reserved_times?.length
+                                );
+
+                                if (booked) {
+                                    const rt = booked.reserved_times[0];
+                                    statusText =
+                                        `Session booked for ${this.formatDateTime(rt.start_at)}`;
+                                    classname = "modcomp-booked";
+                                } else if (
+                                    futureGroups.some(g => g.requiring_action)
+                                ) {
+                                    statusText = "Bookings Available";
+                                    classname = "modcomp-available";
+                                }
+
+                                el.textContent = statusText;
+                                el.className = `module-status ${classname}`;
+                            });
                     }
-
-                    const groups = await res.json();
-                    const now = new Date();
-
-                    const courseGroups = groups.filter(g =>
-                        g.context_codes?.includes(`course_${courseId}`)
-                    );
-
-                    const webinarModComps = document.querySelectorAll(
-                        "[id^='ModComp'][data-web-session='true']"
-                    );
-
-                    webinarModComps.forEach(el => {
-                        let statusText = "No Sessions Available";
-                        let classname = "modcomp-nosessions";
-
-                        const futureGroups = courseGroups.filter(
-                            g => new Date(g.end_at) > now
-                        );
-
-                        const availableGroups = futureGroups.filter(g =>
-                            this.hasAvailableSeats(g)
-                        );
-
-                        const bookedGroup = futureGroups.find(
-                            g => g.reserved_times?.length > 0
-                        );
-
-                        if (bookedGroup) {
-                            const rt = bookedGroup.reserved_times[0];
-                            statusText = `Webinar Booked for ${this.formatDateTime(rt.start_at)}`;
-                            classname = "modcomp-booked";
-
-                        } else if (availableGroups.some(g => g.requiring_action)) {
-                            statusText = "Sessions Available";
-                            classname = "modcomp-available";
-                        }
-
-                        el.textContent = statusText;
-                        el.classList.remove(
-                            "modcomp-booked",
-                            "modcomp-available",
-                            "modcomp-nosessions",
-                            "modcomp-webinar-pending"
-                        );
-                        el.classList.add(classname);
-                    });
-
                 } catch (err) {
-                    console.error("Webinar session status error:", err);
+                    console.error("Webinar status error:", err);
                 }
             }
 
             // ----------------------------
-            // Certificate logic (unchanged)
+            // Webinar button logic
             // ----------------------------
-            const certElement = document.querySelector("[id^='CompCertificate']");
-            const certButton = document.querySelector("[id^='CompCertButton']");
-
-            if (certElement) {
-                if (allComplete) {
-                    certElement.textContent = "Certificate Available";
-                    certElement.classList.add("cert-avail");
-                    certElement.classList.remove("cert-unavail");
-
-                    if (certButton) {
-                        certButton.classList.add("completed");
-                        certButton.classList.remove("in-progress");
-                        certButton.style.pointerEvents = "auto";
-                        certButton.style.cursor = "pointer";
-                        certButton.href = `${this.catalogBaseUrl}/dashboard/completed`;
-                    }
-                } else {
-                    certElement.textContent = "Course Incomplete";
-                    certElement.classList.add("cert-unavail");
-
-                    if (certButton) {
-                        certButton.classList.remove("completed");
-                        certButton.classList.add("in-progress");
-                        certButton.style.pointerEvents = "none";
-                        certButton.removeAttribute("href");
-                    }
-                }
+            const webinarButton = document.getElementById("webinarButton");
+            if (webinarButton && courseId) {
+                const today = new Date().toISOString().split("T")[0];
+                webinarButton.href =
+                    `${location.origin}/calendar#view_name=agenda&view_start=${today}&context_code=course_${courseId}`;
             }
 
             console.log("Module completion statuses updated.");
 
-        } catch (error) {
-            console.error("Error updating module completion status:", error);
+        } catch (err) {
+            console.error("Error updating module completion status:", err);
         }
     }
+
     // ----------------------------
     // Cleanup
     // ----------------------------
