@@ -1491,7 +1491,7 @@ class CanvasCustomizer {
                     );
 
                     const webinarModComps = document.querySelectorAll(
-                        "[id^='ModComp'][webinar_session='true']"
+                        "[id^='ModComp'][data-web-session='true']"
                     );
 
                     webinarModComps.forEach(el => {
