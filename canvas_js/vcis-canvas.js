@@ -328,6 +328,25 @@ class CanvasCustomizer {
         document.getElementById('hide-scheduler-dialog-style')?.remove();
     }
 
+    // for formatting JSON responses from API with timestamps
+    formatDateTime(isoString) {
+        const d = new Date(isoString);
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        const hh = String(d.getHours()).padStart(2, "0");
+        const min = String(d.getMinutes()).padStart(2, "0");
+        return `${dd}-${mm}-${yyyy} at ${hh}:${min}`;
+    }
+
+
+    // for webinar session checks logic
+    hasAvailableSeats(group) {
+        if (group.participants_per_appointment == null) return true;
+        return group.participant_count < group.participants_per_appointment;
+    }
+
+
     autoSelectWebinarAppointment() {
         if (!this.isCalendarPage() || !this.hasWebinarContext()) {
             return;
@@ -1444,6 +1463,82 @@ class CanvasCustomizer {
                     allComplete = false;
                 }
             });
+
+            // ----------------------------------
+            // Webinar session status logic
+            // ----------------------------------
+            if (this.isWebinarAppPage() && !allComplete) {
+                try {
+                    const res = await fetch(
+                        `/api/v1/appointment_groups?include[]=reserved_times&include[]=participant_count&include_past_appointments=true&per_page=50`,
+                        {
+                            credentials: "include",
+                            headers: { "Accept": "application/json" }
+                        }
+                    );
+
+                    if (!res.ok) {
+                        console.warn("Failed to fetch appointment groups");
+                        return;
+                    }
+
+                    const groups = await res.json();
+                    const now = new Date();
+
+                    // Only groups for THIS course
+                    const courseGroups = groups.filter(g =>
+                        g.context_codes?.includes(`course_${courseId}`)
+                    );
+
+                    const webinarModComps = document.querySelectorAll(
+                        "[id^='ModComp'][webinar_session='true']"
+                    );
+
+                    webinarModComps.forEach(el => {
+                        let statusText = "No Sessions Available";
+                        let classname = "modcomp-nosessions";
+
+                        // Future sessions only
+                        const futureGroups = courseGroups.filter(g =>
+                            new Date(g.end_at) > now
+                        );
+
+                        const availableGroups = futureGroups.filter(g =>
+                            this.hasAvailableSeats(g)
+                        );
+
+                        // Check if user already booked
+                        const bookedGroup = futureGroups.find(g =>
+                            g.reserved_times?.length > 0
+                        );
+
+                        if (bookedGroup) {
+                            const rt = bookedGroup.reserved_times[0];
+                            statusText = `Webinar Booked for ${this.formatDateTime(rt.start_at)}`;
+                            classname = "modcomp-booked";
+
+                        } else if (
+                            availableGroups.some(g => g.requiring_action === true)
+                        ) {
+                            statusText = "Sessions Available";
+                            classname = "modcomp-available";
+                        }
+
+                        el.textContent = statusText;
+
+                        el.classList.remove(
+                            "modcomp-booked",
+                            "modcomp-available",
+                            "modcomp-nosessions"
+                        );
+                        el.classList.add(classname);
+                    });
+
+                } catch (err) {
+                    console.error("Webinar session status error:", err);
+                }
+            }
+
 
             // ----------------------------
             //  Certificate logic (unchanged)
