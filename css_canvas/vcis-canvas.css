@@ -135,7 +135,10 @@ display: none;
 	display:none;
 }
 
-
+.reserve_event_link { 
+    font-size: larger;
+    margin-left: -8px;
+}
 
 
 /* course pages CSS */
