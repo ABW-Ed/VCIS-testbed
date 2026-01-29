@@ -535,6 +535,184 @@ class CanvasCustomizer {
         });
     }
 
+    // adds UI improvements to webinar signup functions
+    agendaEventMod() {
+
+        // -----------------------------
+        // Small helper: toast near mouse
+        // -----------------------------
+        let lastMouse = { x: 0, y: 0 };
+        document.addEventListener("mousemove", e => {
+            lastMouse.x = e.clientX;
+            lastMouse.y = e.clientY;
+        });
+
+        const showMouseToast = (message) => {
+            const toast = document.createElement("div");
+            toast.textContent = message;
+
+            Object.assign(toast.style, {
+                position: "fixed",
+                top: (lastMouse.y + 12) + "px",
+                left: (lastMouse.x + 12) + "px",
+                background: "rgba(0,0,0,0.85)",
+                color: "#fff",
+                padding: "6px 10px",
+                borderRadius: "4px",
+                fontSize: "12px",
+                zIndex: 999999,
+                pointerEvents: "none",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.3)"
+            });
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 2000);
+        };
+
+        // --------------------------------
+        // Copy logic: link or text fallback
+        // --------------------------------
+        const copyEventDetails = (container) => {
+            const overflow = container.querySelector(".event-detail-overflow");
+            if (!overflow) return;
+
+            // Prefer link if present
+            const link = overflow.querySelector("a[href]");
+            const textToCopy = link
+                ? link.href
+                : overflow.textContent.trim();
+
+            if (!textToCopy) return;
+
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    showMouseToast("Link copied to clipboard");
+                    console.log("📋 Copied to clipboard:", textToCopy);
+                })
+                .catch(err => {
+                    console.error("Clipboard copy failed:", err);
+                    showMouseToast("Failed to copy");
+                });
+        };
+
+        // -----------------------------
+        // Add Copy button (idempotent)
+        // -----------------------------
+        const addCopyButton = (pop) => {
+            const userContent = pop.querySelector(".user_content");
+            if (!userContent) return;
+
+            // Prevent duplicates
+            if (userContent.querySelector(".canvas-copy-link-btn")) return;
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.textContent = "Copy link";
+            btn.className = "Button Button--small canvas-copy-link-btn";
+
+            Object.assign(btn.style, {
+                marginTop: "6px",
+                display: "inline-block"
+            });
+
+            btn.addEventListener("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+                copyEventDetails(userContent);
+            });
+
+            userContent.appendChild(btn);
+        };
+
+        // -----------------------------
+        // Rename + enhancements
+        // -----------------------------
+        const updateEventDetails = (pop) => {
+            if (!pop) return;
+
+            // Rename headers
+            const headers = pop.querySelectorAll("th[scope='row']");
+            headers.forEach(th => {
+                const label = th.textContent.trim();
+
+                if (label === "Source Calendar") {
+                    th.textContent = "Webinar Name";
+                }
+
+                // Future rules go here
+                // if (label === "Location") th.textContent = "Delivery Method";
+            });
+
+            // Add copy button
+            addCopyButton(pop);
+        };
+
+        // -----------------------------
+        // Handle popover open
+        // -----------------------------
+        const handleOpen = () => {
+            requestAnimationFrame(() => {
+                const pop = document.getElementById("event-details-trap-focus");
+                if (!pop) return;
+
+                updateEventDetails(pop);
+
+                // Watch for async re-renders inside popover
+                const innerObserver = new MutationObserver(() => {
+                    updateEventDetails(pop);
+                });
+
+                innerObserver.observe(pop, {
+                    childList: true,
+                    subtree: true
+                });
+
+                // Cleanup when popover removed
+                const cleanupObserver = new MutationObserver(muts => {
+                    muts.forEach(m => {
+                        m.removedNodes.forEach(n => {
+                            if (n === pop) {
+                                innerObserver.disconnect();
+                            }
+                        });
+                    });
+                });
+
+                cleanupObserver.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            });
+        };
+
+        // -----------------------------
+        // ARIA-expanded hook
+        // -----------------------------
+        const observer = new MutationObserver(mutations => {
+            for (const m of mutations) {
+                if (
+                    m.type === "attributes" &&
+                    m.attributeName === "aria-expanded" &&
+                    m.target.classList.contains("agenda-event__item-container") &&
+                    m.target.getAttribute("aria-expanded") === "true"
+                ) {
+                    handleOpen();
+                }
+            }
+        });
+
+        observer.observe(document.body, {
+            attributes: true,
+            subtree: true,
+            attributeFilter: ["aria-expanded"]
+        });
+
+        console.log("✅ Canvas event details customiser + copy button installed");
+
+    };
+
+
 
     // Global Customisations
 
@@ -677,6 +855,8 @@ class CanvasCustomizer {
 
                     // Hide again post-DOM mutation (Canvas sometimes re-renders)
                     hideCreateEventLinkIfStudent();
+                    // insert ui improvements
+                    agendaEventMod();
 
                 } catch (error) {
                     console.warn(`Failed to load webinar HTML from ${contentUrl}`, error);
