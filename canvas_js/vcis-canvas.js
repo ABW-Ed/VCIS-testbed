@@ -632,9 +632,20 @@ class CanvasCustomizer {
             return;
         }
 
+        // ⛔ Student-only: hide "Create new event"
+        const hideCreateEventLinkIfStudent = () => {
+            if (!this.isStudent()) return;
+
+            const createLink = document.getElementById('create_new_event_link');
+            if (createLink) {
+                createLink.style.display = 'none';
+            }
+        };
+
         this.waitFor(
             () => document.getElementById('calendar-app'),
             async (calendarApp) => {
+
                 // Re-check idempotency after wait (SPA-safe)
                 if (document.getElementById('webinar-event-information')) {
                     this.state.webinarInsertInProgress = false;
@@ -642,6 +653,9 @@ class CanvasCustomizer {
                 }
 
                 try {
+                    // Hide create link once calendar is present
+                    hideCreateEventLinkIfStudent();
+
                     const response = await fetch(contentUrl, {
                         credentials: 'omit',
                         cache: 'no-cache'
@@ -660,6 +674,10 @@ class CanvasCustomizer {
                     calendarApp.parentNode.insertBefore(wrapper, calendarApp);
 
                     console.log(`Inserted webinar event information (${contentUrl})`);
+
+                    // Hide again post-DOM mutation (Canvas sometimes re-renders)
+                    hideCreateEventLinkIfStudent();
+
                 } catch (error) {
                     console.warn(`Failed to load webinar HTML from ${contentUrl}`, error);
                 } finally {
@@ -676,6 +694,7 @@ class CanvasCustomizer {
             this.state.webinarInsertInProgress = false;
         });
     }
+
 
 
     updateDashboardLink() {
