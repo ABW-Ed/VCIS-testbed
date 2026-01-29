@@ -114,6 +114,12 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 /* css for webinar calendar changes */
 
+/* hide comments box from students */
+#event-details-trap-focus .event-details-links > p {
+display: none;
+}
+
+/* make nice transition glow thing when highlighting a session */
 .agenda-event__item-container {
     transition: background-color .1s linear;
 }
@@ -123,12 +129,10 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
     background-color: #eee;
 }
 
+
+/* remove the calendar changing buttons */
 #calendar_header .calendar_view_buttons.btn-group {
 	display:none;
-}
-
-#create_new_event_link {
-	display: none;
 }
 
 
