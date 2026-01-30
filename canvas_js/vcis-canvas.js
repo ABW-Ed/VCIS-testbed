@@ -1701,6 +1701,8 @@ class CanvasCustomizer {
                         { credentials: "include", headers: { Accept: "application/json" } }
                     );
 
+                    console.log("res status:",res);
+
                     if (res.ok) {
                         const groups = await res.json();
                         const now = new Date();
