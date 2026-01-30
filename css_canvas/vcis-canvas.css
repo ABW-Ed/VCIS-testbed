@@ -1,3 +1,5 @@
+/* core Canvas changes */
+
 /* add space for VIC logo so it does not hit border of strip */
 .ic-app-header__logomark-container {
      padding: 4px; 
@@ -14,13 +16,12 @@
     display: none;
 }
 
-
-
+/* full window hack - it may not be necessary with the new feature */
 body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content-only) .ic-Layout-wrapper { 
     max-width: none!important;
 }
 
-
+/* custom VCIS brand classes */
 .vcishover-fade {
   display: inline-block;
   vertical-align: middle;
@@ -75,9 +76,6 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 }
 
-
-
-
 .vcishover-glow {
   display: inline-block;
   vertical-align: middle;
@@ -113,6 +111,32 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 
 
 /* css for webinar calendar changes */
+
+/* toast is for the Link Copy button properties when the popup occurs */
+.canvas-webinar-toast {
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+        opacity 200ms ease,
+        transform 200ms ease;
+}
+
+.canvas-webinar-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.canvas-webinar-toast.is-hiding {
+    opacity: 0;
+    transform: translateY(4px);
+}
 
 /* hide comments box from students */
 #event-details-trap-focus .event-details-links > p {
