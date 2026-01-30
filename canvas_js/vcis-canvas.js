@@ -603,7 +603,16 @@ class CanvasCustomizer {
 
             const noEventsSpan = document.querySelector('span.agendaView--no-assignments');
 
-            if (!noEventsSpan) {
+            const agendaItems = document.querySelectorAll('.agenda-event__item-container');
+            const hasSingleAgendaItem = agendaItems.length === 1;
+
+            // Unified check
+            const noOrSingleEvent =
+                !!noEventsSpan || hasSingleAgendaItem;
+
+
+
+            if (noOrSingleEvent) {
                 console.log('Webinar events detected, stopping retries');
                 finish();
                 return;
@@ -632,7 +641,7 @@ class CanvasCustomizer {
                 if (select && urlCourseId) {
                     const option = [...select.options].find(o => o.value === urlCourseId);
                     console.log("found option", option);
-                    
+
 
                     if (option) {
                         // ✅ Matching course exists → select it
