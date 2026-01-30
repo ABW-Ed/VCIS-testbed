@@ -1735,7 +1735,7 @@ class CanvasCustomizer {
                                     g => g.reserved_times?.length
                                 );
 
-                                console.lg("booked var =",booked);
+                                console.log("booked var =",booked);
 
                                 if (booked) {
                                     const rt = booked.reserved_times[0];
