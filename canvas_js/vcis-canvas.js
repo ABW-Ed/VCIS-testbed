@@ -754,7 +754,9 @@ class CanvasCustomizer {
         console.log('Waiting for calendar hydration before auto-select');
 
         this.waitFor(
-            () => document.querySelector('.agendaView--no-assignments'),
+            () =>
+                document.querySelector('.agendaView--no-assignments') ||
+                document.querySelector('.agenda-event__item-container'),
             () => {
                 console.log('Calendar agenda view hydrated');
                 this.autoSelectWebinarAppointment();
