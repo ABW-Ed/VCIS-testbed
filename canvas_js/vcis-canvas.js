@@ -513,8 +513,11 @@ class CanvasCustomizer {
             borderRadius: '4px',
             fontSize: '12px',
             zIndex: 999999,
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            transition-duration: 0.3s
         });
+
+        
 
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 2000);
