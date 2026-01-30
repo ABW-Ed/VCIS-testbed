@@ -570,15 +570,18 @@ class CanvasCustomizer {
         const RETRY_DELAY = 2000;
         let attempt = 0;
 
+        // NEW: track whether we've actually run the Find flow
+        let hasRunFindFlow = false;
+
         const styleId = 'hide-no-assignments';
         if (!document.getElementById(styleId)) {
             const style = document.createElement('style');
             style.id = styleId;
             style.textContent = `
-              span.agendaView--no-assignments {
-                display: none !important;
-              }
-            `;
+          span.agendaView--no-assignments {
+            display: none !important;
+          }
+        `;
             document.head.appendChild(style);
         }
 
@@ -606,13 +609,10 @@ class CanvasCustomizer {
             const agendaItems = document.querySelectorAll('.agenda-event__item-container');
             const hasSingleAgendaItem = agendaItems.length === 1;
 
-            // Unified check
-            const noOrSingleEvent =
-                !!noEventsSpan || hasSingleAgendaItem;
-
-
-
-            if (noOrSingleEvent) {
+            // ✅ FIXED stop condition:
+            // - Always stop on "no assignments"
+            // - Only stop on single item AFTER Find flow has run
+            if (noEventsSpan || (hasRunFindFlow && hasSingleAgendaItem)) {
                 console.log('Webinar events detected, stopping retries');
                 finish();
                 return;
@@ -630,6 +630,9 @@ class CanvasCustomizer {
             if (findButton) {
                 this.hideSchedulerDialog();
                 findButton.click();
+
+                // NEW: mark that we've triggered the Find flow
+                hasRunFindFlow = true;
             }
 
             setTimeout(() => {
@@ -641,7 +644,6 @@ class CanvasCustomizer {
                 if (select && urlCourseId) {
                     const option = [...select.options].find(o => o.value === urlCourseId);
                     console.log("found option", option);
-
 
                     if (option) {
                         // ✅ Matching course exists → select it
@@ -685,7 +687,6 @@ class CanvasCustomizer {
             finish();
         });
     }
-
 
     // Global Customisations
 
