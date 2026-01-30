@@ -452,6 +452,10 @@ class CanvasCustomizer {
             if (label === 'Source Calendar') {
                 th.textContent = 'Webinar Name';
             }
+
+            if (label === 'Slots Available') {
+                th.textContent = 'Seats Remaining';
+            }
         });
 
         this._addWebinarCopyLinkButton(pop);
