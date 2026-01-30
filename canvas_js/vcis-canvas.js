@@ -385,11 +385,11 @@ class CanvasCustomizer {
         const style = document.createElement('style');
         style.id = 'hide-scheduler-dialog-style';
         style.textContent = `
-    form[role="dialog"] {
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-  `;
+        form[role="dialog"] {
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+      `;
         document.head.appendChild(style);
     }
 
@@ -443,24 +443,40 @@ class CanvasCustomizer {
         });
     }
 
+
+    // adds details for webinar calendar patch
+    // adds details for webinar calendar patch
     _updateWebinarEventDetailsPopover(pop) {
         if (!pop) return;
 
         // Rename headers
         pop.querySelectorAll("th[scope='row']").forEach(th => {
             const label = th.textContent.trim();
-            if (label === 'Source Calendar') {
-                th.textContent = 'Webinar Name';
-            }
 
-            if (label === 'Slots Available') {
-                th.textContent = 'Seats Remaining';
+            switch (label) {
+                case 'Source Calendar':
+                    th.textContent = 'Webinar Name';
+                    break;
+
+                case 'Slots available':
+                    th.textContent = 'Places Remaining';
+                    break;
+
+                // Optional: if Canvas ever reverts / re-renders originals,
+                // this ensures idempotency even if already renamed
+                case 'Webinar Name':
+                case 'Places Remaining':
+                    // already patched — do nothing
+                    break;
             }
         });
 
         this._addWebinarCopyLinkButton(pop);
     }
 
+
+
+    // function for making link copy for calendar webinar patch
     _addWebinarCopyLinkButton(pop) {
         const userContent = pop.querySelector('.user_content');
         if (!userContent) return;
@@ -500,6 +516,9 @@ class CanvasCustomizer {
         const toast = document.createElement('div');
         toast.textContent = message;
 
+        // Assign class for styling + transitions
+        toast.className = 'canvas-webinar-toast';
+
         const x = this._lastMouse?.x || 20;
         const y = this._lastMouse?.y || 20;
 
@@ -507,19 +526,27 @@ class CanvasCustomizer {
             position: 'fixed',
             top: (y + 12) + 'px',
             left: (x + 12) + 'px',
-            background: 'rgba(0,0,0,0.85)',
-            color: '#fff',
-            padding: '6px 10px',
-            borderRadius: '4px',
-            fontSize: '12px',
             zIndex: 999999,
             pointerEvents: 'none'
         });
 
-        
-
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2000);
+
+        // Trigger fade-in
+        requestAnimationFrame(() => {
+            toast.classList.add('is-visible');
+        });
+
+        // Fade out before removal
+        setTimeout(() => {
+            toast.classList.remove('is-visible');
+            toast.classList.add('is-hiding');
+        }, 1600);
+
+        // Remove after transition completes
+        setTimeout(() => {
+            toast.remove();
+        }, 2200);
     }
 
 
@@ -546,10 +573,10 @@ class CanvasCustomizer {
             const style = document.createElement('style');
             style.id = styleId;
             style.textContent = `
-          span.agendaView--no-assignments {
-            display: none !important;
-          }
-        `;
+              span.agendaView--no-assignments {
+                display: none !important;
+              }
+            `;
             document.head.appendChild(style);
         }
 
@@ -735,11 +762,7 @@ class CanvasCustomizer {
         this.state.webinarInsertInProgress = true;
 
 
-        // ugly webinar popup hacks
-
-
-
-
+        // check for missing courses in html bucket
         const contentUrl = this.getWebinarHtmlUrl();
         if (!contentUrl) {
             console.warn('Webinar context detected but no matching HTML found');
@@ -806,7 +829,6 @@ class CanvasCustomizer {
                 }
 
                 try {
-                    // Hide create link once calendar is present
                     // Hide create link once calendar is present
                     hideCreateEventLinkIfStudent();
 
@@ -1037,11 +1059,11 @@ class CanvasCustomizer {
             clone = document.createElement("div");
             clone.className = "content-box vcis-layout-rightbutton";
             clone.innerHTML = `
-      <a href="/courses/${courseId}" class="Button icon">
-        <span aria-hidden="true">Return to Course Page</span>
-        <span class="screenreader-only">Return to Course Page</span>
-      </a>
-    `;
+          <a href="/courses/${courseId}" class="Button icon">
+            <span aria-hidden="true">Return to Course Page</span>
+            <span class="screenreader-only">Return to Course Page</span>
+          </a>
+        `;
 
             // Insert before closing </div> of #main.ic-Layout-columns
             const main = document.querySelector('#main.ic-Layout-columns');
