@@ -329,6 +329,10 @@ class CanvasCustomizer {
         return !!window.ENV?.WIKI_PAGES_PATH;
     }
 
+    isWebinarCoursePage() {
+        return ["254", "255", "256", "257", "258", "259", "212"].includes(window.ENV?.COURSE_ID);
+    }
+
     isQuizPage() {
         return window.ENV?.active_context_tab === "quizzes";
     }
@@ -1695,7 +1699,7 @@ class CanvasCustomizer {
             // ----------------------------
             // Webinar session logic
             // ----------------------------
-            if (this.isWebinarAppPage()) {
+            if (this.isWebinarCoursePage()) {
                 try {
                     const res = await fetch(
                         `/api/v1/appointment_groups?include[]=reserved_times&include[]=participant_count&include_past_appointments=true&per_page=50`,
