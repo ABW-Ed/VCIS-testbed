@@ -625,10 +625,14 @@ class CanvasCustomizer {
 
             setTimeout(() => {
                 const select = document.querySelector('select[data-testid="select-course"]');
+                console.log("found select", select);
                 const urlCourseId = getCourseIdFromUrl();
+                console.log("found urlCourseId", urlCourseId);
 
                 if (select && urlCourseId) {
                     const option = [...select.options].find(o => o.value === urlCourseId);
+                    console.log("found option", option);
+                    
 
                     if (option) {
                         // ✅ Matching course exists → select it
