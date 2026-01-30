@@ -781,8 +781,8 @@ class CanvasCustomizer {
     createWebinarReturnButton() {
         if (document.getElementById("webinar-return-button")) return;
 
-        const courseId = window.ENV?.COURSE_ID;
-        if (!courseId) return;
+        //const courseId = window.ENV?.COURSE_ID;
+        //if (!courseId) return;
 
         const btn = document.createElement("a");
         btn.id = "webinar-return-button";
