@@ -1659,9 +1659,10 @@ class CanvasCustomizer {
                 const complete = itemComplete || moduleComplete;
                 const locked = !!item.content_details?.locked_for_user;
 
-                // 🔑 WEBINAR MODULES: skip generic text handling
+                // WEBINAR MODULES: skip generic text handling
                 if (isWebinarSession) {
                     if (!complete && !isOptional) allComplete = false;
+                    console.log("webinar module - not allcomplete yet");
                     return;
                 }
 
