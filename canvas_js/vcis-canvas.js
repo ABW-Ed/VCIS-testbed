@@ -1706,16 +1706,16 @@ class CanvasCustomizer {
                         { credentials: "include", headers: { Accept: "application/json" } }
                     );
 
-                    console.log("res status:",res);
+                    console.log("res status:", res);
 
                     if (res.ok) {
                         const groups = await res.json();
                         const now = new Date();
-                        console.log("groups var =",groups," now var =",now);
+                        console.log("groups var =", groups, " now var =", now);
 
                         const courseGroups = groups.filter(g =>
                             g.context_codes?.includes(`course_${courseId}`)
-                            
+
                         );
 
                         document
@@ -1729,13 +1729,13 @@ class CanvasCustomizer {
                                     g => new Date(g.end_at) > now
                                 );
 
-                                console.log("futuregroup var = ",futureGroups);
+                                console.log("futuregroup var = ", futureGroups);
 
                                 const booked = futureGroups.find(
                                     g => g.reserved_times?.length
                                 );
 
-                                console.log("booked var =",booked);
+                                console.log("booked var =", booked);
 
                                 if (booked) {
                                     const rt = booked.reserved_times[0];
@@ -1755,6 +1755,42 @@ class CanvasCustomizer {
                     }
                 } catch (err) {
                     console.error("Webinar status error:", err);
+                }
+            }
+
+
+            // ----------------------------
+            //  Certificate logic (unchanged)
+            // ----------------------------
+            const certElement = document.querySelector("[id^='CompCertificate']");
+            const certButton = document.querySelector("[id^='CompCertButton']");
+
+            if (certElement) {
+                if (allComplete) {
+                    certElement.textContent = "Certificate Available";
+                    certElement.classList.remove("cert-unavail");
+                    certElement.classList.add("cert-avail");
+
+                    if (certButton) {
+                        certButton.classList.remove("in-progress");
+                        certButton.classList.add("completed");
+                        certButton.style.pointerEvents = "auto";
+                        certButton.style.cursor = "pointer";
+
+                        const catalogUrl = this.catalogBaseUrl;
+                        certButton.setAttribute("href", `${catalogUrl}/dashboard/completed`);
+                    }
+                } else {
+                    certElement.textContent = "Course Incomplete";
+                    certElement.classList.add("cert-unavail");
+
+                    if (certButton) {
+                        certButton.classList.remove("completed");
+                        certButton.classList.add("in-progress");
+                        certButton.style.pointerEvents = "none";
+                        certButton.style.cursor = "default";
+                        certButton.removeAttribute("href");
+                    }
                 }
             }
 
