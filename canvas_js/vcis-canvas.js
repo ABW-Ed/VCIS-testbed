@@ -751,6 +751,34 @@ class CanvasCustomizer {
         });
     }
 
+    createWebinarReturnButton() {
+        if (document.getElementById("webinar-return-button")) return;
+
+        const courseId = window.ENV?.COURSE_ID;
+        if (!courseId) return;
+
+        const btn = document.createElement("a");
+        btn.id = "webinar-return-button";
+        btn.href = `/courses/${courseId}`;
+        btn.textContent = "← Return to Course Page";
+        btn.className = "Button Button--secondary webinar-return-btn";
+
+        Object.assign(btn.style, {
+            display: "inline-block",
+            margin: "0 0 12px 0"
+        });
+
+        // Try to place near calendar header
+        const calendarHeader =
+            document.querySelector(".calendar-header") ||
+            document.querySelector("#calendar-app") ||
+            document.body;
+
+        calendarHeader.prepend(btn);
+
+        console.log("✅ Webinar return button added");
+    }
+
 
     insertWebinarEventInformation() {
         // Only run on webinar agenda calendar view
@@ -836,6 +864,9 @@ class CanvasCustomizer {
 
                     // Enable webinar popover tweaks + copy button
                     enableWebinarPopoverCustomisations();
+
+                    // Add return-to-course button for webinar calendar
+                    this.createWebinarReturnButton();
 
                     const response = await fetch(contentUrl, {
                         credentials: 'omit',
@@ -1802,7 +1833,7 @@ class CanvasCustomizer {
             // ----------------------------
             // Webinar button logic
             // ----------------------------
- 
+
             const webinarButton = document.getElementById("webinarButton");
             if (webinarButton && courseId) {
                 const today = new Date().toISOString().split("T")[0];
