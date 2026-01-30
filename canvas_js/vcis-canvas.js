@@ -1802,9 +1802,7 @@ class CanvasCustomizer {
             // ----------------------------
             // Webinar button logic
             // ----------------------------
-            // ----------------------------
-            // Webinar button logic
-            // ----------------------------
+ 
             const webinarButton = document.getElementById("webinarButton");
             if (webinarButton && courseId) {
                 const today = new Date().toISOString().split("T")[0];
@@ -1812,19 +1810,19 @@ class CanvasCustomizer {
                     `${location.origin}/calendar#view_name=agenda&view_start=${today}&context_code=course_${courseId}`;
 
                 // Reset classes like other module buttons
-                webinarButton.classList.remove("completed", "in-progress", "not-started");
+                webinarButton.classList.remove("completed", "in-progress", "not-started", "incomplete");
 
                 switch (webinarButtonState) {
                     case "booked":
                         webinarButton.textContent = "View My Booking";
-                        webinarButton.classList.add("not-started");
+                        webinarButton.classList.add("completed");
                         webinarButton.style.pointerEvents = "auto";
                         webinarButton.style.cursor = "pointer";
                         break;
 
                     case "available":
                         webinarButton.textContent = "Register Now";
-                        webinarButton.classList.add("in-progress");
+                        webinarButton.classList.add("incomplete");
                         webinarButton.style.pointerEvents = "auto";
                         webinarButton.style.cursor = "pointer";
                         break;
