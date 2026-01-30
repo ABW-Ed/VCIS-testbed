@@ -738,17 +738,28 @@ class CanvasCustomizer {
         this.hideAttemptBlock();
         this.customizeHelpTray();
         this.updateDashboardLink();
-        // this.createHomeButtons();
         this.insertWebinarEventInformation();
-        this.queueWebinarAutoSelect();
 
-
+        // Don't re-queue while auto-select is running or finished
+        if (
+            !this.state.autoSelectingWebinar &&
+            !this.state.webinarAppointmentSelected
+        ) {
+            this.queueWebinarAutoSelect();
+        }
     }
-
     queueWebinarAutoSelect() {
         if (!this.isCalendarPage() || !this.hasWebinarContext()) return;
 
-        if (this.state.webinarAutoQueued) return;
+        // HARD guard: never queue again once auto-select has started or completed
+        if (
+            this.state.webinarAutoQueued ||
+            this.state.autoSelectingWebinar ||
+            this.state.webinarAppointmentSelected
+        ) {
+            return;
+        }
+
         this.state.webinarAutoQueued = true;
 
         console.log('Waiting for calendar hydration before auto-select');
