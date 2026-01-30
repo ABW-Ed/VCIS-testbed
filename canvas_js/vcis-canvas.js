@@ -675,7 +675,7 @@ class CanvasCustomizer {
 
                 // Retry again after delay
                 setTimeout(tryOnce, RETRY_DELAY);
-            }, 200);
+            }, 600);
         };
 
         this.waitFor(
