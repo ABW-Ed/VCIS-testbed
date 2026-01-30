@@ -781,8 +781,13 @@ class CanvasCustomizer {
     createWebinarReturnButton() {
         if (document.getElementById("webinar-return-button")) return;
 
-        //const courseId = window.ENV?.COURSE_ID;
-        //if (!courseId) return;
+            const getCourseIdFromUrl2 = () => {
+            const hashParams = new URLSearchParams(window.location.hash.slice(1));
+            const code = hashParams.get('context_code'); // e.g., "course_257"
+            return code ? code.replace('course_', '') : null;
+        };
+        const courseId = getCourseIdFromUrl;
+        if (!courseId) return;
 
         const btn = document.createElement("a");
         btn.id = "webinar-return-button";
