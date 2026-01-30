@@ -397,6 +397,9 @@ class CanvasCustomizer {
         document.getElementById('hide-scheduler-dialog-style')?.remove();
     }
 
+
+
+
     // for formatting JSON responses from API with timestamps
     formatDateTime(isoString) {
         const d = new Date(isoString);
@@ -414,6 +417,106 @@ class CanvasCustomizer {
         if (group.participants_per_appointment == null) return true;
         return group.participant_count < group.participants_per_appointment;
     }
+
+
+
+    _handleWebinarPopoverOpen() {
+        requestAnimationFrame(() => {
+            const pop = document.getElementById('event-details-trap-focus');
+            if (!pop) return;
+
+            this._updateWebinarEventDetailsPopover(pop);
+
+            // Watch for async re-renders inside popover
+            if (this._webinarInnerObserver) {
+                this._webinarInnerObserver.disconnect();
+            }
+
+            this._webinarInnerObserver = new MutationObserver(() => {
+                this._updateWebinarEventDetailsPopover(pop);
+            });
+
+            this._webinarInnerObserver.observe(pop, {
+                childList: true,
+                subtree: true
+            });
+        });
+    }
+
+    _updateWebinarEventDetailsPopover(pop) {
+        if (!pop) return;
+
+        // Rename headers
+        pop.querySelectorAll("th[scope='row']").forEach(th => {
+            const label = th.textContent.trim();
+            if (label === 'Source Calendar') {
+                th.textContent = 'Webinar Name';
+            }
+        });
+
+        this._addWebinarCopyLinkButton(pop);
+    }
+
+    _addWebinarCopyLinkButton(pop) {
+        const userContent = pop.querySelector('.user_content');
+        if (!userContent) return;
+
+        if (userContent.querySelector('.canvas-copy-link-btn')) return;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'Copy link';
+        btn.className = 'Button Button--small canvas-copy-link-btn';
+        btn.style.marginTop = '6px';
+
+        btn.addEventListener('click', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            this._copyWebinarEventDetails(userContent);
+        });
+
+        userContent.appendChild(btn);
+    }
+
+    _copyWebinarEventDetails(container) {
+        const overflow = container.querySelector('.event-detail-overflow');
+        if (!overflow) return;
+
+        const link = overflow.querySelector('a[href]');
+        const textToCopy = link ? link.href : overflow.textContent.trim();
+        if (!textToCopy) return;
+
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => this._showWebinarMouseToast('Link copied to clipboard'))
+            .catch(() => this._showWebinarMouseToast('Failed to copy'));
+    }
+
+
+    _showWebinarMouseToast(message) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+
+        const x = this._lastMouse?.x || 20;
+        const y = this._lastMouse?.y || 20;
+
+        Object.assign(toast.style, {
+            position: 'fixed',
+            top: (y + 12) + 'px',
+            left: (x + 12) + 'px',
+            background: 'rgba(0,0,0,0.85)',
+            color: '#fff',
+            padding: '6px 10px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            zIndex: 999999,
+            pointerEvents: 'none'
+        });
+
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+
+
 
 
     autoSelectWebinarAppointment() {
@@ -625,6 +728,12 @@ class CanvasCustomizer {
         if (this.state.webinarInsertInProgress) return;
         this.state.webinarInsertInProgress = true;
 
+
+        // ugly webinar popup hacks
+
+
+
+
         const contentUrl = this.getWebinarHtmlUrl();
         if (!contentUrl) {
             console.warn('Webinar context detected but no matching HTML found');
@@ -632,7 +741,45 @@ class CanvasCustomizer {
             return;
         }
 
-        // ⛔ Student-only: hide "Create new event"
+        // repatch dialog boxes
+
+        // Enable webinar popover customisations (idempotent)
+        const enableWebinarPopoverCustomisations = () => {
+            if (this._webinarPopoverCustomiserEnabled) return;
+            this._webinarPopoverCustomiserEnabled = true;
+
+            // Track mouse for toast positioning
+            this._lastMouse = this._lastMouse || { x: 0, y: 0 };
+            document.addEventListener('mousemove', this._webinarMouseMoveHandler ||= (e) => {
+                this._lastMouse.x = e.clientX;
+                this._lastMouse.y = e.clientY;
+            });
+
+            // Watch agenda aria-expanded
+            this._webinarAgendaObserver = new MutationObserver(mutations => {
+                for (const m of mutations) {
+                    if (
+                        m.type === 'attributes' &&
+                        m.attributeName === 'aria-expanded' &&
+                        m.target.classList.contains('agenda-event__item-container') &&
+                        m.target.getAttribute('aria-expanded') === 'true'
+                    ) {
+                        this._handleWebinarPopoverOpen();
+                    }
+                }
+            });
+
+            this._webinarAgendaObserver.observe(document.body, {
+                attributes: true,
+                subtree: true,
+                attributeFilter: ['aria-expanded']
+            });
+
+            console.log('✅ Webinar popover customisations enabled');
+        };
+
+
+        // Student-only: hide "Create new event"
         const hideCreateEventLinkIfStudent = () => {
             if (!this.isStudent()) return;
 
@@ -654,7 +801,11 @@ class CanvasCustomizer {
 
                 try {
                     // Hide create link once calendar is present
+                    // Hide create link once calendar is present
                     hideCreateEventLinkIfStudent();
+
+                    // Enable webinar popover tweaks + copy button
+                    enableWebinarPopoverCustomisations();
 
                     const response = await fetch(contentUrl, {
                         credentials: 'omit',
@@ -676,7 +827,11 @@ class CanvasCustomizer {
                     console.log(`Inserted webinar event information (${contentUrl})`);
 
                     // Hide again post-DOM mutation (Canvas sometimes re-renders)
+                    // Hide create link once calendar is present
                     hideCreateEventLinkIfStudent();
+
+                    // Enable webinar popover tweaks + copy button
+                    enableWebinarPopoverCustomisations();
 
                 } catch (error) {
                     console.warn(`Failed to load webinar HTML from ${contentUrl}`, error);
