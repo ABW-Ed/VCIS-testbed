@@ -1632,6 +1632,8 @@ class CanvasCustomizer {
             const modules = await res.json();
             const allItems = modules.flatMap(m => m.items || []);
 
+            let webinarButtonState = null;
+
             let allComplete = true;
 
             // ----------------------------
@@ -1729,28 +1731,31 @@ class CanvasCustomizer {
                                     g => new Date(g.end_at) > now
                                 );
 
-                                console.log("futuregroup var = ", futureGroups);
-
                                 const booked = futureGroups.find(
                                     g => g.reserved_times?.length
                                 );
-
-                                console.log("booked var =", booked);
 
                                 if (booked) {
                                     const rt = booked.reserved_times[0];
                                     statusText =
                                         `Session booked for ${this.formatDateTime(rt.start_at)}`;
                                     classname = "modcomp-booked";
-                                } else if (
-                                    futureGroups.some(g => g.requiring_action)
-                                ) {
+
+                                    webinarButtonState = "booked";
+
+                                } else if (futureGroups.some(g => g.requiring_action)) {
                                     statusText = "Bookings Available";
                                     classname = "modcomp-available";
+
+                                    webinarButtonState = "available";
+
+                                } else {
+                                    webinarButtonState = "none";
                                 }
 
                                 el.textContent = statusText;
                                 el.className = `module-status ${classname}`;
+
                             });
                     }
                 } catch (err) {
@@ -1797,12 +1802,45 @@ class CanvasCustomizer {
             // ----------------------------
             // Webinar button logic
             // ----------------------------
+            // ----------------------------
+            // Webinar button logic
+            // ----------------------------
             const webinarButton = document.getElementById("webinarButton");
             if (webinarButton && courseId) {
                 const today = new Date().toISOString().split("T")[0];
                 webinarButton.href =
                     `${location.origin}/calendar#view_name=agenda&view_start=${today}&context_code=course_${courseId}`;
+
+                // Reset classes like other module buttons
+                webinarButton.classList.remove("completed", "in-progress", "not-started");
+
+                switch (webinarButtonState) {
+                    case "booked":
+                        webinarButton.textContent = "View My Booking";
+                        webinarButton.classList.add("not-started");
+                        webinarButton.style.pointerEvents = "auto";
+                        webinarButton.style.cursor = "pointer";
+                        break;
+
+                    case "available":
+                        webinarButton.textContent = "Register Now";
+                        webinarButton.classList.add("in-progress");
+                        webinarButton.style.pointerEvents = "auto";
+                        webinarButton.style.cursor = "pointer";
+                        break;
+
+                    case "none":
+                    default:
+                        webinarButton.textContent = "No Bookings";
+                        webinarButton.classList.add("not-started");
+
+                        // Optional UX: disable when none available
+                        webinarButton.style.pointerEvents = "none";
+                        webinarButton.style.cursor = "default";
+                        break;
+                }
             }
+
 
             console.log("Module completion statuses updated.");
 
