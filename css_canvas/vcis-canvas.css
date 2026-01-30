@@ -135,11 +135,16 @@ display: none;
 	display:none;
 }
 
-.reserve_event_link { 
-    font-size: larger;
-    margin-left: -8px;
+/* adjust font sizes of webinar details popup */
+.agenda-date, .event-details-timestring, .reserve_event_link {
+	font-size: 1.3rem!important;
 }
 
+/* remove appointment title */
+#event-details-trap-focus .event-details-header {
+	display:none;
+
+}
 
 /* course pages CSS */
 
