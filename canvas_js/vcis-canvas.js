@@ -443,8 +443,6 @@ class CanvasCustomizer {
         });
     }
 
-
-    // adds details for webinar calendar patch
     // adds details for webinar calendar patch
     _updateWebinarEventDetailsPopover(pop) {
         if (!pop) return;
@@ -1706,9 +1704,11 @@ class CanvasCustomizer {
                     if (res.ok) {
                         const groups = await res.json();
                         const now = new Date();
+                        console.log("groups var =",groups," now var =",now);
 
                         const courseGroups = groups.filter(g =>
                             g.context_codes?.includes(`course_${courseId}`)
+                            
                         );
 
                         document
@@ -1722,9 +1722,13 @@ class CanvasCustomizer {
                                     g => new Date(g.end_at) > now
                                 );
 
+                                console.log("futuregroup var = ",futureGroups);
+
                                 const booked = futureGroups.find(
                                     g => g.reserved_times?.length
                                 );
+
+                                console.lg("booked var =",booked);
 
                                 if (booked) {
                                     const rt = booked.reserved_times[0];
