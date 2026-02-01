@@ -731,7 +731,7 @@ class CanvasCustomizer {
         this.waitFor(
             () => window.ENV?.CALENDAR,
             () => tryOnce(),
-            10000
+            20000
         ).catch(err => {
             console.warn('Calendar never initialized', err);
             finish();
