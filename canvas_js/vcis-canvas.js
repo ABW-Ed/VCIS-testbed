@@ -566,6 +566,39 @@ class CanvasCustomizer {
         this.state.autoSelectingWebinar = true;
         console.log('Auto-selecting webinar appointment');
 
+
+        const waitForDomToSettle = (settleMs = 500, maxWait = 5000) => {
+            return new Promise(resolve => {
+                let settleTimer = null;
+                const start = Date.now();
+
+                const observer = new MutationObserver(() => {
+                    clearTimeout(settleTimer);
+                    settleTimer = setTimeout(() => {
+                        observer.disconnect();
+                        resolve(true);
+                    }, settleMs);
+
+                    if (Date.now() - start > maxWait) {
+                        observer.disconnect();
+                        resolve(false);
+                    }
+                });
+
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+
+                // Fallback in case no mutations happen
+                settleTimer = setTimeout(() => {
+                    observer.disconnect();
+                    resolve(true);
+                }, settleMs);
+            });
+        };
+
+
         const MAX_ATTEMPTS = 5;
         const RETRY_DELAY = 2000;
         let attempt = 0;
@@ -612,10 +645,22 @@ class CanvasCustomizer {
             const hasSingleAgendaItem = agendaItems.length === 1;
             console.log("hasSingleAgendaItem val = ", hasSingleAgendaItem);
 
-            // ✅ FIXED stop condition:
-            // - Always stop on "no assignments"
-            // - Only stop on single item AFTER Find flow has run
-            if (hasRunFindFlow && (noEventsSpan || hasSingleAgendaItem)) {
+            const agendaCount = agendaItems.length;
+
+            console.log('Stop check:', {
+                hasRunFindFlow,
+                noEventsSpan: !!noEventsSpan,
+                agendaCount
+            });
+
+            // Only stop when DOM is stable AND Find flow has run
+            if (
+                hasRunFindFlow &&
+                (
+                    (noEventsSpan && agendaCount === 0) ||
+                    agendaCount === 1
+                )
+            ) {
                 console.log('Webinar events detected, stopping retries');
                 finish();
                 return;
@@ -638,9 +683,11 @@ class CanvasCustomizer {
                 hasRunFindFlow = true;
             }
 
-            setTimeout(() => {
+            setTimeout(async () => {
+                console.log('Webinar Sessions: Waiting for DOM to settle...');
+                await waitForDomToSettle(600, 6000);
+
                 const select = document.querySelector('select[data-testid="select-course"]');
-                console.log("found select", select);
                 const urlCourseId = getCourseIdFromUrl();
                 console.log("found urlCourseId", urlCourseId);
 
