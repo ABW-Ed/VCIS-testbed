@@ -161,7 +161,8 @@ display: none;
 
 /* adjust font sizes of webinar details popup */
 .agenda-date, .event-details-timestring, .reserve_event_link, .unreserve_event_link {
-	font-size: 1.3rem!important;
+    font-size: 1.3rem!important;
+    margin-left: -9px;
 }
 
 /* remove appointment title */
