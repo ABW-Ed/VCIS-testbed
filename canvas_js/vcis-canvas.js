@@ -605,9 +605,12 @@ class CanvasCustomizer {
             attempt++;
 
             const noEventsSpan = document.querySelector('span.agendaView--no-assignments');
+            console.log("noeventspan val = ",noEventsSpan);
 
             const agendaItems = document.querySelectorAll('.agenda-event__item-container');
+            console.log("agendaItems val = ",agendaItems);
             const hasSingleAgendaItem = agendaItems.length === 1;
+            console.log("hasSingleAgendaItem val = ",hasSingleAgendaItem);
 
             // ✅ FIXED stop condition:
             // - Always stop on "no assignments"
