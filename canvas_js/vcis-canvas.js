@@ -250,28 +250,28 @@ class CanvasCustomizer {
         return this.webinarCalendarContexts.includes(contextCode);
     }
 
-getWebinarCourseIdFromCalendar() {
-    // Get the current hash
-    const hash = window.location.hash;
+    getWebinarCourseIdFromCalendar() {
+        // Get the current hash
+        const hash = window.location.hash;
 
-    // Must be calendar agenda view and have a course context
-    if (!hash.includes("view_name=agenda") || !hash.includes("context_code=course_")) {
-        return null;
+        // Must be calendar agenda view and have a course context
+        if (!hash.includes("view_name=agenda") || !hash.includes("context_code=course_")) {
+            return null;
+        }
+
+        // Parse parameters from the hash
+        const params = new URLSearchParams(hash.replace(/^#/, ""));
+        const contextCode = params.get("context_code");
+
+        if (!contextCode?.startsWith("course_")) {
+            return null;
+        }
+
+        const courseId = contextCode.replace("course_", "");
+
+        // Extra sanity check (numeric only)
+        return /^\d+$/.test(courseId) ? courseId : null;
     }
-
-    // Parse parameters from the hash
-    const params = new URLSearchParams(hash.replace(/^#/, ""));
-    const contextCode = params.get("context_code");
-
-    if (!contextCode?.startsWith("course_")) {
-        return null;
-    }
-
-    const courseId = contextCode.replace("course_", "");
-
-    // Extra sanity check (numeric only)
-    return /^\d+$/.test(courseId) ? courseId : null;
-}
 
     // for updating the information section of webinar events
     getWebinarHtmlUrl() {
@@ -532,99 +532,129 @@ getWebinarCourseIdFromCalendar() {
 
 
     async autoSelectWebinarAppointment() {
-    if (!this.isCalendarPage() || !this.hasWebinarContext()) {
-        return;
-    }
+        if (!this.isCalendarPage() || !this.hasWebinarContext()) {
+            return;
+        }
 
-    if (this.state.autoSelectingWebinar || this.state.webinarAppointmentSelected) {
-        return;
-    }
+        if (this.state.autoSelectingWebinar || this.state.webinarAppointmentSelected) {
+            return;
+        }
 
-    this.state.autoSelectingWebinar = true;
-    console.log('Auto-selecting webinar appointment');
+        this.state.autoSelectingWebinar = true;
+        console.log('Auto-selecting webinar appointment');
 
-    const waitForDomToSettle = (settleMs = 500, maxWait = 5000) => {
-        return new Promise(resolve => {
-            let settleTimer = null;
-            const start = Date.now();
+        const waitForDomToSettle = (settleMs = 500, maxWait = 5000) => {
+            return new Promise(resolve => {
+                let settleTimer = null;
+                const start = Date.now();
 
-            const observer = new MutationObserver(() => {
-                clearTimeout(settleTimer);
+                const observer = new MutationObserver(() => {
+                    clearTimeout(settleTimer);
+                    settleTimer = setTimeout(() => {
+                        observer.disconnect();
+                        resolve(true);
+                    }, settleMs);
+
+                    if (Date.now() - start > maxWait) {
+                        observer.disconnect();
+                        resolve(false);
+                    }
+                });
+
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+
+                // Fallback in case no mutations happen
                 settleTimer = setTimeout(() => {
                     observer.disconnect();
                     resolve(true);
                 }, settleMs);
-
-                if (Date.now() - start > maxWait) {
-                    observer.disconnect();
-                    resolve(false);
-                }
             });
+        };
 
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
+        const MAX_ATTEMPTS = 5;
+        const RETRY_DELAY = 2000;
+        let attempt = 0;
 
-            // Fallback in case no mutations happen
-            settleTimer = setTimeout(() => {
-                observer.disconnect();
-                resolve(true);
-            }, settleMs);
-        });
-    };
+        const finish = () => {
+            this.showSchedulerDialog();
+            this.state.autoSelectingWebinar = false;
+            this.state.webinarAppointmentSelected = true;
+            console.log('Webinar auto-select finished');
+        };
 
-    const MAX_ATTEMPTS = 5;
-    const RETRY_DELAY = 2000;
-    let attempt = 0;
+        // Extract courseId from URL hash
+        const getCourseIdFromUrl = () => {
+            const hashParams = new URLSearchParams(window.location.hash.slice(1));
+            const code = hashParams.get('context_code'); // e.g., "course_257"
+            return code ? code.replace('course_', '') : null;
+        };
 
-    const finish = () => {
-        this.showSchedulerDialog();
-        this.state.autoSelectingWebinar = false;
-        this.state.webinarAppointmentSelected = true;
-        console.log('Webinar auto-select finished');
-    };
+        const tryOnce = async () => {
+            attempt++;
+            console.log(`Webinar attempt ${attempt}/${MAX_ATTEMPTS}`);
 
-    // Extract courseId from URL hash
-    const getCourseIdFromUrl = () => {
-        const hashParams = new URLSearchParams(window.location.hash.slice(1));
-        const code = hashParams.get('context_code'); // e.g., "course_257"
-        return code ? code.replace('course_', '') : null;
-    };
+            if (attempt > MAX_ATTEMPTS) {
+                console.log('Max webinar retries reached');
+                finish();
+                return;
+            }
 
-    const tryOnce = async () => {
-        attempt++;
-        console.log(`Webinar attempt ${attempt}/${MAX_ATTEMPTS}`);
+            const findButton = document.querySelector('#FindAppointmentButton');
+            if (!findButton) {
+                console.log('Find Appointment button not found yet, retrying...');
+                setTimeout(tryOnce, RETRY_DELAY);
+                return;
+            }
 
-        if (attempt > MAX_ATTEMPTS) {
-            console.log('Max webinar retries reached');
-            finish();
-            return;
-        }
+            // Click Find Appointment
+            this.hideSchedulerDialog();
+            findButton.click();
 
-        const findButton = document.querySelector('#FindAppointmentButton');
-        if (!findButton) {
-            console.log('Find Appointment button not found yet, retrying...');
-            setTimeout(tryOnce, RETRY_DELAY);
-            return;
-        }
+            console.log('Find Appointment clicked, waiting for modal + DOM settle...');
 
-        // Click Find Appointment
-        this.hideSchedulerDialog();
-        findButton.click();
+            // Wait for React churn to settle
+            await waitForDomToSettle(800, 8000);
 
-        console.log('Find Appointment clicked, waiting for modal + DOM settle...');
+            const select = document.querySelector('select[data-testid="select-course"]');
+            const urlCourseId = getCourseIdFromUrl();
 
-        // Wait for React churn to settle
-        await waitForDomToSettle(800, 8000);
+            console.log('Post-settle state:', { select, urlCourseId });
 
-        const select = document.querySelector('select[data-testid="select-course"]');
-        const urlCourseId = getCourseIdFromUrl();
+            if (!select || !urlCourseId) {
+                console.log('Course select not available yet — closing modal and retrying');
 
-        console.log('Post-settle state:', { select, urlCourseId });
+                const closeButton = document.querySelector(
+                    'button.css-16y8pl-view--inlineBlock-baseButton'
+                );
+                if (closeButton) closeButton.click();
 
-        if (!select || !urlCourseId) {
-            console.log('Course select not available yet — closing modal and retrying');
+                setTimeout(tryOnce, RETRY_DELAY);
+                return;
+            }
+
+            const option = [...select.options].find(o => o.value === urlCourseId);
+            console.log('Found matching option:', option);
+
+            if (option) {
+                // ✅ Success path
+                select.value = urlCourseId;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+
+                const submitButton = document.querySelector(
+                    'form[role="dialog"] button[type="submit"]'
+                );
+                if (submitButton) submitButton.click();
+
+                console.log(`Webinar course ${urlCourseId} selected`);
+                finish();
+                return;
+            }
+
+            // ❌ No matching option — close + retry
+            console.log(`No matching course for ${urlCourseId}, closing modal and retrying`);
 
             const closeButton = document.querySelector(
                 'button.css-16y8pl-view--inlineBlock-baseButton'
@@ -632,47 +662,17 @@ getWebinarCourseIdFromCalendar() {
             if (closeButton) closeButton.click();
 
             setTimeout(tryOnce, RETRY_DELAY);
-            return;
-        }
+        };
 
-        const option = [...select.options].find(o => o.value === urlCourseId);
-        console.log('Found matching option:', option);
-
-        if (option) {
-            // ✅ Success path
-            select.value = urlCourseId;
-            select.dispatchEvent(new Event('change', { bubbles: true }));
-
-            const submitButton = document.querySelector(
-                'form[role="dialog"] button[type="submit"]'
-            );
-            if (submitButton) submitButton.click();
-
-            console.log(`Webinar course ${urlCourseId} selected`);
+        this.waitFor(
+            () => window.ENV?.CALENDAR,
+            () => tryOnce(),
+            10000
+        ).catch(err => {
+            console.warn('Calendar never initialized', err);
             finish();
-            return;
-        }
-
-        // ❌ No matching option — close + retry
-        console.log(`No matching course for ${urlCourseId}, closing modal and retrying`);
-
-        const closeButton = document.querySelector(
-            'button.css-16y8pl-view--inlineBlock-baseButton'
-        );
-        if (closeButton) closeButton.click();
-
-        setTimeout(tryOnce, RETRY_DELAY);
-    };
-
-    this.waitFor(
-        () => window.ENV?.CALENDAR,
-        () => tryOnce(),
-        10000
-    ).catch(err => {
-        console.warn('Calendar never initialized', err);
-        finish();
-    });
-}
+        });
+    }
 
 
     // Global Customisations
@@ -766,32 +766,60 @@ getWebinarCourseIdFromCalendar() {
     }
 
     createWebinarReturnButton() {
+        const parent = document.getElementById("other-right-side-wrapper") || document.createElement("div");
+
+        if (!parent.id) {
+            parent.id = "other-right-side-wrapper";
+            parent.className = "ic-app-main-content__secondary";
+            parent.style.display = "flex";
+            parent.style.flexDirection = "column";
+            parent.style.justifyContent = "flex-end";
+            const rightSide = document.getElementById("right-side-wrapper");
+            if (rightSide) rightSide.insertAdjacentElement("afterend", parent);
+        }
+
         if (document.getElementById("webinar-return-button")) return;
 
-        const courseId = window.ENV?.COURSE_ID;
+        let courseId = window.ENV?.COURSE_ID;
+        if (!courseId) {
+            const hashParams = new URLSearchParams(window.location.hash.slice(1));
+            const contextCode = hashParams.get("context_code");
+            const match = contextCode && contextCode.match(/^course_(\d+)$/);
+            if (match) courseId = match[1];
+        }
         if (!courseId) return;
 
         const btn = document.createElement("a");
         btn.id = "webinar-return-button";
         btn.href = `/courses/${courseId}`;
-        btn.textContent = "← Return to Course Page";
-        btn.className = "Button Button--secondary webinar-return-btn";
+        btn.className = "css-1sec0gm-view--inlineBlock-baseButton";
+        btn.setAttribute("role", "button");
 
-        Object.assign(btn.style, {
-            display: "inline-block",
-            margin: "0 0 12px 0"
-        });
+        const contentSpan = document.createElement("span");
+        contentSpan.className = "css-1ta5ds2-baseButton__content";
 
-        // Try to place near calendar header
-        const calendarHeader =
-            document.querySelector(".calendar-header") ||
-            document.querySelector("#calendar-app") ||
-            document.body;
+        const childrenSpan = document.createElement("span");
+        childrenSpan.className = "css-11xkk0o-baseButton__children";
 
-        calendarHeader.prepend(btn);
+        const flexSpan = document.createElement("span");
+        flexSpan.className = "css-p0uk0p-view--flex-flex";
+        flexSpan.style.flexDirection = "row";
+        flexSpan.style.alignItems = "center";
 
-        console.log("✅ Webinar return button added");
+        flexSpan.appendChild(document.createTextNode("Return to Course Page →"));
+
+        childrenSpan.appendChild(flexSpan);
+        contentSpan.appendChild(childrenSpan);
+        btn.appendChild(contentSpan);
+
+        const wrapper = document.createElement("div");
+        wrapper.appendChild(btn);
+
+        parent.appendChild(wrapper);
+
+        console.log("✅ Webinar return button created (class)", courseId);
     }
+
 
 
     insertWebinarEventInformation() {
