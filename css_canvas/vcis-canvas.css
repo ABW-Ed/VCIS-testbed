@@ -170,6 +170,10 @@ display: none;
 	display:none;
 
 }
+/* make webinar link unclickable */
+#event-details-trap-focus .event-detail-overflow {
+    pointer-events: none;
+}
 
 /* course pages CSS */
 
