@@ -436,17 +436,17 @@ class CanvasCustomizer {
 
             switch (label) {
                 case 'Source Calendar':
-                    th.textContent = 'Webinar Name';
+                    th.textContent = 'Webinar name';
                     break;
 
                 case 'Slots available':
-                    th.textContent = 'Places Remaining';
+                    th.textContent = 'Places remaining';
                     break;
 
                 // Optional: if Canvas ever reverts / re-renders originals,
                 // this ensures idempotency even if already renamed
-                case 'Webinar Name':
-                case 'Places Remaining':
+                case 'Webinar name':
+                case 'Places remaining':
                     // already patched — do nothing
                     break;
             }
@@ -467,7 +467,7 @@ class CanvasCustomizer {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = 'Copy link';
-        btn.className = 'Button Button--small canvas-copy-link-btn';
+        btn.className = 'Button Button--large canvas-copy-link-btn';
         btn.style.marginTop = '6px';
 
         btn.addEventListener('click', e => {
@@ -802,7 +802,7 @@ class CanvasCustomizer {
         childrenSpan.className = "css-11xkk0o-baseButton__children";
 
         const flexSpan = document.createElement("span");
-        flexSpan.className = "css-p0uk0p-view--flex-flex";
+        flexSpan.className = "Button Button--medium canvas-copy-link-btn";
         flexSpan.style.flexDirection = "row";
         flexSpan.style.alignItems = "center";
 
