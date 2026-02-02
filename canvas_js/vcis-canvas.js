@@ -1887,14 +1887,14 @@ class CanvasCustomizer {
 
                 switch (webinarButtonState) {
                     case "booked":
-                        webinarButton.textContent = "View My Booking";
+                        webinarButton.textContent = "View my booking";
                         webinarButton.classList.add("completed");
                         webinarButton.style.pointerEvents = "auto";
                         webinarButton.style.cursor = "pointer";
                         break;
 
                     case "available":
-                        webinarButton.textContent = "Register Now";
+                        webinarButton.textContent = "Book a session";
                         webinarButton.classList.add("incomplete");
                         webinarButton.style.pointerEvents = "auto";
                         webinarButton.style.cursor = "pointer";
@@ -1902,7 +1902,7 @@ class CanvasCustomizer {
 
                     case "none":
                     default:
-                        webinarButton.textContent = "No Bookings";
+                        webinarButton.textContent = "No bookings";
                         webinarButton.classList.add("not-started");
 
                         // Optional UX: disable when none available
