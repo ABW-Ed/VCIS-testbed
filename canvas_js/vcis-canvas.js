@@ -250,49 +250,28 @@ class CanvasCustomizer {
         return this.webinarCalendarContexts.includes(contextCode);
     }
 
-    getWebinarCourseIdFromCalendar() {
+getWebinarCourseIdFromCalendar() {
+    // Get the current hash
+    const hash = window.location.hash;
 
-        // ----------------------------
-        // Primary: Canvas ENV calendar contexts
-        // ----------------------------
-        const contexts = window.ENV?.CALENDAR?.SELECTED_CONTEXTS;
-
-        if (Array.isArray(contexts)) {
-            const match = contexts.find(c =>
-                this.webinarCalendarContexts.includes(c)
-            );
-
-            if (match?.startsWith("course_")) {
-                return match.replace("course_", "");
-            }
-        }
-
-        // ----------------------------
-        // Fallback: parse calendar URL hash
-        // ----------------------------
-        const hash = window.location.hash;
-
-        // Must be calendar agenda view
-        if (
-            !hash.includes("view_name=agenda") ||
-            !hash.includes("context_code=course_")
-        ) {
-            return null;
-        }
-
-        const params = new URLSearchParams(hash.replace(/^#/, ""));
-        const contextCode = params.get("context_code");
-
-        if (!contextCode?.startsWith("course_")) {
-            return null;
-        }
-
-        const courseId = contextCode.replace("course_", "");
-
-        // Extra sanity check (numeric only)
-        return /^\d+$/.test(courseId) ? courseId : null;
+    // Must be calendar agenda view and have a course context
+    if (!hash.includes("view_name=agenda") || !hash.includes("context_code=course_")) {
+        return null;
     }
 
+    // Parse parameters from the hash
+    const params = new URLSearchParams(hash.replace(/^#/, ""));
+    const contextCode = params.get("context_code");
+
+    if (!contextCode?.startsWith("course_")) {
+        return null;
+    }
+
+    const courseId = contextCode.replace("course_", "");
+
+    // Extra sanity check (numeric only)
+    return /^\d+$/.test(courseId) ? courseId : null;
+}
 
     // for updating the information section of webinar events
     getWebinarHtmlUrl() {
