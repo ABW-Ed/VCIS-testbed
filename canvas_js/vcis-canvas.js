@@ -853,13 +853,16 @@ class CanvasCustomizer {
             // Popup container
             const popup = document.createElement("div");
             popup.id = "bookweb-popup";
-            popup.style.background = "#fff";
+            popup.style.background = "#222";
+            popup.style.color = "#fff";
+            popup.style.padding = "12px 16px";
+            popup.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+            popup.style.fontSize = "14px";
             popup.style.borderRadius = "8px";
             popup.style.maxWidth = "600px";
             popup.style.width = "90%";
             popup.style.maxHeight = "80vh";
             popup.style.overflowY = "auto";
-            popup.style.boxShadow = "0 10px 30px rgba(0,0,0,0.4)";
             popup.innerHTML = html;
 
             overlay.appendChild(popup);
