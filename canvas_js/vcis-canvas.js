@@ -839,30 +839,10 @@ class CanvasCustomizer {
             // Overlay (dims + blocks page)
             const overlay = document.createElement("div");
             overlay.id = "bookweb-popup-overlay";
-            overlay.style.position = "fixed";
-            overlay.style.top = "0";
-            overlay.style.left = "0";
-            overlay.style.width = "100vw";
-            overlay.style.height = "100vh";
-            overlay.style.background = "rgba(0,0,0,0.5)";
-            overlay.style.zIndex = "10000";
-            overlay.style.display = "flex";
-            overlay.style.alignItems = "center";
-            overlay.style.justifyContent = "center";
 
             // Popup container
             const popup = document.createElement("div");
             popup.id = "bookweb-popup";
-            popup.style.background = "#222";
-            popup.style.color = "#fff";
-            popup.style.padding = "12px 16px";
-            popup.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
-            popup.style.fontSize = "14px";
-            popup.style.borderRadius = "8px";
-            popup.style.maxWidth = "600px";
-            popup.style.width = "90%";
-            popup.style.maxHeight = "80vh";
-            popup.style.overflowY = "auto";
             popup.innerHTML = html;
 
             overlay.appendChild(popup);
