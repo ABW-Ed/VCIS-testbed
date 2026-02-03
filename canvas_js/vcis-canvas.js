@@ -287,6 +287,31 @@ class CanvasCustomizer {
         return `${this.HTML_ROOT}/${courseId}-webinar.html`;
     }
 
+    highlightBookWebinarTarget() {
+        const target = document.querySelector("[data-highlight='bookweb']");
+        if (!target) return;
+
+        const rect = target.getBoundingClientRect();
+        const absoluteTop = rect.top + window.pageYOffset;
+
+        // Position so element sits ~35% from top of viewport
+        const viewportOffset = window.innerHeight * 0.35;
+        const scrollTo = absoluteTop - viewportOffset;
+
+        window.scrollTo({
+            top: Math.max(scrollTo, 0),
+            behavior: "smooth"
+        });
+
+        // Add highlight class
+        target.classList.add("bookweb-highlight");
+
+        // Remove highlight after 3 seconds
+        setTimeout(() => {
+            target.classList.remove("bookweb-highlight");
+        }, 3000);
+    }
+
     isWebinarAppPage() {
         return this.isCalendarPage()
             && this.isAgendaView()
@@ -843,6 +868,7 @@ class CanvasCustomizer {
             // Popup container
             const popup = document.createElement("div");
             popup.id = "bookweb-popup";
+
             popup.innerHTML = html;
 
             overlay.appendChild(popup);
@@ -853,18 +879,23 @@ class CanvasCustomizer {
                 // Only close if clicking backdrop, not popup itself
                 if (e.target === overlay) {
                     overlay.remove();
+                    this.highlightBookWebinarTarget();
                 }
             });
 
             // Allow popup HTML to define close buttons
             popup.querySelectorAll("[data-popup-close]").forEach(btn => {
-                btn.addEventListener("click", () => overlay.remove());
+                btn.addEventListener("click", () => {
+                    overlay.remove();
+                    this.highlightBookWebinarTarget();
+                });
             });
 
             // Optional: ESC key to close
             const escHandler = (e) => {
                 if (e.key === "Escape") {
                     overlay.remove();
+                    this.highlightBookWebinarTarget();
                     document.removeEventListener("keydown", escHandler);
                 }
             };
