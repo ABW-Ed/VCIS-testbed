@@ -821,6 +821,47 @@ class CanvasCustomizer {
     }
 
 
+    showBookWebinarPopup() {
+        // Prevent multiple popups
+        if (document.getElementById("bookweb-popup")) return;
+
+        const popup = document.createElement("div");
+        popup.id = "bookweb-popup";
+        popup.style.position = "fixed";
+        popup.style.top = "20px";
+        popup.style.right = "20px";
+        popup.style.zIndex = "9999";
+        popup.style.background = "#222";
+        popup.style.color = "#fff";
+        popup.style.padding = "12px 16px";
+        popup.style.borderRadius = "6px";
+        popup.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+        popup.style.fontSize = "14px";
+        popup.style.maxWidth = "320px";
+
+        popup.innerHTML = `
+        <div style="font-weight:bold; margin-bottom:6px;">
+            Webinar booking required
+        </div>
+        <div>
+            You will need to book a webinar session time.
+        </div>
+        <div style="margin-top:8px; text-align:right;">
+            <button id="bookweb-popup-close"
+                style="background:#555;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">
+                Close
+            </button>
+        </div>
+    `;
+
+        document.body.appendChild(popup);
+
+        document
+            .getElementById("bookweb-popup-close")
+            .addEventListener("click", () => popup.remove());
+    }
+
+
 
     insertWebinarEventInformation() {
         // Only run on webinar agenda calendar view
@@ -1833,6 +1874,22 @@ class CanvasCustomizer {
                     }
                 } catch (err) {
                     console.error("Webinar status error:", err);
+                }
+            }
+
+
+            // ----------------------------
+            // Book Webinar Popup Logic
+            // ----------------------------
+            const popupTargets = document.querySelectorAll("[data-popup='bookweb']");
+
+            if (popupTargets.length) {
+                // Only show popup if:
+                // - course NOT complete
+                // - bookings available
+                // - user NOT booked
+                if (!allComplete && webinarButtonState === "available") {
+                    this.showBookWebinarPopup();
                 }
             }
 
