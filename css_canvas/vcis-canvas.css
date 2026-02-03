@@ -225,6 +225,13 @@ display: none;
     margin-top: 8px;
     text-align: right;
 }
+
+/* highlight for book webinar card after closing popup */
+.bookweb-highlight {
+    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.8),
+                0 0 20px rgba(255, 193, 7, 0.6);
+    transition: box-shadow 0.4s ease;
+}
 	
 /* course pages CSS */
 
