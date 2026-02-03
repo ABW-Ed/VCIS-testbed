@@ -291,17 +291,20 @@ class CanvasCustomizer {
         const target = document.querySelector("[data-highlight='bookweb']");
         if (!target) return;
 
-        const rect = target.getBoundingClientRect();
-        const absoluteTop = rect.top + window.pageYOffset;
-
-        // Position so element sits ~35% from top of viewport
-        const viewportOffset = window.innerHeight * 0.35;
-        const scrollTo = absoluteTop - viewportOffset;
-
-        window.scrollTo({
-            top: Math.max(scrollTo, 0),
-            behavior: "smooth"
+        // Step 1: Smooth scroll element into view (top)
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
         });
+
+        // Step 2: After a short delay, apply viewport offset (~35%)
+        setTimeout(() => {
+            const offset = window.innerHeight * 0.35;
+            window.scrollBy({
+                top: -offset,
+                behavior: "smooth"
+            });
+        }, 300);
 
         // Add highlight class
         target.classList.add("bookweb-highlight");
