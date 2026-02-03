@@ -821,44 +821,75 @@ class CanvasCustomizer {
     }
 
 
-    showBookWebinarPopup() {
+    async showBookWebinarPopup() {
         // Prevent multiple popups
-        if (document.getElementById("bookweb-popup")) return;
+        if (document.getElementById("bookweb-popup-overlay")) return;
 
-        const popup = document.createElement("div");
-        popup.id = "bookweb-popup";
-        popup.style.position = "fixed";
-        popup.style.top = "20px";
-        popup.style.right = "20px";
-        popup.style.zIndex = "9999";
-        popup.style.background = "#222";
-        popup.style.color = "#fff";
-        popup.style.padding = "12px 16px";
-        popup.style.borderRadius = "6px";
-        popup.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
-        popup.style.fontSize = "14px";
-        popup.style.maxWidth = "320px";
+        try {
+            const popupUrl = `${this.HTML_ROOT}/popups/webinarpage-popup.html`;
 
-        popup.innerHTML = `
-        <div style="font-weight:bold; margin-bottom:6px;">
-            Webinar booking required
-        </div>
-        <div>
-            You will need to book a webinar session time.
-        </div>
-        <div style="margin-top:8px; text-align:right;">
-            <button id="bookweb-popup-close"
-                style="background:#555;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">
-                Close
-            </button>
-        </div>
-    `;
+            const res = await fetch(popupUrl, { credentials: "omit" });
+            if (!res.ok) {
+                console.error("Failed to load webinar popup HTML:", res.status);
+                return;
+            }
 
-        document.body.appendChild(popup);
+            const html = await res.text();
 
-        document
-            .getElementById("bookweb-popup-close")
-            .addEventListener("click", () => popup.remove());
+            // Overlay (dims + blocks page)
+            const overlay = document.createElement("div");
+            overlay.id = "bookweb-popup-overlay";
+            overlay.style.position = "fixed";
+            overlay.style.top = "0";
+            overlay.style.left = "0";
+            overlay.style.width = "100vw";
+            overlay.style.height = "100vh";
+            overlay.style.background = "rgba(0,0,0,0.5)";
+            overlay.style.zIndex = "10000";
+            overlay.style.display = "flex";
+            overlay.style.alignItems = "center";
+            overlay.style.justifyContent = "center";
+
+            // Popup container
+            const popup = document.createElement("div");
+            popup.id = "bookweb-popup";
+            popup.style.background = "#fff";
+            popup.style.borderRadius = "8px";
+            popup.style.maxWidth = "600px";
+            popup.style.width = "90%";
+            popup.style.maxHeight = "80vh";
+            popup.style.overflowY = "auto";
+            popup.style.boxShadow = "0 10px 30px rgba(0,0,0,0.4)";
+            popup.innerHTML = html;
+
+            overlay.appendChild(popup);
+            document.body.appendChild(overlay);
+
+            // Close handlers (support multiple patterns)
+            overlay.addEventListener("click", (e) => {
+                // Only close if clicking backdrop, not popup itself
+                if (e.target === overlay) {
+                    overlay.remove();
+                }
+            });
+
+            // Allow popup HTML to define close buttons
+            popup.querySelectorAll("[data-popup-close]").forEach(btn => {
+                btn.addEventListener("click", () => overlay.remove());
+            });
+
+            // Optional: ESC key to close
+            const escHandler = (e) => {
+                if (e.key === "Escape") {
+                    overlay.remove();
+                    document.removeEventListener("keydown", escHandler);
+                }
+            };
+            document.addEventListener("keydown", escHandler);
+
+        } catch (err) {
+            console.error("Error showing webinar popup:", err);
+        }
     }
 
 
