@@ -291,20 +291,20 @@ class CanvasCustomizer {
         const target = document.querySelector("[data-highlight='bookweb']");
         if (!target) return;
 
-        // Step 1: Smooth scroll element into view (top)
+        // Apply temporary scroll margin to offset element (~35% viewport)
+        const originalScrollMarginTop = target.style.scrollMarginTop;
+        target.style.scrollMarginTop = "35vh";
+
+        // Single smooth scroll
         target.scrollIntoView({
             behavior: "smooth",
             block: "start"
         });
 
-        // Step 2: After a short delay, apply viewport offset (~35%)
+        // Restore original scroll margin after scroll settles
         setTimeout(() => {
-            const offset = window.innerHeight * 0.35;
-            window.scrollBy({
-                top: -offset,
-                behavior: "smooth"
-            });
-        }, 300);
+            target.style.scrollMarginTop = originalScrollMarginTop || "";
+        }, 1000);
 
         // Add highlight class
         target.classList.add("bookweb-highlight");
