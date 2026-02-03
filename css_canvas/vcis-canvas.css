@@ -1,5 +1,9 @@
 /* core Canvas changes */
 
+html {
+  scroll-behavior: smooth!important;
+}
+
 /* add space for VIC logo so it does not hit border of strip */
 .ic-app-header__logomark-container {
      padding: 4px; 
