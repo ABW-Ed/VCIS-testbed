@@ -171,6 +171,43 @@ async function registrationHeaderTweaker2() {
   return false;
 }
 
+
+// makes sure that people don't click the catalog redirect button when new course 
+let registrationRedirectArmed = false;
+
+async function registrationSuccessRedirect() {
+  const $success = $('.RegistrationBody__Success');
+  if (!$success.length) return;
+
+  // Prevent re-arming on every mutation
+  if (registrationRedirectArmed) return;
+  registrationRedirectArmed = true;
+
+  const $span = $success.find('span').first();
+  const extraText = ' Please wait while you are redirected to your course.';
+
+  if (!$span.text().includes('Please wait while you are redirected')) {
+    $span.append(extraText);
+  }
+
+  $('a[data-cid="Link"]:contains("Return to Catalogue")')
+    .closest('li[data-cid="InlineListItem"]')
+    .remove();
+
+  setTimeout(function () {
+    const $goToCourseLink = $('a[data-testid="go-to-course-link"]').first();
+
+    if ($goToCourseLink.length) {
+      $goToCourseLink[0].click();
+    } else {
+      console.warn('Go to course link not found');
+      // Allow retry if link appears later
+      registrationRedirectArmed = false;
+    }
+  }, 5000);
+}
+
+
 /**
  * Initialise a given feature with DOM ready + MutationObserver
  */
@@ -182,36 +219,7 @@ function initFeature(featureFn) {
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
-// makes sure that people don't click the catalog redirect button when new course 
-async function registrationSuccessRedirect() {
-  // Append extra success text
-  const $success = $('.RegistrationBody__Success');
 
-  if ($success.length) {
-    const $span = $success.find('span').first();
-    const extraText = ' Please wait while you are redirected to your course.';
-
-    if (!$span.text().includes('Please wait while you are redirected')) {
-      $span.append(extraText);
-    }
-
-    $('a[data-cid="Link"]:contains("Return to Catalogue")')
-      .closest('li[data-cid="InlineListItem"]')
-      .remove();
-
-  }
-
-  // Click go-to-course after 5 seconds
-  setTimeout(function () {
-    const $goToCourseLink = $('a[data-testid="go-to-course-link"]').first();
-
-    if ($goToCourseLink.length) {
-      $goToCourseLink[0].click();
-    } else {
-      console.warn('Go to course link not found');
-    }
-  }, 5000);
-}
 
 
 /**
@@ -257,13 +265,11 @@ async function initCustomisations() {
   }
 
   // Branch 5: Enrollment success → auto redirect to course
-  if (
-    // ENV?.user?.id &&
-    $('.RegistrationBody__Success').length
-  ) {
+  if (ENV?.user?.id && ENV?.product?.started) {
     console.log("✅ Enrollment success detected — enabling auto redirect to course.");
     initFeature(registrationSuccessRedirect);
   }
+
 
 }
 
