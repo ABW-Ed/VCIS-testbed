@@ -265,7 +265,7 @@ async function initCustomisations() {
   }
 
   // Branch 5: Enrollment success → auto redirect to course
-  if (ENV?.user?.id && ENV?.product?.started) {
+  if (ENV?.user?.id && ENV?.product?.["started?"]) {
     console.log("✅ Enrollment success detected — enabling auto redirect to course.");
     initFeature(registrationSuccessRedirect);
   }
