@@ -149,7 +149,7 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
     box-shadow: 2px 2px 10px rgba(0, 0, 0, .6);
     background-color: #fff;
     min-width: 450px;
-    max-width: 670px!important;
+    max-width: 600px!important;
 	transition: opacity 500ms ease, transform 500ms ease;
 }
 
