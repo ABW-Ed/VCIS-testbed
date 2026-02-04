@@ -182,6 +182,38 @@ function initFeature(featureFn) {
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
+// makes sure that people don't click the catalog redirect button when new course 
+async function registrationSuccessRedirect() {
+  // Append extra success text
+  const $success = $('.RegistrationBody__Success');
+
+  if ($success.length) {
+    const $span = $success.find('span').first();
+    const extraText = ' Please wait while you are redirected to your course.';
+
+    if (!$span.text().includes('Please wait while you are redirected')) {
+      $span.append(extraText);
+    }
+
+    $('a[data-cid="Link"]:contains("Return to Catalogue")')
+      .closest('li[data-cid="InlineListItem"]')
+      .remove();
+
+  }
+
+  // Click go-to-course after 5 seconds
+  setTimeout(function () {
+    const $goToCourseLink = $('a[data-testid="go-to-course-link"]').first();
+
+    if ($goToCourseLink.length) {
+      $goToCourseLink[0].click();
+    } else {
+      console.warn('Go to course link not found');
+    }
+  }, 5000);
+}
+
+
 /**
  * Router: decides which customisations to run based on ENV
  */
@@ -215,22 +247,32 @@ async function initCustomisations() {
   if (ENV.isEnrollmentForm && ENV.user?.id) {
     console.log("📄 Enrollment form detected — enabling header tweaker.");
     initFeature(registrationHeaderTweaker);
-    
+
   }
 
-    // Branch 4: Enrollment form → registration header tweak - logged out
+  // Branch 4: Enrollment form → registration header tweak - logged out
   if (ENV.isEnrollmentForm && !(ENV.user?.id)) {
     console.log("📄 Enrollment form detected — enabling header tweaker.");
     initFeature(registrationHeaderTweaker2);
   }
-  
+
+  // Branch 5: Enrollment success → auto redirect to course
+  if (
+    ENV?.user?.id &&
+    ENV?.product?.started &&
+    $('.RegistrationBody__Success').length
+  ) {
+    console.log("✅ Enrollment success detected — enabling auto redirect to course.");
+    initFeature(registrationSuccessRedirect);
+  }
+
 }
 
 // --------------------
 // Wrap init in DOM-ready routine
 // --------------------
 if (document.readyState === "complete" ||
-   (document.readyState !== "loading" && !document.documentElement.doScroll)) {
+  (document.readyState !== "loading" && !document.documentElement.doScroll)) {
   initCustomisations();
 } else {
   document.addEventListener("DOMContentLoaded", initCustomisations);
