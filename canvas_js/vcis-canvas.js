@@ -10,6 +10,7 @@ class CanvasCustomizer {
     constructor() {
         this.config = {
             SCORM_TOOL_ID: "207",
+            NEWQUIZ_TOOL_ID: "208",
             DEFAULT_ASSIGNMENT_ID: 247,
             POLLING_INTERVAL: 5000,
             PASSING_GRADE: 90,
@@ -197,6 +198,10 @@ class CanvasCustomizer {
     isAdmin() {
         const roles = window.ENV?.current_user_roles || [];
         return roles.includes("admin") || roles.includes("root_admin");
+    }
+
+    isNewQuizContext() {
+        return String(window.ENV?.LTI_TOOL_ID) === this.config.NEWQUIZ_TOOL_ID;
     }
 
 
@@ -1258,7 +1263,7 @@ class CanvasCustomizer {
             );
 
             // Only run in SCORM or Quiz
-            if (!this.isSCORMContext() && !this.isQuizPage()) {
+            if (!this.isSCORMContext() && !this.isQuizPage() && !this.isNewQuizContext()) {
                 return;
             }
 
