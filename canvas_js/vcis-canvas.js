@@ -201,8 +201,12 @@ class CanvasCustomizer {
     }
 
     isNewQuizContext() {
-        return String(window.ENV?.LTI_TOOL_ID) === this.config.NEWQUIZ_TOOL_ID;
+        return (
+            String(ENV?.LTI_TOOL_ID) === this.config.NEWQUIZ_TOOL_ID ||
+            ENV?.LTI_TOOL_FORM_ID != null
+        );
     }
+
 
 
     isSCORMContext() {
