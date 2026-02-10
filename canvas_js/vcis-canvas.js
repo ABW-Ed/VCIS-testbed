@@ -429,6 +429,15 @@ class CanvasCustomizer {
         });
     }
 
+    waitMs(ms) {
+        const start = Date.now();
+        return this.waitFor(
+            () => (Date.now() - start) >= ms,
+            () => { },
+            ms + 1000
+        );
+    }
+
     hideSchedulerDialog() {
         if (document.getElementById('hide-scheduler-dialog-style')) return;
 
@@ -1366,8 +1375,16 @@ class CanvasCustomizer {
             });
 
             if (!hasIncompleteRequired || this.isProblemSCORM()) {
+
+                // Only delay for New Quizzes
+                if (this.isNewQuizContext()) {
+                    console.log("New Quizzes context — waiting 20s for iframe/DOM to settle");
+                    await this.waitMs(20000);
+                }
+
                 console.log("All required modules completed or prob scorm page — creating homepage button");
                 this.createHomepageButton();
+
             } else {
                 console.log("Required modules still incomplete — no action taken");
             }
