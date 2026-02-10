@@ -1280,12 +1280,23 @@ class CanvasCustomizer {
                 return;
             }
 
-            // Grab course ID
-            const courseId = window.ENV?.COURSE_ID;
+            // Grab course ID (ENV first, URL fallback)
+            let courseId = ENV?.COURSE_ID;
+
+            // Fallback: extract from URL like /courses/232/...
             if (!courseId) {
-                console.warn("No course ID found — cannot check module completion.");
+                const match = window.location.pathname.match(/\/courses\/(\d+)/);
+                if (match) {
+                    courseId = match[1];
+                    console.debug("Course ID derived from URL:", courseId);
+                }
+            }
+
+            if (!courseId) {
+                console.warn("No course ID found (ENV or URL) — cannot check module completion.");
                 return;
             }
+
 
             // Fetch modules + items
             const res = await fetch(
