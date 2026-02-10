@@ -85,6 +85,7 @@ class CanvasCustomizer {
             "Protecting Children - Mandatory Reporting and Other Obligations for Early Childhood - Frequently Asked Questions"
         ];
 
+
         this.observers = new Map();
 
         // problem SCORMs, mostly MARAM ones
@@ -290,26 +291,8 @@ class CanvasCustomizer {
     }
 
     getWebinarCourseIdFromCalendar() {
-        // Get the current hash
-        const hash = window.location.hash;
-
-        // Must be calendar agenda view and have a course context
-        if (!hash.includes("view_name=agenda") || !hash.includes("context_code=course_")) {
-            return null;
-        }
-
-        // Parse parameters from the hash
-        const params = new URLSearchParams(hash.replace(/^#/, ""));
-        const contextCode = params.get("context_code");
-
-        if (!contextCode?.startsWith("course_")) {
-            return null;
-        }
-
-        const courseId = contextCode.replace("course_", "");
-
-        // Extra sanity check (numeric only)
-        return /^\d+$/.test(courseId) ? courseId : null;
+        if (!this.isCalendarPage() || !this.isAgendaView()) return null;
+        return this.getCourseId({ fromContext: true });
     }
 
     // for updating the information section of webinar events
@@ -376,7 +359,7 @@ class CanvasCustomizer {
     }
 
     isWebinarCoursePage() {
-        return ["254", "255", "256", "257", "258", "259", "212"].includes(window.ENV?.COURSE_ID);
+        return ["254", "255", "256", "257", "258", "259", "212"].includes(this.getCourseId());
     }
 
     isQuizPage() {
@@ -384,15 +367,15 @@ class CanvasCustomizer {
     }
 
     isMRMod() {
-        return ["217", "224"].includes(window.ENV?.COURSE_ID);
+        return ["217", "224"].includes(this.getCourseId());
     }
 
     isMRModEC() {
-        return ["224"].includes(window.ENV?.COURSE_ID);
+        return ["224"].includes(this.getCourseId());
     }
 
     isMRModNG() {
-        return ["224"].includes(window.ENV?.COURSE_ID);
+        return ["224"].includes(this.getCourseId());
     }
 
     getCurrentUserId() {
@@ -661,13 +644,6 @@ class CanvasCustomizer {
             console.log('Webinar auto-select finished');
         };
 
-        // Extract courseId from URL hash
-        const getCourseIdFromUrl = () => {
-            const hashParams = new URLSearchParams(window.location.hash.slice(1));
-            const code = hashParams.get('context_code'); // e.g., "course_257"
-            return code ? code.replace('course_', '') : null;
-        };
-
         const tryOnce = async () => {
             attempt++;
             console.log(`Webinar attempt ${attempt}/${MAX_ATTEMPTS}`);
@@ -695,7 +671,7 @@ class CanvasCustomizer {
             await waitForDomToSettle(800, 8000);
 
             const select = document.querySelector('select[data-testid="select-course"]');
-            const urlCourseId = getCourseIdFromUrl();
+            const urlCourseId = this.getCourseId({ fromContext: true });
 
             console.log('Post-settle state:', { select, urlCourseId });
 
@@ -856,13 +832,7 @@ class CanvasCustomizer {
 
         if (document.getElementById("webinar-return-button")) return;
 
-        let courseId = window.ENV?.COURSE_ID;
-        if (!courseId) {
-            const hashParams = new URLSearchParams(window.location.hash.slice(1));
-            const contextCode = hashParams.get("context_code");
-            const match = contextCode && contextCode.match(/^course_(\d+)$/);
-            if (match) courseId = match[1];
-        }
+        const courseId = this.getCourseId({ fromContext: true });
         if (!courseId) return;
 
         const btn = document.createElement("a");
@@ -1125,7 +1095,7 @@ class CanvasCustomizer {
 
         if (attemptNode && attemptNode.style.display !== "none") {
             attemptNode.style.display = "none";
-            console.log("ðŸ” Hidden attempt block");
+            console.log("🔑 Hidden attempt block");
         }
 
         if (anonGradeNode && anonGradeNode.style.display !== "none") {
@@ -1319,20 +1289,10 @@ class CanvasCustomizer {
                 return;
             }
 
-            // Grab course ID (ENV first, URL fallback)
-            let courseId = ENV?.COURSE_ID;
-
-            // Fallback: extract from URL like /courses/232/...
-            if (!courseId) {
-                const match = window.location.pathname.match(/\/courses\/(\d+)/);
-                if (match) {
-                    courseId = match[1];
-                    console.debug("Course ID derived from URL:", courseId);
-                }
-            }
+            const courseId = this.getCourseId();
 
             if (!courseId) {
-                console.warn("No course ID found (ENV or URL) — cannot check module completion.");
+                console.warn("No course ID found — cannot check module completion.");
                 return;
             }
 
@@ -1547,7 +1507,7 @@ class CanvasCustomizer {
 
             this.state.scormWatcherStarted = true;
 
-            const courseId = window.ENV?.COURSE_ID;
+            const courseId = this.getCourseId();
             const assignmentId = window.ENV?.ASSIGNMENT_ID || this.config.DEFAULT_ASSIGNMENT_ID;
 
             if (!courseId) {
@@ -1731,7 +1691,7 @@ class CanvasCustomizer {
         }
 
         try {
-            const courseId = window.ENV?.COURSE_ID || window.ENV?.course_id;
+            const courseId = this.getCourseId();
             if (!courseId) throw new Error("No course ID found");
 
             const incompleteItems = await this.getIncompleteModuleItems(courseId);
@@ -1843,7 +1803,7 @@ class CanvasCustomizer {
     // ----------------------------
     async updateModuleCompletionStatus() {
         try {
-            const courseId = window.ENV?.COURSE_ID;
+            const courseId = this.getCourseId();
             if (!courseId) return;
 
             const modElements = Array.from(document.querySelectorAll("[id^='ModComp']"));
