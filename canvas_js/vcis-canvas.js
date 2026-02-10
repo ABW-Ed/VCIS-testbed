@@ -25,7 +25,7 @@ class CanvasCustomizer {
 
         };
 
-        this.HTML_ROOT = "https://abw-ed.github.io/VCIS-testbed/html";
+        this.HTML_ROOT = "redacted";
 
         this.state = {
             scormWatcherStarted: false,
@@ -78,11 +78,11 @@ class CanvasCustomizer {
         ];
         // conditional block list of items
         this.blockedHelpItemsConditional = [
-            "Protecting Children - Mandatory Reporting and Other Obligations for Non-Government Schools - Frequently Asked Questions"
+            "redacted"
         ];
 
         this.blockedHelpItemsConditional2 = [
-            "Protecting Children - Mandatory Reporting and Other Obligations for Early Childhood - Frequently Asked Questions"
+            "redacted"
         ];
 
         this.observers = new Map();
@@ -123,8 +123,8 @@ class CanvasCustomizer {
 
 
         this.catalogBaseUrl = this.isMRMod()
-            ? "https://protectngstraining.education.vic.gov.au"
-            : "https://training.infosharing.vic.gov.au";
+            ? "redacted"
+            : "redacted";
     }
 
     // ----------------------------
@@ -185,6 +185,36 @@ class CanvasCustomizer {
     // ----------------------------
     // Utility Methods
     // ----------------------------
+
+    /**
+     * Resolves the current course ID from (in priority order):
+     *   1. window.ENV.COURSE_ID
+     *   2. URL pathname  /courses/(\d+)
+     *   3. URL hash context_code=course_(\d+)  (opt-in)
+     */
+    getCourseId({ fromContext = false } = {}) {
+        // ENV (canonical)
+        const envId = window.ENV?.COURSE_ID;
+        if (envId) return String(envId);
+
+        // URL path
+        const pathMatch = window.location.pathname.match(/\/courses\/(\d+)/);
+        if (pathMatch) return pathMatch[1];
+
+        // Hash context_code (calendar pages, etc.)
+        if (fromContext) {
+            const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+            const code = params.get('context_code');
+            if (code?.startsWith('course_')) {
+                const id = code.replace('course_', '');
+                if (/^\d+$/.test(id)) return id;
+            }
+        }
+
+        return null;
+    }
+
+
 
     isStudent() {
         const roles = window.ENV?.current_user_roles || [];
@@ -1223,7 +1253,7 @@ class CanvasCustomizer {
         // FAILSAFE PATH: build a button manually
         // -------------------------------------------------
         if (!clone) {
-            const courseId = window.ENV?.COURSE_ID;
+            const courseId = this.getCourseId();
             if (!courseId) {
                 console.warn("No course ID; cannot create homepage button");
                 return;
