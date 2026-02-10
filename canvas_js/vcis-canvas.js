@@ -25,7 +25,7 @@ class CanvasCustomizer {
 
         };
 
-        this.HTML_ROOT = "redacted";
+        this.HTML_ROOT = "https://abw-ed.github.io/VCIS-testbed/html";
 
         this.state = {
             scormWatcherStarted: false,
@@ -78,11 +78,11 @@ class CanvasCustomizer {
         ];
         // conditional block list of items
         this.blockedHelpItemsConditional = [
-            "redacted"
+            "Protecting Children - Mandatory Reporting and Other Obligations for Non-Government Schools - Frequently Asked Questions"
         ];
 
         this.blockedHelpItemsConditional2 = [
-            "redacted"
+            "Protecting Children - Mandatory Reporting and Other Obligations for Early Childhood - Frequently Asked Questions"
         ];
 
         this.observers = new Map();
@@ -123,8 +123,8 @@ class CanvasCustomizer {
 
 
         this.catalogBaseUrl = this.isMRMod()
-            ? "redacted"
-            : "redacted";
+            ? "https://protectngstraining.education.vic.gov.au"
+            : "https://training.infosharing.vic.gov.au";
     }
 
     // ----------------------------
