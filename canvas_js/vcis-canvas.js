@@ -164,7 +164,7 @@ class CanvasCustomizer {
                     await this.updateModuleCompletionStatus();
                 }
 
-                if (this.isQuizPage() || this.isSCORMContext()) {
+                if (this.isQuizPage() || this.isSCORMContext() || this.isNewQuizContext()) {
                     const nextBtn = document.querySelector('[aria-label="Next Module Item"]');
 
                     if (!nextBtn || this.isProblemSCORM()) {
