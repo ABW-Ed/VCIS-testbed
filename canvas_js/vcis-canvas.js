@@ -546,7 +546,6 @@ class CanvasCustomizer {
     btn.type = 'button';
     btn.textContent = 'Copy link';
     btn.className = 'Button Button--large canvas-copy-link-btn';
-    btn.style.marginTop = '6px';
 
     btn.addEventListener('click', e => {
       e.preventDefault();
@@ -582,11 +581,8 @@ class CanvasCustomizer {
     const y = this._lastMouse?.y || 20;
 
     Object.assign(toast.style, {
-      position: 'fixed',
       top: (y + 12) + 'px',
-      left: (x + 12) + 'px',
-      zIndex: 999999,
-      pointerEvents: 'none'
+      left: (x + 12) + 'px'
     });
 
     document.body.appendChild(toast);
@@ -842,9 +838,6 @@ class CanvasCustomizer {
     if (!parent.id) {
       parent.id = "other-right-side-wrapper";
       parent.className = "ic-app-main-content__secondary";
-      parent.style.display = "flex";
-      parent.style.flexDirection = "column";
-      parent.style.justifyContent = "flex-end";
       const rightSide = document.getElementById("right-side-wrapper");
       if (rightSide) rightSide.insertAdjacentElement("afterend", parent);
     }
@@ -867,9 +860,7 @@ class CanvasCustomizer {
     childrenSpan.className = "css-11xkk0o-baseButton__children";
 
     const flexSpan = document.createElement("span");
-    flexSpan.className = "Button Button--medium canvas-copy-link-btn";
-    flexSpan.style.flexDirection = "row";
-    flexSpan.style.alignItems = "center";
+    flexSpan.className = "Button Button--medium canvas-copy-link-btn vcis-webinar-return-inner";
 
     flexSpan.appendChild(document.createTextNode("Return to Course Page →"));
 
@@ -1760,11 +1751,10 @@ class CanvasCustomizer {
 
   addBeginLabel(targetElement) {
     const nameNode = targetElement.querySelector(this.selectors.itemName);
-    if (nameNode && !nameNode.querySelector(".begin-label")) {
+    if (nameNode && !nameNode.querySelector(".vcis-begin-label")) {
       const label = document.createElement("span");
-      label.className = "begin-label";
+      label.className = "vcis-begin-label";
       label.textContent = "";
-      label.style.marginRight = "0rem";
       nameNode.prepend(label);
     }
   }
@@ -1772,24 +1762,19 @@ class CanvasCustomizer {
   createHighlightEffect(element, options = {}) {
     const { flashCount = 10, message = "Element highlighted" } = options;
 
-    // element.scrollIntoView({ behavior: "smooth", block: "center" });
     element.focus();
 
     setTimeout(() => {
-      const originalTransition = element.style.transition;
-      const originalBoxShadow = element.style.boxShadow;
-
-      element.style.transition = "box-shadow 0.3s ease-in-out";
+      element.classList.add("vcis-highlight-flash");
 
       let count = 0;
       const flashInterval = setInterval(() => {
-        element.style.boxShadow = count % 2 === 0 ? "0 0 20px 8px cornflowerblue" : "none";
+        element.classList.toggle("vcis-highlight-on", count % 2 === 0);
         count++;
 
         if (count > flashCount) {
           clearInterval(flashInterval);
-          element.style.transition = originalTransition || "";
-          element.style.boxShadow = originalBoxShadow || "none";
+          element.classList.remove("vcis-highlight-flash", "vcis-highlight-on");
         }
       }, 500);
 
@@ -1981,8 +1966,6 @@ class CanvasCustomizer {
           if (certButton) {
             certButton.classList.remove("in-progress");
             certButton.classList.add("completed");
-            certButton.style.pointerEvents = "auto";
-            certButton.style.cursor = "pointer";
 
             const catalogUrl = this.catalogBaseUrl;
             certButton.setAttribute("href", `${catalogUrl}/dashboard/completed`);
@@ -1994,8 +1977,6 @@ class CanvasCustomizer {
           if (certButton) {
             certButton.classList.remove("completed");
             certButton.classList.add("in-progress");
-            certButton.style.pointerEvents = "none";
-            certButton.style.cursor = "default";
             certButton.removeAttribute("href");
           }
         }
@@ -2018,25 +1999,17 @@ class CanvasCustomizer {
           case "booked":
             webinarButton.textContent = "View my booking";
             webinarButton.classList.add("completed");
-            webinarButton.style.pointerEvents = "auto";
-            webinarButton.style.cursor = "pointer";
             break;
 
           case "available":
             webinarButton.textContent = "Book a session";
             webinarButton.classList.add("incomplete");
-            webinarButton.style.pointerEvents = "auto";
-            webinarButton.style.cursor = "pointer";
             break;
 
           case "none":
           default:
             webinarButton.textContent = "No bookings";
             webinarButton.classList.add("not-started");
-
-            // Optional UX: disable when none available
-            webinarButton.style.pointerEvents = "none";
-            webinarButton.style.cursor = "default";
             break;
         }
       }
