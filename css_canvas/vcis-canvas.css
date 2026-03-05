@@ -186,10 +186,10 @@ body:not(.full-width):not(.outcomes):not(.body--login-confirmation):not(.content
 }
 
 
-/* remove the calendar changing buttons */
+/* remove the calendar changing buttons 
 #calendar_header .calendar_view_buttons.btn-group {
   display: none;
-}
+}*/
 
 /* adjust font sizes of webinar details popup */
 .agenda-date,
