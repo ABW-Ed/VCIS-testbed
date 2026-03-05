@@ -50,11 +50,13 @@ class CanvasCustomizer {
 
         };
 
-
+        // month, week and agenda seemingly are calendar only ID tags, fingers crossed
         this.alwaysHiddenElements = [
             "course-show-secondary",
             "global_nav_calendar_link",
-            "calendar_view_buttons.btn-group"
+            "month",
+            "week",
+            "agenda"
         ];
 
         this.conditionallyHiddenElements = [
