@@ -614,6 +614,49 @@ class CanvasCustomizer {
         }, 2200);
     }
 
+    observeHelpTray() {
+        if (this.helpObserver) return; // prevent duplicates
+
+        this.helpObserver = new MutationObserver(mutations => {
+            for (const mutation of mutations) {
+                if (!mutation.addedNodes.length) continue;
+
+                for (const node of mutation.addedNodes) {
+                    if (!(node instanceof HTMLElement)) continue;
+
+                    // Desktop tray added
+                    if (node.id === "help_tray") {
+                        this.customizeHelpTray();
+                        return;
+                    }
+
+                    // Mobile expandable added
+                    if (node.id && node.id.startsWith("Expandable___")) {
+                        this.customizeHelpTray();
+                        return;
+                    }
+
+                    // If help content appears deeper in subtree
+                    if (
+                        node.querySelector &&
+                        (
+                            node.querySelector('#help_tray') ||
+                            node.querySelector('[id^="Expandable___"]')
+                        )
+                    ) {
+                        this.customizeHelpTray();
+                        return;
+                    }
+                }
+            }
+        });
+
+        this.helpObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
 
     async autoSelectWebinarAppointment() {
         if (!this.isCalendarPage() || !this.hasWebinarContext()) {
@@ -815,7 +858,7 @@ class CanvasCustomizer {
     // ----------------------------
     async setupUICustomizations() {
         this.hideAttemptBlock();
-        this.customizeHelpTray();
+        this.observeHelpTray();
         this.updateDashboardLink();
         this.insertWebinarEventInformation();
 
@@ -1157,39 +1200,51 @@ class CanvasCustomizer {
     }
 
     customizeHelpTray() {
-        const tray = this.$(this.selectors.helpTray);
-        if (!tray) return;
+        // Desktop tray
+        let container = document.querySelector('#help_tray');
 
-        const buttons = tray.querySelectorAll(
-            "a[role='button'], button[role='button'], a.css-1fu6hu0-view-link"
+        // Mobile expandable tray
+        if (!container) {
+            container = document.querySelector('[id^="Expandable___"]');
+        }
+
+        if (!container) return;
+
+        const buttons = container.querySelectorAll(
+            "a[role='button'], button[role='button'], a.css-c4zpq1-view-link"
         );
 
-        // Start with the default blocked list
+        if (!buttons.length) return;
+
         let itemsToBlock = [...this.blockedHelpItems];
 
-        // Apply correct conditional logic
         if (this.isMRModNG()) {
             itemsToBlock = itemsToBlock.concat(this.blockedHelpItemsConditional);
-            console.log("MRModNG detected – applying conditional list 1");
         } else if (this.isMRModEC()) {
             itemsToBlock = itemsToBlock.concat(this.blockedHelpItemsConditional2);
-            console.log("MRModEC detected – applying conditional list 2");
-        } else {
-            console.log("Neither MRModNG nor MRModEC detected – using default block list only");
         }
 
         buttons.forEach(el => {
-            const text = el.innerText.trim();
+            const text = (el.innerText || "").trim();
             const href = el.getAttribute("href") || "";
 
-            if (itemsToBlock.some(item => text.includes(item) || href.includes(item))) {
+            if (
+                itemsToBlock.some(item =>
+                    text.includes(item) || href.includes(item)
+                )
+            ) {
                 const li = el.closest("li");
+
+                // Prevent re-processing
+                if ((li || el).dataset.helpHidden === "true") return;
+
                 (li || el).style.display = "none";
-                console.log(`Hidden help item: ${text || href}`);
+                (li || el).dataset.helpHidden = "true";
+
+                console.log("Hidden help item:", text || href);
             }
         });
     }
-
     createHomepageButton() {
         const left = document.querySelector(".module-sequence-footer-left");
         const right = document.querySelector(".module-sequence-footer-right");
