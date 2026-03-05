@@ -53,7 +53,8 @@ class CanvasCustomizer {
 
         this.alwaysHiddenElements = [
             "course-show-secondary",
-            "global_nav_calendar_link"
+            "global_nav_calendar_link",
+            "calendar_view_buttons.btn-group"
         ];
 
         this.conditionallyHiddenElements = [
