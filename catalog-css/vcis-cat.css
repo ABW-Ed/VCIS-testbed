@@ -555,3 +555,8 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   border-radius: 15px !important;
   white-space: normal;
 }
+
+/* Make certificate download text child link blue */
+.cert-link .DashboardCertificate__Title {
+  color: #0052c2 !important;
+}
