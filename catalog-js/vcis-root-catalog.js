@@ -38,7 +38,7 @@ async function catalogCertCorrection() {
         newLink.className = downloadLink.className + " hover_cert_link";
         newLink.setAttribute("target", "_blank");
         newLink.setAttribute("rel", "noopener noreferrer");
-        newLink.style.color = "#0052c2";   // makes the text Child Link blue
+        newLink.classList.add("cert-link");   // adds a class for the certificate link
         newLink.appendChild(titleSpan.cloneNode(true));
         titleSpan.replaceWith(newLink);
 
