@@ -21,43 +21,37 @@ async function catalogCertCorrection() {
 
   let updated = false;
 
-  completedPanel.querySelectorAll(".DashboardCertificate").forEach((cert, idx) => {
-
+  completedPanel.querySelectorAll(".col-xs-12").forEach((container, idx) => {
     // 1️. Remove course title if present
-    const titleSpan = cert.querySelector(".DashboardCertificate__Title");
+    const titleSpan = container.querySelector(".DashboardCertificate__Title");
     if (titleSpan) titleSpan.remove();
 
-    // 2️. Remove any old View/Download links that might still exist
-    cert.querySelectorAll("span a").forEach(link => {
-      const text = link.textContent.trim().toLowerCase();
-      if (text === "view" || text === "download") link.remove();
-    });
-
-    // 3️. Remove any old Download Certificate button div
-    const oldBtnDiv = cert.parentElement.querySelector(".DashboardProduct__DownloadButtonWrapper");
-    if (oldBtnDiv) oldBtnDiv.remove();
-
-    // 4️. Grab the certificate download URL from the existing <a>
-    const downloadLink = cert.querySelector("a[href*='?download=1']");
-    if (!downloadLink) {
-      console.warn(`⚠️ No download URL found for certificate #${idx + 1}`);
+    // 2️. Remove old download link
+    const oldDownload = container.querySelector(".DashboardCertificate a[href*='?download=1']");
+    if (!oldDownload) {
+      console.warn(`⚠️ No download link found for certificate #${idx + 1}`);
       return;
     }
-    const downloadHref = downloadLink.href;
+    const downloadHref = oldDownload.href;
+    oldDownload.remove(); // remove old link
 
-    // 5️. Find the Review Course wrapper
-    const reviewWrapper = cert.parentElement.querySelector(".DashboardProduct__CourseButtonWrapper");
+    // 3️. Find the Review Course wrapper
+    const reviewWrapper = container.querySelector(".DashboardProduct__CourseButtonWrapper");
     if (!reviewWrapper) {
       console.warn(`⚠️ No Review Course wrapper found for certificate #${idx + 1}`);
       return;
     }
 
-    // 6️. Create a new div for the Download Certificate button
+    // 4️. Remove existing download button wrapper if it exists
+    const oldBtnDiv = container.querySelector(".DashboardProduct__DownloadButtonWrapper");
+    if (oldBtnDiv) oldBtnDiv.remove();
+
+    // 5️. Create new div for download button
     const downloadDiv = document.createElement("div");
     downloadDiv.className = "DashboardProduct__DownloadButtonWrapper";
-    downloadDiv.style.marginTop = "10px"; // spacing below Review button
+    downloadDiv.style.marginTop = "10px";
 
-    // 7️. Create the Download Certificate button
+    // 6️. Create button
     const btn = document.createElement("a");
     btn.href = downloadHref;
     btn.target = "_blank";
@@ -70,8 +64,9 @@ async function catalogCertCorrection() {
       </span>
     `;
 
-    // Append the button to the new div and insert after the Review wrapper
     downloadDiv.appendChild(btn);
+
+    // 7️. Insert download button div **after the Review Course button wrapper**
     reviewWrapper.insertAdjacentElement("afterend", downloadDiv);
 
     updated = true;
