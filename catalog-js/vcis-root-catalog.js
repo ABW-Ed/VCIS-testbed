@@ -64,13 +64,23 @@ async function catalogCertCorrection() {
         `;
 
         // Select "review course" button and place "certificate download" button next to it
-        const buttonWrapper = cert.querySelector(".DashboardProduct__CourseButtonWrapper");
+        const reviewBtn = cert.querySelector("a[data-testid='review-course-button']");
 
-        if (buttonWrapper) {
-          buttonWrapper.appendChild(btn);
+        if (reviewBtn) {
+          // Use the wrapper that contains the review button
+          const buttonWrapper = reviewBtn.parentElement;
+
+          // Force horizontal layout
+          buttonWrapper.style.display = "flex";
+          buttonWrapper.style.alignItems = "center";
+          buttonWrapper.style.gap = "10px";
+
+          // Append the download button **after the review button**
+          reviewBtn.insertAdjacentElement("afterend", btn);
         } else {
           cert.appendChild(btn); // fallback
-        }
+        }    
+        
         console.log(`⬇️ Added button for cert #${idx + 1}`);
       }
 
