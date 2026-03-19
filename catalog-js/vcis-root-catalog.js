@@ -26,32 +26,35 @@ async function catalogCertCorrection() {
     const titleSpan = container.querySelector(".DashboardCertificate__Title");
     if (titleSpan) titleSpan.remove();
 
-    // 2️. Remove old download link
-    const oldDownload = container.querySelector(".DashboardCertificate a[href*='?download=1']");
-    if (!oldDownload) {
-      console.warn(`⚠️ No download link found for certificate #${idx + 1}`);
+    // 2️. Remove ALL links inside DashboardCertificate (View/Download)
+    const certificateLinks = container.querySelectorAll(".DashboardCertificate a");
+    certificateLinks.forEach(link => link.remove());
+
+    // 3️. Grab the original download href if any (from removed links)
+    // fallback if you still want to use existing URL
+    let downloadHref = certificateLinks[0]?.href;
+    if (!downloadHref) {
+      console.warn(`⚠️ No download URL found for certificate #${idx + 1}`);
       return;
     }
-    const downloadHref = oldDownload.href;
-    oldDownload.remove(); // remove old link
 
-    // 3️. Find the Review Course wrapper
+    // 4️. Find Review Course wrapper
     const reviewWrapper = container.querySelector(".DashboardProduct__CourseButtonWrapper");
     if (!reviewWrapper) {
       console.warn(`⚠️ No Review Course wrapper found for certificate #${idx + 1}`);
       return;
     }
 
-    // 4️. Remove existing download button wrapper if it exists
+    // 5️. Remove existing download button wrapper if it exists
     const oldBtnDiv = container.querySelector(".DashboardProduct__DownloadButtonWrapper");
     if (oldBtnDiv) oldBtnDiv.remove();
 
-    // 5️. Create new div for download button
+    // 6️. Create new div for Download Certificate button
     const downloadDiv = document.createElement("div");
     downloadDiv.className = "DashboardProduct__DownloadButtonWrapper";
     downloadDiv.style.marginTop = "10px";
 
-    // 6️. Create button
+    // 7️. Create the button
     const btn = document.createElement("a");
     btn.href = downloadHref;
     btn.target = "_blank";
@@ -66,7 +69,7 @@ async function catalogCertCorrection() {
 
     downloadDiv.appendChild(btn);
 
-    // 7️. Insert download button div **after the Review Course button wrapper**
+    // 8️. Insert download button after Review Course wrapper
     reviewWrapper.insertAdjacentElement("afterend", downloadDiv);
 
     updated = true;
