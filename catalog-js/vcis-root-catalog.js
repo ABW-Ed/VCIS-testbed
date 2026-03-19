@@ -45,6 +45,37 @@ async function catalogCertCorrection() {
         console.log(`✅ Wrapped title in download link: ${newLink.href}`);
       }
 
+      // Certificate download button
+      if (!cert.querySelector(".cert-download-btn")) {
+        const btn = document.createElement("a");
+        btn.href = downloadLink.href;
+        btn.target = "_blank";
+        btn.rel = "noopener noreferrer";
+
+        btn.className = "css-5lkooj-view--inlineBlock-baseButton cert-download-btn";
+        btn.setAttribute("data-testid", "download-certificate-button");
+        btn.setAttribute("data-cid", "BaseButton Button");
+        btn.setAttribute("dir", "ltr");
+
+        btn.innerHTML = `
+          <span class="css-1f674i6-baseButton__content">
+            <span class="css-11xkk0o-baseButton__children">
+              Download Certificate
+            </span>
+          </span>
+        `;
+
+        // Place button under title
+        const titleLink = cert.querySelector(".cert-link");
+        if (titleLink) {
+          titleLink.insertAdjacentElement("afterend", btn);
+        } else {
+          cert.appendChild(btn);
+        }
+
+        console.log("⬇️ Added Download Certificate button");
+      }
+      
       // Remove duplicate "View/Download" links
       const extraLinksContainer = cert.querySelector("span > a[href*='?download=1']")?.parentElement;
       if (extraLinksContainer) {
