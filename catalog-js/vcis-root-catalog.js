@@ -9,7 +9,6 @@ let initAttempts = 0;
  * Feature: Certificate Customiser
  * Runs ONLY on product pages (ENV.product exists)
  */
-
 async function catalogCertCorrection() {
   console.log("✅ Running certificate customiser...");
 
@@ -22,71 +21,71 @@ async function catalogCertCorrection() {
   let updated = false;
 
   completedPanel.querySelectorAll(".DashboardCertificate").forEach((cert, idx) => {
+    // 1️. Remove course title if present
     const titleSpan = cert.querySelector(".DashboardCertificate__Title");
-    const downloadLink = cert.querySelector("a[href*='?download=1']");
-    const downloadHref = downloadLink?.href;
+    if (titleSpan) titleSpan.remove();
 
-    if (titleSpan && downloadHref) {
+    // 2️. Remove old "View/Download" links
+    cert.querySelectorAll("span a").forEach(link => {
+      const text = link.textContent.trim().toLowerCase();
+      if (text === "view" || text === "download") link.remove();
+    });
 
-      // Remove title
-      titleSpan.remove();
+    // 3️. Remove any existing Download Certificate buttons
+    const oldBtnDiv = cert.querySelector(".DashboardProduct__DownloadButtonWrapper");
+    if (oldBtnDiv) oldBtnDiv.remove();
 
-      // Remove View/Download link group
-      cert.querySelectorAll("span").forEach(span => {
-        const links = span.querySelectorAll("a");
+    // 4️. Grab the certificate download URL
+    // Try to find it first via the old link or a data attribute
+    let downloadHref = null;
 
-        if (links.length) {
-          const texts = Array.from(links).map(a => a.textContent.trim().toLowerCase());
+    // Option A: old link still exists (hidden or somewhere)
+    const oldLink = cert.querySelector("a[href*='?download=1']");
+    if (oldLink) downloadHref = oldLink.href;
 
-          if (texts.includes("view") || texts.includes("download")) {
-            span.remove();
-          }
-        }
-      });
+    // Option B: check for data attribute (replace with the actual attribute your system uses)
+    if (!downloadHref) {
+      const dataLink = cert.getAttribute("data-download-url"); // adjust if different
+      if (dataLink) downloadHref = dataLink;
+    }
 
-      // Create "download certificate"
-      if (!cert.querySelector(".cert-download-btn")) {
+    if (!downloadHref) {
+      console.warn(`⚠️ No download URL found for certificate #${idx + 1}`);
+      return; // skip this certificate
+    }
 
-        const btn = document.createElement("a");
-        btn.href = downloadHref;
-        btn.target = "_blank";
-        btn.rel = "noopener noreferrer";
+    // 5️. Find the Review Course wrapper
+    const reviewWrapper = cert.querySelector(".DashboardProduct__CourseButtonWrapper");
+    if (!reviewWrapper) {
+      console.warn(`⚠️ No Review Course wrapper found for certificate #${idx + 1}`);
+      return;
+    }
 
-        btn.className = "css-5lkooj-view--inlineBlock-baseButton cert-download-btn";
-        btn.setAttribute("data-testid", "download-certificate-button");
+    // 6️. Create a new div for the Download Certificate button
+    const downloadDiv = document.createElement("div");
+    downloadDiv.className = "DashboardProduct__DownloadButtonWrapper";
+    downloadDiv.style.marginTop = "10px"; // spacing below Review button
 
-        btn.innerHTML = `
-          <span class="css-1f674i6-baseButton__content">
-            <span class="css-11xkk0o-baseButton__children">
-              Download Certificate
-            </span>
-          </span>
-        `;
+    // 7️. Create the Download Certificate button
+    const btn = document.createElement("a");
+    btn.href = downloadHref;
+    btn.target = "_blank";
+    btn.rel = "noopener noreferrer";
+    btn.className = "css-5lkooj-view--inlineBlock-baseButton cert-download-btn";
+    btn.setAttribute("data-testid", "download-certificate-button");
+    btn.innerHTML = `
+      <span class="css-1f674i6-baseButton__content">
+        <span class="css-11xkk0o-baseButton__children">Download Certificate</span>
+      </span>
+    `;
 
-        // Select "review course" button and place "certificate download" button next to it
-        const reviewBtn = cert.querySelector("a[data-testid='review-course-button']");
+    // Append button to the new div and insert after Review wrapper
+    downloadDiv.appendChild(btn);
+    reviewWrapper.insertAdjacentElement("afterend", downloadDiv);
 
-        if (reviewBtn) {
-          // Use the wrapper that contains the review button
-          const buttonWrapper = reviewBtn.parentElement;
-
-          // Force horizontal layout
-          buttonWrapper.style.display = "flex";
-          buttonWrapper.style.alignItems = "center";
-          buttonWrapper.style.gap = "10px";
-
-          // Append the download button **after the review button**
-          reviewBtn.insertAdjacentElement("afterend", btn);
-        } else {
-          cert.appendChild(btn); // fallback
-        }    
-        
-        console.log(`⬇️ Added button for cert #${idx + 1}`);
-      }
-
-      updated = true;
-    } // closes (titleSpan && downloadHref)
-  }); // closes forEach
+    updated = true;
+    console.log(`⬇️ Added Download Certificate button for cert #${idx + 1}`);
+  });
 
   if (updated) {
     console.log("🎉 Certificate customisation complete.");
