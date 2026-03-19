@@ -63,15 +63,14 @@ async function catalogCertCorrection() {
           </span>
         `;
 
-        // Selector for review button
-        const reviewBtn = cert.querySelector("a[data-testid*='review']");
+        // Selects "review course" button and places "
+        const buttonWrapper = cert.querySelector(".DashboardProduct__CourseButtonWrapper");
 
-        if (reviewBtn && reviewBtn.parentElement) {
-          reviewBtn.parentElement.appendChild(btn);
+        if (buttonWrapper) {
+          buttonWrapper.appendChild(btn);
         } else {
-          cert.appendChild(btn);
+          cert.appendChild(btn); // fallback
         }
-
         console.log(`⬇️ Added button for cert #${idx + 1}`);
       }
 
