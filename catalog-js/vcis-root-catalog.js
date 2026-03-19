@@ -37,10 +37,6 @@ async function catalogCertCorrection() {
       if (text === "view" || text === "download") link.remove();
     });
 
-    // 3️. Remove any existing Download Certificate buttons
-    const existingBtn = cert.querySelector(".cert-download-btn");
-    if (existingBtn) existingBtn.remove();
-
     // 4️. Create new Download Certificate button
     const btn = document.createElement("a");
     btn.href = downloadHref;
