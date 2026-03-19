@@ -32,8 +32,10 @@ async function catalogCertCorrection() {
       titleSpan.remove();
 
       // Remove ALL existing download links
-      cert.querySelectorAll("a[href*='?download=1']").forEach(link => {
-        link.remove();
+      cert.querySelectorAll("a").forEach(link => {
+        if (link.textContent.trim().toLowerCase().includes("view")) {
+          link.remove();
+        }
       });
 
       // Create "download certificate"
@@ -58,8 +60,8 @@ async function catalogCertCorrection() {
         // Selector for review button
         const reviewBtn = cert.querySelector("a[data-testid*='review']");
 
-        if (reviewBtn) {
-          reviewBtn.insertAdjacentElement("afterend", btn);
+        if (reviewBtn && reviewBtn.parentElement) {
+          reviewBtn.parentElement.appendChild(btn);
         } else {
           cert.appendChild(btn);
         }
