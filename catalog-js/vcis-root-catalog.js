@@ -25,6 +25,9 @@ async function catalogCertCorrection() {
     const downloadLink = cert.querySelector("a[href*='?download=1']");
 
     if (titleSpan && downloadLink) {
+
+        titleSpan.remove(); // Removes course title since there's a download button further down
+      
       // Append helpful suffix
       // if (!titleSpan.textContent.includes(" - Click to download certificate")) {
       //  titleSpan.textContent = titleSpan.textContent.trim() + " - Click to download certificate";
