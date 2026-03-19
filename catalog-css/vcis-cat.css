@@ -562,9 +562,14 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
 }
 
 /* Forces horizontal layout of all children in "review course" button wrapper */
+.cert-download-btn {
+  /* remove margin-left if using gap in flex container */
+  margin-left: 0;
+}
+
 .DashboardProduct__CourseButtonWrapper {
-  display: flex;
+  display: flex;       /* horizontal layout */
   flex-direction: row;
-  align-items: center;
-  gap: 10px;
+  align-items: center; /* vertical center */
+  gap: 10px;           /* spacing between buttons */
 }
