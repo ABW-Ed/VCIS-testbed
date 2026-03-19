@@ -9,6 +9,7 @@ let initAttempts = 0;
  * Feature: Certificate Customiser
  * Runs ONLY on product pages (ENV.product exists)
  */
+
 async function catalogCertCorrection() {
   console.log("✅ Running certificate customiser...");
 
@@ -20,7 +21,7 @@ async function catalogCertCorrection() {
 
   let updated = false;
 
- completedPanel.querySelectorAll(".DashboardCertificate").forEach((cert, idx) => {
+  completedPanel.querySelectorAll(".DashboardCertificate").forEach((cert, idx) => {
     const titleSpan = cert.querySelector(".DashboardCertificate__Title");
     const downloadLink = cert.querySelector("a[href*='?download=1']");
     const downloadHref = downloadLink?.href;
@@ -66,9 +67,9 @@ async function catalogCertCorrection() {
         console.log(`⬇️ Added button for cert #${idx + 1}`);
       }
 
-  updated = true;
-}
-  });
+      updated = true;
+    } // closes (titleSpan && downloadHref)
+  }); // closes forEach
 
   if (updated) {
     console.log("🎉 Certificate customisation complete.");
