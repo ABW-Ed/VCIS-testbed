@@ -31,10 +31,16 @@ async function catalogCertCorrection() {
       // Remove title
       titleSpan.remove();
 
-      // Remove ALL existing download links
-      cert.querySelectorAll("a").forEach(link => {
-        if (link.textContent.trim().toLowerCase().includes("view")) {
-          link.remove();
+      // Remove View/Download link group
+      cert.querySelectorAll("span").forEach(span => {
+        const links = span.querySelectorAll("a");
+
+        if (links.length) {
+          const texts = Array.from(links).map(a => a.textContent.trim().toLowerCase());
+
+          if (texts.includes("view") || texts.includes("download")) {
+            span.remove();
+          }
         }
       });
 
