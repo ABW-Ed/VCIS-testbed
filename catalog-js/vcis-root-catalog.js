@@ -63,7 +63,7 @@ async function catalogCertCorrection() {
           </span>
         `;
 
-        // Selects "review course" button and places "
+        // Select "review course" button and place "certificate download" button next to it
         const buttonWrapper = cert.querySelector(".DashboardProduct__CourseButtonWrapper");
 
         if (buttonWrapper) {
