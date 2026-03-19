@@ -68,16 +68,14 @@ async function catalogCertCorrection() {
           </span>
         `;
 
-        // Place button under title
-        const titleLink = cert.querySelector(".cert-link");
-        if (titleLink) {
-          titleLink.insertAdjacentElement("afterend", btn);
-        } else {
-          cert.appendChild(btn);
-        }
+        // Place button next to "review course" button
+const reviewBtn = cert.querySelector("a[data-testid='review-course-button']");
 
-        console.log("⬇️ Added Download Certificate button");
-      }
+if (reviewBtn) {
+  reviewBtn.insertAdjacentElement("afterend", btn);
+} else {
+  cert.appendChild(btn); // fallback
+}
       
       // Remove duplicate "View/Download" links
       const extraLinksContainer = cert.querySelector("span > a[href*='?download=1']")?.parentElement;
