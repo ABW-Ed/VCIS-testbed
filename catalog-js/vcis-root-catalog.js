@@ -26,10 +26,10 @@ async function catalogCertCorrection() {
 
     if (titleSpan && downloadLink) {
       // Append helpful suffix
-      if (!titleSpan.textContent.includes(" - Click to download certificate")) {
-        titleSpan.textContent = titleSpan.textContent.trim() + " - Click to download certificate";
-        console.log(`✏️ Updated title text for cert #${idx + 1}`);
-      }
+      // if (!titleSpan.textContent.includes(" - Click to download certificate")) {
+      //  titleSpan.textContent = titleSpan.textContent.trim() + " - Click to download certificate";
+      //  console.log(`✏️ Updated title text for cert #${idx + 1}`);
+      // }
 
       // Wrap in anchor if not already
       if (!titleSpan.closest("a")) {
