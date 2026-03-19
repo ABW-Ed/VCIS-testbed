@@ -561,7 +561,10 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   color: #0052c2 !important;
 }
 
-/* Spacing for certificate download button */
-.cert-download-btn {
-  margin-left: 10px;
+/* Forces horizontal layout of all children in "review course" button wrapper */
+.DashboardProduct__CourseButtonWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
