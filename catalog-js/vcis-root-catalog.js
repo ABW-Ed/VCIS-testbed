@@ -20,45 +20,31 @@ async function catalogCertCorrection() {
 
   let updated = false;
 
-  completedPanel.querySelectorAll(".DashboardCertificate").forEach((cert, idx) => {
+ completedPanel.querySelectorAll(".DashboardCertificate").forEach((cert, idx) => {
     const titleSpan = cert.querySelector(".DashboardCertificate__Title");
     const downloadLink = cert.querySelector("a[href*='?download=1']");
+    const downloadHref = downloadLink?.href;
 
-    if (titleSpan && downloadLink) {
+    if (titleSpan && downloadHref) {
 
-        titleSpan.remove(); // Removes course title since there's a download button further down
-      
-      // Append helpful suffix
-      // if (!titleSpan.textContent.includes(" - Click to download certificate")) {
-      //  titleSpan.textContent = titleSpan.textContent.trim() + " - Click to download certificate";
-      //  console.log(`✏️ Updated title text for cert #${idx + 1}`);
-      // }
+      // Remove title
+      titleSpan.remove();
 
-      // Wrap in anchor if not already
-      if (!titleSpan.closest("a")) {
-        const newLink = document.createElement("a");
-        newLink.href = downloadLink.href;
-        newLink.className = downloadLink.className + " hover_cert_link";
-        newLink.setAttribute("target", "_blank");
-        newLink.setAttribute("rel", "noopener noreferrer");
-        newLink.classList.add("cert-link");   // adds a class for the certificate link
-        newLink.appendChild(titleSpan.cloneNode(true));
-        titleSpan.replaceWith(newLink);
+      // Remove ALL existing download links
+      cert.querySelectorAll("a[href*='?download=1']").forEach(link => {
+        link.remove();
+      });
 
-        console.log(`✅ Wrapped title in download link: ${newLink.href}`);
-      }
-
-      // Certificate download button
+      // Create "download certificate"
       if (!cert.querySelector(".cert-download-btn")) {
+
         const btn = document.createElement("a");
-        btn.href = downloadLink.href;
+        btn.href = downloadHref;
         btn.target = "_blank";
         btn.rel = "noopener noreferrer";
 
         btn.className = "css-5lkooj-view--inlineBlock-baseButton cert-download-btn";
         btn.setAttribute("data-testid", "download-certificate-button");
-        btn.setAttribute("data-cid", "BaseButton Button");
-        btn.setAttribute("dir", "ltr");
 
         btn.innerHTML = `
           <span class="css-1f674i6-baseButton__content">
@@ -68,24 +54,20 @@ async function catalogCertCorrection() {
           </span>
         `;
 
-        // Place button next to "review course" button
-const reviewBtn = cert.querySelector("a[data-testid='review-course-button']");
+        // Selector for review button
+        const reviewBtn = cert.querySelector("a[data-testid*='review']");
 
-if (reviewBtn) {
-  reviewBtn.insertAdjacentElement("afterend", btn);
-} else {
-  cert.appendChild(btn); // fallback
-}
-      
-      // Remove duplicate "View/Download" links
-      const extraLinksContainer = cert.querySelector("span > a[href*='?download=1']")?.parentElement;
-      if (extraLinksContainer) {
-        extraLinksContainer.remove();
-        console.log("🗑️ Removed extra View/Download links.");
+        if (reviewBtn) {
+          reviewBtn.insertAdjacentElement("afterend", btn);
+        } else {
+          cert.appendChild(btn);
+        }
+
+        console.log(`⬇️ Added button for cert #${idx + 1}`);
       }
 
-      updated = true;
-    }
+  updated = true;
+}
   });
 
   if (updated) {
