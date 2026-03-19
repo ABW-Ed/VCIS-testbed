@@ -560,3 +560,8 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
 .cert-link .DashboardCertificate__Title {
   color: #0052c2 !important;
 }
+
+/* Spacing for certificate download button */
+.cert-download-btn {
+  margin-left: 10px;
+}
