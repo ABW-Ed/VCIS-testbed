@@ -573,3 +573,15 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   align-items: center; /* vertical center */
   gap: 10px;           /* spacing between buttons */
 }
+
+/* Hide Add to Cart button */
+#add-remove-cart-button,
+button[aria-label="Add to Cart"] {
+  display: none !important;
+}
+
+/* Hide Cart / Checkout button */
+button[data-testid="open-shopping-cart-button"],
+button[aria-describedby^="Badge"] {
+  display: none !important;
+}
