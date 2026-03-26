@@ -578,10 +578,14 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
 #add-remove-cart-button,
 button[aria-label="Add to Cart"] {
   display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* Hide Cart / Checkout button */
 button[data-testid="open-shopping-cart-button"],
 button[aria-describedby^="Badge"] {
   display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
