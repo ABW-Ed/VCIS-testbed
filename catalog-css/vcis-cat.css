@@ -574,14 +574,6 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   gap: 10px;           /* spacing between buttons */
 }
 
-/* Hide Add to Cart button */
-#add-remove-cart-button,
-button[aria-label="Add to Cart"] {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
 /* Hide Cart / Checkout button */
 .cart-button
 {
