@@ -583,8 +583,8 @@ button[aria-label="Add to Cart"] {
 }
 
 /* Hide Cart / Checkout button */
-button[data-testid="open-shopping-cart-button"],
-button[aria-describedby^="Badge"] {
+.cart-button
+{
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
