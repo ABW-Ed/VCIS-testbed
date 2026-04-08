@@ -581,3 +581,10 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+/* Hide Add to Cart button */
+#add-to-cart-hero, #add-to-cart-footer {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
