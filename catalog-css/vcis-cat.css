@@ -1,3 +1,9 @@
+/* cyber security incident fix to make links unclickable */
+
+.product-link {
+pointer-events: none;
+}
+
 #app-header {
   /*    background-color: #041E42; */
   color: #ffffff;
