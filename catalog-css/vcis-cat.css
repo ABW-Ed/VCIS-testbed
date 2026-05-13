@@ -1,4 +1,4 @@
-/* cyber security incident fix to make links unclickable but still have links in announcement clickable */
+/* cyber security incident fix to make links unclickable but still have links in announcement clickable and commented out box-shadow */
 
 .product-link {
 pointer-events: none;
@@ -286,10 +286,10 @@ pointer-events: none;
   display: none;
 }
 
-/* add slight drop shadow to tiles */
+/* add slight drop shadow to tiles 
 .product-tile {
   box-shadow: 5px 5px 5px #00000030;
-}
+} */
 
 .product-price {
   display: none !important;
