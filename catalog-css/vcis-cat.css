@@ -4,7 +4,7 @@
 pointer-events: none;
 }
 
-.product-link > .announce-line > a {
+.product-link .announce-line a {
   pointer-events: auto !important;
 }
 
