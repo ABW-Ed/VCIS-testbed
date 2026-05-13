@@ -5,7 +5,7 @@ pointer-events: none;
 }
 
 .product-link > .announce-line > a {
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 
 #app-header {
