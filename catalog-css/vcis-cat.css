@@ -1,4 +1,4 @@
-/* cyber security incident fix to make links unclickable but still have links in announcement clickable - NOTE have also commented out #page-links a:hover so reinstate that when incident has been resolved */
+/* cyber security incident fix to make links unclickable but still have links in announcement clickable */
 
 .product-link {
 pointer-events: none;
@@ -366,11 +366,11 @@ pointer-events: none;
   font-size: 14px;
   color: #ffffff !important;
 }
-/* commenting out for SECURITY INCIDENT
+
 #page-links a:hover,
 .btn-link:hover {
   color: #EE7323;
-} */
+}
 
 #page-links .header-piped-list>li:after {
   content: "|";
