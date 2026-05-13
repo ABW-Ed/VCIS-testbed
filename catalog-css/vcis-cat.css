@@ -1,4 +1,4 @@
-/* cyber security incident fix to make links unclickable but still have links in announcement clickable */
+/* cyber security incident fix to make links unclickable but still have links in announcement clickable - NOTE have also commented out #page-links a:hover so reinstate that when incident has been resolved */
 
 .product-link {
 pointer-events: none;
@@ -7,6 +7,12 @@ pointer-events: none;
 #announcement-block .product-link a {
   pointer-events: auto !important;
 }
+
+#search-form {
+pointer-events: none;
+}
+
+/* beginning of BAU CSS */
 
 #app-header {
   /*    background-color: #041E42; */
