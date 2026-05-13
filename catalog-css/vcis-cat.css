@@ -1,7 +1,11 @@
-/* cyber security incident fix to make links unclickable */
+/* cyber security incident fix to make links unclickable but still have links in announcement clickable */
 
 .product-link {
 pointer-events: none;
+}
+
+.product-link > .announce-line > a {
+  pointer-events: auto;
 }
 
 #app-header {
