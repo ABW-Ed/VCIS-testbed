@@ -306,6 +306,42 @@ var buildTileHTML = function (tile) {
   return tileHTML;
 };
 
+// Inject Child Link category tile into Education Workforces page
+function injectChildLinkTileIntoEducationWorkforce() {
+
+  // Education Workforce category page only
+  const deworkforcesId = "64839";
+
+  const match = window.location.href.match(/category%5Bid%5D=(\d+)/);
+  if (!match || match[1] !== deworkforcesId) {
+    return;
+  }
+
+  // Prevent duplicates
+ if ($("#related-training-section").length) {
+    return;
+  }
+
+  const childlinkTile = [
+    "Child Link",
+    "/browse/infosharing?category%5Bid%5D=64838",
+    githubpage + "assets/img/childlink-logo.png"
+  ];
+
+  const section = $(`
+    <div id="related-training-section" style="margin-top:40px;">
+      <h2 dir="ltr" data-cid="Heading" class="css-1yhs06y-view-heading">Related Training</h2>
+      <div class="row" id="related-training-tiles"></div>
+    </div>
+  `);
+
+  $("#listings").append(section);
+
+  $("#related-training-tiles").append(
+    $(buildTileHTML(childlinkTile))
+  );
+}
+
 /* ---------------------------------------
    Cache-safe, idempotent hero init
 ----------------------------------------*/
@@ -522,6 +558,8 @@ function initAll() {
     changeCredits();
     injectBannerStripe();
     updateListingHeadingFromCategory();
+
+    injectChildLinkTileIntoEducationWorkforce(); // Injects Child Link Tile Into Education Workforces page under "Related Training" section
 
     // prevent stacking scroll handlers by namespacing
     $(window).off('scroll.ocpsCredits').on('scroll.ocpsCredits', function () {
