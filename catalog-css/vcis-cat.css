@@ -575,7 +575,7 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
 }
 
 /* Hide Cart / Checkout button */
-.cart-button
+.cart
 {
   display: none !important;
   visibility: hidden !important;
