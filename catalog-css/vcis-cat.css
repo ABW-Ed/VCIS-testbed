@@ -594,4 +594,9 @@ div.css-1qzggr4-topNavBarDesktopLayout__menuItemsContainer a span {
   .callout-region {
     display:none;
 }
+
+/* Hide search form filters on category pages */
+.search-form-filters {
+  display: none !important;
+}
  
