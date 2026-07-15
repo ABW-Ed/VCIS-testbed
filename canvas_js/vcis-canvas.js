@@ -139,7 +139,6 @@ class CanvasCustomizer {
             : "https://training.infosharing.vic.gov.au";
     }
 
-// Make Canvas Dashboard read My Courses
     
 const observer = new MutationObserver(() => {
   const container = document.getElementById("dashboard_header_container");
