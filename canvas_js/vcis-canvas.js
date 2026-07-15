@@ -2220,3 +2220,22 @@ canvasManager.init().catch(error => {
 window.addEventListener('beforeunload', () => {
     canvasManager.customizer?.cleanup();
 });
+
+// Make Dahboard read My Courses
+
+  (function () {
+  const observer = new MutationObserver(() => {
+    const container = document.getElementById("dashboard_header_container");
+    if (container) {
+      const visibleHeading = container.querySelector('[data-cid="Heading"] .hidden-phone');
+      if (visibleHeading && visibleHeading.textContent.trim() === "Dashboard") {
+        visibleHeading.textContent = "My Courses";
+      }
+    }
+    const srHeading = document.querySelector("h1.screenreader-only");
+    if (srHeading && srHeading.textContent.trim() === "Dashboard") {
+      srHeading.textContent = "My Courses";
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
