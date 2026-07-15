@@ -140,26 +140,26 @@ class CanvasCustomizer {
     }
 
 // Make Canvas Dashboard read My Courses
- console.log("Custom dashboard script loaded");
-    
+console.log("Custom dashboard script loaded");
+
 const observer = new MutationObserver(() => {
-  // Update the visible heading text
   const container = document.getElementById("dashboard_header_container");
   if (container) {
     const visibleHeading = container.querySelector('[data-cid="Heading"] .hidden-phone');
+    console.log("Found heading?", visibleHeading, visibleHeading ? visibleHeading.textContent : null);
     if (visibleHeading && visibleHeading.textContent.trim() === "Dashboard") {
       visibleHeading.textContent = "My Courses";
+      console.log("Replaced!");
     }
   }
 
-  // Update the screen-reader-only heading to match
   const srHeading = document.querySelector("h1.screenreader-only");
   if (srHeading && srHeading.textContent.trim() === "Dashboard") {
     srHeading.textContent = "My Courses";
   }
 });
 
-observer.observe(document.body, { childList: true, subtree: true });   
+observer.observe(document.body, { childList: true, subtree: true });
 
     // ----------------------------
     // Main Initialization
