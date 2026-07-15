@@ -139,25 +139,6 @@ class CanvasCustomizer {
             : "https://training.infosharing.vic.gov.au";
     }
 
-    
-const observer = new MutationObserver(() => {
-  const container = document.getElementById("dashboard_header_container");
-  if (container) {
-    const visibleHeading = container.querySelector('[data-cid="Heading"] .hidden-phone');
-    console.log("Found heading?", visibleHeading, visibleHeading ? visibleHeading.textContent : null);
-    if (visibleHeading && visibleHeading.textContent.trim() === "Dashboard") {
-      visibleHeading.textContent = "My Courses";
-      console.log("Replaced!");
-    }
-  }
-
-  const srHeading = document.querySelector("h1.screenreader-only");
-  if (srHeading && srHeading.textContent.trim() === "Dashboard") {
-    srHeading.textContent = "My Courses";
-  }
-});
-
-observer.observe(document.body, { childList: true, subtree: true });
 
     // ----------------------------
     // Main Initialization
