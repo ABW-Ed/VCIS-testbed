@@ -140,8 +140,7 @@ class CanvasCustomizer {
     }
 
 // Make Canvas Dashboard read My Courses
-console.log("Custom dashboard script loaded");
-
+    
 const observer = new MutationObserver(() => {
   const container = document.getElementById("dashboard_header_container");
   if (container) {
