@@ -291,7 +291,13 @@ async function initCustomisations() {
     initFeature(registrationSuccessRedirect);
   }
 
-
+  // ------------------
+  // Branch 6: Closed enrolment → update notice text
+  // ------------------
+  var enrollmentNotice = document.querySelector(".ProductEnrollment__Notice");
+  if (enrollmentNotice && enrollmentNotice.textContent.trim() !== "This course is closed for enrolments. Please see below for more information.") {
+    enrollmentNotice.textContent = "This course is closed for enrolments. Please see below for more information.";
+  }
 }
 
 // --------------------
