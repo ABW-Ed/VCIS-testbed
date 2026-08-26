@@ -119,18 +119,13 @@ $(function () {
     }
   }, intervalMs);
 
-// sneak in the MR ECEC change here - to be removed on 1st of Dec
-  
-  const prodDetail = ENV.product_details;
-
-if (window.ENV?.product_details?.id === 16772) {
-  const notice = $(".ProductEnrollment__Notice");
-  if (notice.length) {
-    notice.text(
-      "Hello! This course is currently not available. Enrolments will open from Monday 1 December."
-    );
+// ------------------
+// Closed enrolment → update notice text
+// ------------------
+  var enrollmentNotice = document.querySelector(".ProductEnrollment__Notice");
+  if (enrollmentNotice && enrollmentNotice.textContent.trim() !== "This course is closed for enrolments. Please see below for more information.") {
+    enrollmentNotice.textContent = "This course is closed for enrolments. Please see below for more information.";
   }
-}
 
   // ===============================
   // 8. User-based DOM customisations
