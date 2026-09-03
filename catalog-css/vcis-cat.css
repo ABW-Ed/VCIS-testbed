@@ -270,8 +270,8 @@
   display: none;
 }
 
-/* add slight drop shadow to tiles */
-.product-tile {
+/* add slight drop shadow to tiles on hover */
+.product-tile:hover {
   box-shadow: 5px 5px 5px #00000030;
 } 
 
@@ -599,4 +599,13 @@ button[data-testid="open-shopping-cart-button"]
 .search-form-filters {
   display: none !important;
 }
- 
+
+/* remove the Victoria logo from individual product tiles */
+.product-account-image-wrapper {
+    display:none !important;
+}
+
+/* remove the Victoria logo from student dashboard */
+.DashboardProduct__AccountLogo {
+    display:none !important;
+}
