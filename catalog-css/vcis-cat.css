@@ -271,9 +271,12 @@
 }
 
 /* add slight drop shadow to tiles on hover */
-.product-tile:hover {
-  box-shadow: 5px 5px 5px #00000030 !important;
-} 
+.product-results .product-tile:hover,
+.product-recommendations-container .product-tile:hover {
+  box-shadow: 
+    inset 0 -5px #0073ac,
+    5px 5px 5px #00000030;
+}
 
 .product-price {
   display: none !important;
