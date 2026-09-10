@@ -278,7 +278,7 @@ var defineTiles = async function () {
    ["Education Workforces", "/?category%5Bid%5D=64839&category%5Bname%5D=deworkforces", githubpage + "assets/img/de-wf-tile.png"],
    ["Families Fairness and Housing", "/?category%5Bid%5D=64841&category%5Bname%5D=dffhworkforces", githubpage + "assets/img/dffh-wf-tile.png"],
    ["Health Workforces", "/?category%5Bid%5D=64842&category%5Bname%5D=dhworkforces", githubpage + "assets/img/dh-wf-tile.png"],
-   ["Community Service Workforces", "/?category%5Bid%5D=64840&category%5Bname%5D=csworkforces", githubpage + "assets/img/IS-DFFH-elearn-tile-resize.png"],
+   ["Community Services Workforces", "/?category%5Bid%5D=64840&category%5Bname%5D=csworkforces", githubpage + "assets/img/IS-DFFH-elearn-tile-resize.png"],
    ["Child Link", "/?category%5Bid%5D=64838&category%5Bname%5D=childlink", githubpage + "assets/img/childlink-logo.png"],
    ["Justice Training", "/?category%5Bid%5D=64843&category%5Bname%5D=djcsworkforces", githubpage + "assets/img/scales-3.png"]
   ];
