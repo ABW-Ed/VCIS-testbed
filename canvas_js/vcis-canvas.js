@@ -1934,7 +1934,7 @@ class CanvasCustomizer {
                     el.textContent = "Status: Completed";
                     el.classList.add("modcomp-complete");
                 } else if (!locked) {
-                    el.textContent = "Status: Not Completed";
+                    el.textContent = "Status: In progress";
                     el.classList.add("modcomp-inprogress");
                     if (!isOptional) allComplete = false;
                 } else {
