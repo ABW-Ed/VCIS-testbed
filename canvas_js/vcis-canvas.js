@@ -2039,7 +2039,7 @@ class CanvasCustomizer {
 
             if (certElement) {
                 if (allComplete) {
-                    certElement.textContent = "Certificate Available";
+                    certElement.textContent = "Certificate available";
                     certElement.classList.remove("cert-unavail");
                     certElement.classList.add("cert-avail");
 
@@ -2051,7 +2051,7 @@ class CanvasCustomizer {
                         certButton.setAttribute("href", `${catalogUrl}/dashboard/completed`);
                     }
                 } else {
-                    certElement.textContent = "Course Incomplete";
+                    certElement.textContent = "Course incomplete";
                     certElement.classList.add("cert-unavail");
 
                     if (certButton) {
