@@ -111,6 +111,14 @@
 
 /* Headings */
 
+/* 511px and above */
+#home-page #feature.feature-region #custom-feature-container h1 {
+  font-size: 2.1em;
+  text-align: left;
+  font-weight: 700;
+  margin: 0;
+}
+
 /* smallest phones: up to 444px */
 @media (max-width: 444px) {
   #home-page #feature.feature-region #custom-feature-container h1 {
@@ -123,14 +131,6 @@
   #home-page #feature.feature-region #custom-feature-container h1 {
     font-size: 25px;
   }
-}
-
-/* 511px and above: falls back to original rule */
-#home-page #feature.feature-region #custom-feature-container h1 {
-  font-size: 2.1em;
-  text-align: left;
-  font-weight: 700;
-  margin: 0;
 }
 
 /* make header work more better */
