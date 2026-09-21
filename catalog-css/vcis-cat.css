@@ -110,6 +110,22 @@
 }
 
 /* Headings */
+
+/* smallest phones: up to 444px */
+@media (max-width: 444px) {
+  #home-page #feature.feature-region #custom-feature-container h1 {
+    font-size: 22px;
+  }
+}
+
+/* larger phones: 445px–510px */
+@media (min-width: 445px) and (max-width: 510px) {
+  #home-page #feature.feature-region #custom-feature-container h1 {
+    font-size: 25px;
+  }
+}
+
+/* 511px and above: falls back to original rule */
 #home-page #feature.feature-region #custom-feature-container h1 {
   font-size: 2.1em;
   text-align: left;
