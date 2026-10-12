@@ -229,7 +229,8 @@ $(function () {
           (() => {
             const replacements = {
               "Protecting Children - Mandatory Reporting and Other Obligations Early Childhood": "Early Childhood",
-              "Protecting Children - Mandatory Reporting and Other Obligations Non-Government Schools": "Non-Government Schools"
+              "Protecting Children - Mandatory Reporting and Other Obligations Non-Government Schools": "Schools",
+              "PROTECT Child Safety Training for Government Schools": "Schools"
             };
 
             const headings = [...document.querySelectorAll(".product-heading")];
