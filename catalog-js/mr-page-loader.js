@@ -209,7 +209,7 @@ $(function () {
 
 
   // ===============================
-  // 10. Course title duplication & renaming (only for IDs 16772 & 15667)
+  // 10. Course title duplication & renaming (only for IDs 16772, 15667, and 20438)
   // ===============================
   var productWatcher = setInterval(function () {
     try {
@@ -222,8 +222,8 @@ $(function () {
         // Extract product IDs
         const ids = ENV.products_initial_data.products.map(p => p.id);
 
-        // Only run if the catalogue is one of the 2 target IDs
-        if (ids.includes(16772) || ids.includes(15667)) {
+        // Only run if the catalogue is one of the 3 target IDs
+        if (ids.includes(16772) || ids.includes(15667) || ids.includes(20438)) {
 
           // Your working duplication & replacement script
           (() => {
