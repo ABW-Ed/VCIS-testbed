@@ -228,7 +228,7 @@ $(function () {
           // Your working duplication & replacement script
           (() => {
             const replacements = {
-              "Protecting Children - Mandatory Reporting and Other Obligations Early Childhood": "Early Childhood",
+              "Protecting Children - Mandatory Reporting and Other Obligations for Early Childhood": "Early Childhood",
               "Protecting Children - Mandatory Reporting and Other Obligations Non-Government Schools": "Schools",
               "PROTECT Child Safety Training for Government Schools": "Schools"
             };
