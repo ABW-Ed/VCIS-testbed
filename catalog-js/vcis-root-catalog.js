@@ -296,7 +296,7 @@ async function initCustomisations() {
   // ------------------
   var enrollmentNotice = document.querySelector(".ProductEnrollment__Notice");
   if (enrollmentNotice && enrollmentNotice.textContent.trim() !== "This course is currently closed for enrolments. Please check back in early December.") {
-    enrollmentNotice.textContent = "This course is closed for enrolments. Please see below for more information.";
+    enrollmentNotice.textContent = "This course is currently closed for enrolments. Please check back in early December.";
   }
 }
 
